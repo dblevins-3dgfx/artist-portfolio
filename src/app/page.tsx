@@ -97,10 +97,10 @@ export default function HomePage() {
           </li>
           <li>
             <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">02</p>
-            <h3 className="mt-2 font-heading text-2xl italic">Send a request</h3>
+            <h3 className="mt-2 font-heading text-2xl italic">Send a request by email</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Leave a name, an email, and a shipping address. No card number is asked for,
-              and nothing is charged on this site.
+              The site fills in the order. You send it from your own email. No card number
+              is asked for, and nothing is charged on this site.
             </p>
           </li>
           <li>

@@ -10,16 +10,18 @@ The artist’s name, prices, email, and biography live in [`content/studio.json`
 
 ```bash
 npm install
-cp .env.example .env.local
-```
-
-Edit `.env.local` and set `STUDIO_PASSWORD` to at least 12 characters. Then:
-
-```bash
 npm run dev
 ```
 
-Open the site, and open `/studio` for the desk where print requests are listed.
+Open the site. `/studio` is a checklist for the public details. Print requests are not stored there.
+
+## Publish on GitHub Pages
+
+GitHub Pages only serves files. It can publish this catalog. It cannot run a password-protected inbox or save orders on the server, so a print request is an email the visitor sends.
+
+Push this project to a GitHub repository. The workflow in `.github/workflows/pages.yml` builds the static site and deploys it. In the repository settings, set Pages to deploy from GitHub Actions. The public address is `https://<user>.github.io/<repository>/` unless the repository is a user site named `<user>.github.io`.
+
+The GoDaddy name can point at that host later. In GitHub Pages, add the custom domain, then in GoDaddy replace the welcome-page records with the DNS records GitHub shows. Disconnect GoDaddy’s website builder or domain forwarding first, or the old page keeps answering. Do not upload the `originals/` folder.
 
 ## Put the studio’s name on it
 
@@ -56,28 +58,15 @@ Keep a private backup of `originals/`. The site cannot reconstruct a print from 
 
 ## How a print request works
 
-The buyer builds a list in the browser and sends a name, email, and shipping address. Prices are recalculated on the server from `content/studio.json`. Card numbers are never requested.
+The buyer builds a list in the browser and enters a name, email, and shipping address. Prices come from `content/studio.json`. Card numbers are never requested.
 
-On a normal Node server, the request is saved in `data/requests.json` (also not committed) and shows up at `/studio`. Sign in with `STUDIO_PASSWORD`, reply from your own email, then mark the request confirmed, shipped, or closed. Those marks are reminders for you. They do not email the buyer or talk to a printer.
-
-If you publish on Vercel, the disk does not keep that file. Set these environment variables on the host so each request is emailed instead:
-
-- `STUDIO_PASSWORD`
-- `STUDIO_EMAIL`
-- `RESEND_API_KEY`
-- `RESEND_FROM` — a sender on a domain you have verified with [Resend](https://resend.com), such as `Studio <prints@yourdomain.com>`
-
-Until email is configured on that kind of host, the buyer is given the request text and a button that opens their own mail program, so the order is not thrown away.
+The site then opens an email to the address in `content/studio.json`, with the order written in. The buyer sends that email. You reply with a total and an invoice, print from the original file, and ship it. The website does not keep a copy of the request.
 
 ## Point the GoDaddy domain here
 
-The domain registration can stay at GoDaddy. GoDaddy’s welcome page is only the current host. This app needs a host that runs Next.js. Publishing to Vercel is the straightforward one: use the Publish button, then add the domain in that host’s project settings and copy the DNS records it shows into GoDaddy’s DNS manager.
+The domain registration can stay at GoDaddy. After GitHub Pages is serving the site, add the domain in the Pages settings and copy the DNS records GitHub shows into GoDaddy. Disconnect the domain from the website builder or from domain forwarding first. The old welcome page is replaced when the name points at GitHub Pages.
 
-In GoDaddy, disconnect the domain from the website builder or from domain forwarding first. Otherwise the old welcome page keeps answering even after you edit records. You are changing where the name points, not giving up the name. The old page is replaced when the name points at the new host.
-
-Do not upload the `originals/` folder to GoDaddy, and do not turn the previews back into full-size files to “make the prints look better” online. The print file stays on your computer.
-
-Set `siteUrl` in `content/studio.json` to the public address after the domain works, so the sitemap uses it.
+Set `siteUrl` in `content/studio.json` to the public address, including `https://`, so the sitemap uses it. Then publish again.
 
 ## What the image protection does, and what it does not
 
@@ -85,11 +74,4 @@ A preview is a poor source for someone else’s print: it is small, it is compre
 
 A screenshot is still possible. No website can prevent that. The practical protection for a small studio is the reduced file plus the watermark, not a lock on right-click.
 
-Also in place:
-
-- The studio desk is password protected, and the password is compared in a way that does not leak it. A short or placeholder password does not unlock the desk.
-- Sign-in attempts and print requests are rate limited.
-- Security headers are set, including `noimageindex` on the preview files.
-- The request form does not ask for a card number.
-
-Change `STUDIO_PASSWORD` before anyone else can open the site. Do not reuse a password from email or banking.
+The pages ask search engines not to index the pictures. The request form does not ask for a card number. GitHub Pages does not apply extra security headers to the image files; the protection is the reduced, watermarked file itself.

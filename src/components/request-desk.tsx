@@ -1,21 +1,31 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useState, type FormEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { MinusIcon, PlusIcon } from "lucide-react";
-import { submitRequest, type RequestFormState } from "@/app/request/actions";
 import { useRequestCart } from "@/components/request-provider";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { formatMoney } from "@/lib/money";
+import { formatRequest, requestMailto } from "@/lib/request-text";
 import { emailIsPublic, site, workAlt, type PrintSize } from "@/lib/site";
-import type { Work } from "@/lib/types";
+import type { PrintRequest, Work } from "@/lib/types";
+import { fieldErrors, requestSchema } from "@/lib/validators";
 import { cn } from "@/lib/utils";
 
-const initial: RequestFormState = { ok: false };
+type FormState = {
+  ok: boolean;
+  error?: string;
+  fieldErrors?: Record<string, string>;
+  id?: string;
+  summary?: string;
+  mailto?: string;
+};
+
+const initial: FormState = { ok: false };
 
 export function RequestDesk({
   works,
@@ -25,22 +35,10 @@ export function RequestDesk({
   sizes: PrintSize[];
 }) {
   const { items, setQty, remove, clear } = useRequestCart();
-  const [state, action, pending] = useActionState(submitRequest, initial);
+  const [state, setState] = useState<FormState>(initial);
 
-  useEffect(() => {
-    if (state.ok && state.delivery !== "manual" && state.id) clear();
-  }, [state.ok, state.delivery, state.id, clear]);
-
-  if (state.ok && state.id) {
-    return (
-      <Thanks
-        id={state.id}
-        delivery={state.delivery}
-        summary={state.summary}
-        mailto={state.mailto}
-        onManualSend={clear}
-      />
-    );
+  if (state.ok && state.id && state.summary && state.mailto) {
+    return <Thanks id={state.id} summary={state.summary} mailto={state.mailto} />;
   }
 
   const lines = items.map((item) => {
@@ -52,6 +50,91 @@ export function RequestDesk({
     if (!line.size || !line.work?.printsAvailable) return sum;
     return sum + line.size.price * line.item.qty;
   }, 0);
+
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const parsed = requestSchema.safeParse({
+      name: form.get("name"),
+      email: form.get("email"),
+      phone: form.get("phone") ?? "",
+      street: form.get("street"),
+      city: form.get("city"),
+      region: form.get("region"),
+      postal: form.get("postal"),
+      country: form.get("country"),
+      notes: form.get("notes") ?? "",
+      company: String(form.get("company") ?? ""),
+      items,
+    });
+
+    if (!parsed.success) {
+      setState({
+        ok: false,
+        error: "Check the fields below and prepare the email again.",
+        fieldErrors: fieldErrors(parsed.error),
+      });
+      return;
+    }
+
+    if (parsed.data.company) {
+      setState({
+        ok: true,
+        id: "PR-RECEIVED",
+        summary: "Request received.",
+        mailto: "mailto:",
+      });
+      return;
+    }
+
+    const resolved = [];
+    for (const item of parsed.data.items) {
+      const work = works.find((entry) => entry.slug === item.slug);
+      const size = sizes.find((entry) => entry.id === item.sizeId);
+      if (!work || !work.printsAvailable || !size) {
+        setState({
+          ok: false,
+          error: "One of the prints is no longer offered. Remove it from the list and try again.",
+        });
+        return;
+      }
+      resolved.push({
+        slug: work.slug,
+        title: work.title,
+        sizeId: size.id,
+        sizeLabel: size.label,
+        unitPrice: size.price,
+        qty: item.qty,
+      });
+    }
+
+    const request: PrintRequest = {
+      id: newRequestId(),
+      createdAt: new Date().toISOString(),
+      status: "new",
+      buyer: {
+        name: parsed.data.name,
+        email: parsed.data.email,
+        phone: parsed.data.phone,
+        street: parsed.data.street,
+        city: parsed.data.city,
+        region: parsed.data.region,
+        postal: parsed.data.postal,
+        country: parsed.data.country,
+        notes: parsed.data.notes,
+      },
+      items: resolved,
+      total: resolved.reduce((sum, item) => sum + item.unitPrice * item.qty, 0),
+    };
+
+    clear();
+    setState({
+      ok: true,
+      id: request.id,
+      summary: formatRequest(request),
+      mailto: requestMailto(request),
+    });
+  }
 
   return (
     <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)] lg:items-start">
@@ -138,11 +221,11 @@ export function RequestDesk({
         )}
       </div>
 
-      <form action={action} className="border border-border bg-card p-5 lg:sticky lg:top-24">
-        <h2 className="font-heading text-2xl italic">Send this request</h2>
+      <form onSubmit={onSubmit} className="border border-border bg-card p-5 lg:sticky lg:top-24">
+        <h2 className="font-heading text-2xl italic">Prepare this request</h2>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           {site.paymentNote} The prints total is {formatMoney(total)}. Postage is added
-          on the invoice.
+          on the invoice. The next step opens an email; this website does not keep the order.
         </p>
         {state.error ? (
           <p className="mt-4 border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm" role="alert">
@@ -153,7 +236,6 @@ export function RequestDesk({
           <label htmlFor="company">Company</label>
           <input id="company" name="company" tabIndex={-1} autoComplete="off" />
         </div>
-        <input type="hidden" name="items" value={JSON.stringify(items)} />
         <div className="mt-5 grid gap-4">
           <Field label="Name" name="name" error={state.fieldErrors?.name} autoComplete="name" />
           <Field label="Email" name="email" type="email" error={state.fieldErrors?.email} autoComplete="email" />
@@ -179,12 +261,13 @@ export function RequestDesk({
             ) : null}
           </div>
         </div>
-        <Button type="submit" className="mt-5 h-11 w-full" disabled={pending || items.length === 0}>
-          {pending ? "Sending request…" : "Send print request"}
+        <Button type="submit" className="mt-5 h-11 w-full" disabled={items.length === 0}>
+          Prepare the email
         </Button>
-        {emailIsPublic() ? (
+        {!emailIsPublic() ? (
           <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-            Or write {site.email} yourself. Include the picture titles and sizes.
+            The studio email in the site settings is still a placeholder, so this message
+            does not yet reach anyone.
           </p>
         ) : null}
       </form>
@@ -224,52 +307,52 @@ function Field({
   );
 }
 
-function Thanks({
-  id,
-  delivery,
-  summary,
-  mailto,
-  onManualSend,
-}: {
-  id: string;
-  delivery?: RequestFormState["delivery"];
-  summary?: string;
-  mailto?: string;
-  onManualSend: () => void;
-}) {
-  const manual = delivery === "manual";
+function Thanks({ id, summary, mailto }: { id: string; summary: string; mailto: string }) {
+  const [copied, setCopied] = useState(false);
+  const placeholder = !emailIsPublic();
+
   return (
     <div className="max-w-2xl border border-border bg-card p-6 sm:p-8">
       <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">Request</p>
       <h2 className="mt-2 font-heading text-4xl italic">{id}</h2>
-      {manual ? (
-        <p className="mt-4 leading-relaxed">
-          This copy of the site cannot store the request on the server yet. Send it from
-          your own email so the studio receives it. Keep the reference {id}.
-        </p>
-      ) : (
-        <p className="mt-4 leading-relaxed">
-          The studio has this request and will reply by email with a total and an invoice.
-          Nothing has been charged. Keep the reference {id}.
-        </p>
-      )}
-      {manual && mailto ? (
-        <a
-          href={mailto}
-          onClick={onManualSend}
-          className={cn(buttonVariants(), "mt-6 inline-flex h-11 px-4")}
+      <p className="mt-4 leading-relaxed">
+        {placeholder
+          ? "The order is written out below. The studio email is not set yet, so sending it will not reach the studio."
+          : "Send the email so the studio receives this request. Nothing has been charged. Keep the reference."}{" "}
+        {id}.
+      </p>
+      <div className="mt-6 flex flex-wrap gap-3">
+        {mailto.startsWith("mailto:") && mailto.length > "mailto:".length ? (
+          <a href={mailto} className={cn(buttonVariants(), "inline-flex h-11 px-4")}>
+            Open the email
+          </a>
+        ) : null}
+        <Button
+          type="button"
+          variant="outline"
+          className="h-11 bg-background"
+          onClick={() => {
+            void navigator.clipboard.writeText(summary).then(() => {
+              setCopied(true);
+            });
+          }}
         >
-          Email this request to the studio
-        </a>
-      ) : null}
-      {summary ? (
-        <pre className="mt-6 overflow-x-auto border border-border bg-background p-4 text-xs leading-relaxed whitespace-pre-wrap">
-          {summary}
-        </pre>
-      ) : null}
+          {copied ? "Copied" : "Copy the request"}
+        </Button>
+      </div>
+      <pre className="mt-6 overflow-x-auto border border-border bg-background p-4 text-xs leading-relaxed whitespace-pre-wrap">
+        {summary}
+      </pre>
       <Link href="/work" className="mt-6 inline-block text-sm underline underline-offset-4">
         Back to the work
       </Link>
     </div>
   );
+}
+
+function newRequestId() {
+  const bytes = new Uint8Array(4);
+  crypto.getRandomValues(bytes);
+  const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return `PR-${hex.toUpperCase()}`;
 }

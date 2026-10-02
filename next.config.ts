@@ -1,28 +1,13 @@
 import type { NextConfig } from "next";
 
-const securityHeaders = [
-  { key: "X-Content-Type-Options", value: "nosniff" },
-  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "X-Frame-Options", value: "DENY" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
-];
+const basePath = process.env.BASE_PATH?.replace(/\/$/, "") || "";
 
 const nextConfig: NextConfig = {
+  output: "export",
+  images: { unoptimized: true },
+  trailingSlash: true,
   poweredByHeader: false,
-  async headers() {
-    return [
-      { source: "/:path*", headers: securityHeaders },
-      {
-        source: "/art/:path*",
-        headers: [
-          ...securityHeaders,
-          { key: "X-Robots-Tag", value: "noimageindex" },
-          { key: "Content-Disposition", value: "inline" },
-          { key: "Cache-Control", value: "public, max-age=86400" },
-        ],
-      },
-    ];
-  },
+  ...(basePath ? { basePath, assetPrefix: basePath } : {}),
 };
 
 export default nextConfig;
