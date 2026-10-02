@@ -1,0 +1,39 @@
+{
+  "artistName": "Artist Name",
+  "tagline": "Original paintings, offered as fine-art prints.",
+  "location": "City, State",
+  "email": "studio@example.com",
+  "domain": "yourdomain.com",
+  "siteUrl": "",
+  "currency": "USD",
+  "watermark": "PREVIEW",
+  "maxPreviewEdge": 1400,
+  "intro": "The pictures on this site are previews: smaller than the print files, and watermarked. Choose one, pick a size, and send a request. Nothing is charged here. The studio writes back with a total and an invoice, then prints from the original file and ships it.",
+  "biography": "",
+  "paper": "Archival pigment print on matte rag paper.",
+  "turnaround": "Prints are made to order and usually ship within two weeks of payment.",
+  "shippingNote": "Prints ship flat or rolled, from the studio. Postage is added on the invoice.",
+  "paymentNote": "Payment is arranged by invoice after you send a request. The studio accepts the methods named in the reply. Card numbers are never entered on this site.",
+  "prints": [
+    {
+      "id": "small",
+      "label": "8 × 10 in",
+      "price": 48
+    },
+    {
+      "id": "medium",
+      "label": "11 × 14 in",
+      "price": 78
+    },
+    {
+      "id": "large",
+      "label": "16 × 20 in",
+      "price": 128
+    },
+    {
+      "id": "xlarge",
+      "label": "24 × 36 in",
+      "price": 240
+    }
+  ]
+}

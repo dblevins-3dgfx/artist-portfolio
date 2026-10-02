@@ -1,0 +1,44 @@
+{
+  "files": {
+    "field-in-ochre.jpg": {
+      "width": 1400,
+      "height": 784,
+      "sha256": "f2eb100398adb2326f8e15fb821eb756d33720808f7d815ec3ec4984c6a1abaf"
+    },
+    "fig-branch.jpg": {
+      "width": 1400,
+      "height": 1400,
+      "sha256": "6385d2644a4e0020d6c29f6787a2e51205a353b171c0754e2e3dc2e2da246d9f"
+    },
+    "garden-after-dark.jpg": {
+      "width": 1105,
+      "height": 1400,
+      "sha256": "3b919ea4bd70132fcb799f9cacbf5f86036d006eee9824b6134716d5f162b7b0"
+    },
+    "harbor-late.jpg": {
+      "width": 1400,
+      "height": 980,
+      "sha256": "f5bc16b56b0c66e0a0932405e30b9e459ad1962a06ba57a71b490ed4eda099a2"
+    },
+    "market-flowers.jpg": {
+      "width": 1105,
+      "height": 1400,
+      "sha256": "916d1a9a88784e88b875ecc0a2f5b0a6a28048beba2e1ea09c1059de45866f93"
+    },
+    "pitcher-and-lemon.jpg": {
+      "width": 1105,
+      "height": 1400,
+      "sha256": "5425f8806d64f86b269441a2faacf0e349a3e03eac409cc5c997a257901f32b8"
+    },
+    "the-blue-room.jpg": {
+      "width": 1071,
+      "height": 1400,
+      "sha256": "bcd9954e80c409c5f54388a116e84553fe443df19728f22a277d1b77adf7c531"
+    },
+    "window-in-winter.jpg": {
+      "width": 1032,
+      "height": 1400,
+      "sha256": "fcbbaf6c6e510ff9e3162f03bb71ede5050f5f28e873b90e42d576a0c45353fd"
+    }
+  }
+}
