@@ -12,38 +12,25 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useRequestCart } from "@/components/request-provider";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const links = [
   { href: "/work", label: "Work" },
-  { href: "/prints", label: "Prints" },
   { href: "/about", label: "About" },
-  { href: "/request", label: "Request" },
 ];
 
 function NavLink({
   href,
   label,
-  count,
   onNavigate,
 }: {
   href: string;
   label: string;
-  count?: number;
   onNavigate?: boolean;
 }) {
   const pathname = usePathname();
   const active = pathname === href || pathname.startsWith(`${href}/`);
-  const text = (
-    <>
-      {label}
-      {href === "/request" && count ? (
-        <span className="ml-1.5 text-primary">{count}</span>
-      ) : null}
-    </>
-  );
   const className = cn(
     "text-sm tracking-wide",
     active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
@@ -52,21 +39,19 @@ function NavLink({
   if (onNavigate) {
     return (
       <SheetClose render={<Link href={href} className={className} />}>
-        {text}
+        {label}
       </SheetClose>
     );
   }
 
   return (
     <Link href={href} className={className} aria-current={active ? "page" : undefined}>
-      {text}
+      {label}
     </Link>
   );
 }
 
 export function SiteHeader() {
-  const { count } = useRequestCart();
-
   return (
     <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
@@ -75,7 +60,7 @@ export function SiteHeader() {
         </Link>
         <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
           {links.map((link) => (
-            <NavLink key={link.href} {...link} count={count} />
+            <NavLink key={link.href} {...link} />
           ))}
         </nav>
         <div className="md:hidden">
@@ -98,7 +83,7 @@ export function SiteHeader() {
               </SheetHeader>
               <nav className="flex flex-col gap-5 px-4 text-lg" aria-label="Mobile">
                 {links.map((link) => (
-                  <NavLink key={link.href} {...link} count={count} onNavigate />
+                  <NavLink key={link.href} {...link} onNavigate />
                 ))}
               </nav>
             </SheetContent>

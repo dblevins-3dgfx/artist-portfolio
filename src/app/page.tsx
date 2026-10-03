@@ -30,10 +30,10 @@ export default function HomePage() {
               Browse the work
             </Link>
             <Link
-              href="/prints"
+              href="/about"
               className={cn(buttonVariants({ variant: "outline" }), "inline-flex h-11 bg-card px-4")}
             >
-              Print sizes and prices
+              About the studio
             </Link>
           </div>
         </div>
@@ -84,30 +84,31 @@ export default function HomePage() {
 
       <section className="mx-auto max-w-6xl px-5 py-12">
         <h2 className="border-t border-border pt-10 font-heading text-3xl italic">
-          How a print happens
+          What is published
         </h2>
         <ol className="mt-8 grid gap-8 md:grid-cols-3">
           <li>
             <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">01</p>
-            <h3 className="mt-2 font-heading text-2xl italic">Choose a picture and a size</h3>
+            <h3 className="mt-2 font-heading text-2xl italic">A catalog</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Sizes and prices are listed on each picture. The preview is enough to choose;
-              it is not the file that gets printed.
+              Each picture has a title, a year, and the medium. Open one for a closer look
+              and a short note.
             </p>
           </li>
           <li>
             <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">02</p>
-            <h3 className="mt-2 font-heading text-2xl italic">Send a request by email</h3>
+            <h3 className="mt-2 font-heading text-2xl italic">A preview</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              The site fills in the order. You send it from your own email. No card number
-              is asked for, and nothing is charged on this site.
+              The image is reduced and watermarked, and the camera data is removed. The
+              full photograph stays with the studio.
             </p>
           </li>
           <li>
             <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">03</p>
-            <h3 className="mt-2 font-heading text-2xl italic">The studio replies</h3>
+            <h3 className="mt-2 font-heading text-2xl italic">A biography</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {site.turnaround} {site.paymentNote}
+              The about page holds a short account of the work, and a way to write, once
+              those are filled in.
             </p>
           </li>
         </ol>

@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PrintPicker } from "@/components/print-picker";
 import { Badge } from "@/components/ui/badge";
-import { formatInches, originalStatusLabel, site, workAlt } from "@/lib/site";
+import { formatInches, workAlt } from "@/lib/site";
 import { getWork, getWorks } from "@/lib/works";
 
 export function generateStaticParams() {
@@ -68,7 +67,7 @@ export default async function WorkDetailPage({
             className="h-auto w-full border border-border bg-card"
           />
           <figcaption className="mt-3 text-xs leading-relaxed text-muted-foreground">
-            Reduced preview, watermarked. This is not the file a print is made from.
+            Reduced preview, watermarked. The full photograph stays with the studio.
           </figcaption>
         </figure>
         <div className="lg:sticky lg:top-24">
@@ -85,20 +84,6 @@ export default async function WorkDetailPage({
           {work.statement ? (
             <p className="mt-6 max-w-prose leading-relaxed">{work.statement}</p>
           ) : null}
-          <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
-            {originalStatusLabel(work.originalStatus)}. A print is a separate object, made
-            after you request it.
-            {work.originalStatus === "in-studio"
-              ? " If you want to ask about the painting itself, say so in the note."
-              : ""}
-          </p>
-          {work.printsAvailable ? (
-            <PrintPicker slug={work.slug} title={work.title} sizes={site.prints} />
-          ) : (
-            <p className="mt-8 border border-border bg-card p-5 text-sm leading-relaxed">
-              Prints of this picture are not being made right now.
-            </p>
-          )}
         </div>
       </div>
       {others.length > 0 ? (

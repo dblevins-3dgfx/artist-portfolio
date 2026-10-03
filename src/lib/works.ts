@@ -8,9 +8,3 @@ export function getWorks(): Work[] {
 export function getWork(slug: string) {
   return getWorks().find((work) => work.slug === slug);
 }
-
-export function listMediums(works: Work[]) {
-  return [...new Set(works.map((work) => work.medium))].sort((a, b) =>
-    a.localeCompare(b),
-  );
-}

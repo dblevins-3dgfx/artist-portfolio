@@ -8,7 +8,6 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/studio"],
     },
     ...(site.siteUrl ? { sitemap: `${site.siteUrl.replace(/\/$/, "")}/sitemap.xml` } : {}),
   };

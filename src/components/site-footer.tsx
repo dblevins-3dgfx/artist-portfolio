@@ -3,10 +3,7 @@ import { emailIsPublic, site } from "@/lib/site";
 
 const links = [
   { href: "/work", label: "Work" },
-  { href: "/prints", label: "Prints" },
   { href: "/about", label: "About" },
-  { href: "/request", label: "Request a print" },
-  { href: "/studio", label: "Studio desk" },
 ];
 
 export function SiteFooter() {
@@ -38,8 +35,8 @@ export function SiteFooter() {
         </nav>
       </div>
       <p className="mx-auto max-w-6xl px-5 pb-10 text-xs leading-relaxed text-muted-foreground">
-        Pictures on this site are reduced, watermarked previews. Prints are made from
-        files that are not published.
+        Pictures on this site are reduced, watermarked previews. The full photographs are
+        not published.
       </p>
     </footer>
   );

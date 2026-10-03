@@ -3,14 +3,16 @@
 import { useMemo, useState } from "react";
 import { WorkCard } from "@/components/work-card";
 import { Input } from "@/components/ui/input";
-import { listMediums } from "@/lib/works";
-import type { Work } from "@/lib/types";
+import type { CatalogWork } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export function Gallery({ works }: { works: Work[] }) {
+export function Gallery({ works }: { works: CatalogWork[] }) {
   const [query, setQuery] = useState("");
   const [medium, setMedium] = useState("all");
-  const mediums = useMemo(() => listMediums(works), [works]);
+  const mediums = useMemo(
+    () => [...new Set(works.map((work) => work.medium))].sort((a, b) => a.localeCompare(b)),
+    [works],
+  );
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();

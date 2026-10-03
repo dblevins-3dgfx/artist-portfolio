@@ -2,9 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { workAlt } from "@/lib/site";
-import type { Work } from "@/lib/types";
+import type { CatalogWork } from "@/lib/types";
 
-export function WorkCard({ work }: { work: Work }) {
+export function WorkCard({ work }: { work: CatalogWork }) {
   return (
     <Link href={`/work/${work.slug}`} className="group mb-10 block break-inside-avoid">
       <Image
@@ -22,7 +22,6 @@ export function WorkCard({ work }: { work: Work }) {
       <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
         <span>{work.medium}</span>
         {work.sample ? <Badge variant="outline">Sample</Badge> : null}
-        {!work.printsAvailable ? <Badge variant="outline">Prints paused</Badge> : null}
       </p>
     </Link>
   );
