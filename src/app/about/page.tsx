@@ -15,7 +15,11 @@ export default function AboutPage() {
           <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">Studio</p>
           <h1 className="mt-3 font-heading text-5xl italic">About</h1>
           {site.biography ? (
-            <p className="mt-6 max-w-prose text-lg leading-relaxed">{site.biography}</p>
+            site.biography.split(/\n\n+/).map((paragraph) => (
+              <p key={paragraph} className="mt-6 max-w-prose text-lg leading-relaxed">
+                {paragraph}
+              </p>
+            ))
           ) : (
             <p className="mt-6 max-w-prose text-lg leading-relaxed">{site.tagline}.</p>
           )}
