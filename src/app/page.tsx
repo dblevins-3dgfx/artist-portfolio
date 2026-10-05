@@ -66,6 +66,31 @@ export default function HomePage() {
         )}
       </section>
 
+      <section className="mx-auto grid max-w-6xl items-center gap-8 px-5 pb-4 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+        <div>
+          <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">At the easel</p>
+          <h2 className="mt-3 font-heading text-3xl italic">A painting in progress</h2>
+          <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
+            Thomasene paints outdoors. This photograph shows one landscape while it was
+            still on the easel. The pictures in the catalog are stand-ins until her own
+            work is added.
+          </p>
+          <Link href="/about" className="mt-6 inline-block text-sm underline-offset-4 hover:underline">
+            About Thomasene
+          </Link>
+        </div>
+        <figure>
+          <Image
+            src="/studio/plein-air.jpg"
+            alt="A landscape painting in progress on an easel outdoors, with a palette of oil paint."
+            width={1050}
+            height={1400}
+            sizes="(min-width: 1024px) 55vw, 100vw"
+            className="h-auto w-full border border-border bg-card"
+          />
+        </figure>
+      </section>
+
       {selected.length > 0 ? (
         <section className="mx-auto max-w-6xl px-5 pb-4">
           <div className="flex items-end justify-between gap-4 border-t border-border pt-10">
