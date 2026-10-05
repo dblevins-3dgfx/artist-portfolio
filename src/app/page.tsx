@@ -105,10 +105,10 @@ export default function HomePage() {
           </li>
           <li>
             <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">03</p>
-            <h3 className="mt-2 font-heading text-2xl italic">A biography</h3>
+            <h3 className="mt-2 font-heading text-2xl italic">A way to write</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              The about page holds a short account of the work, and a way to write, once
-              those are filled in.
+              The about page carries the studio’s line, and a place to send a note once
+              an email address is added.
             </p>
           </li>
         </ol>

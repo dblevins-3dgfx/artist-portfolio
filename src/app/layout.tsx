@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     default: site.artistName,
     template: `%s · ${site.artistName}`,
   },
-  description: site.intro,
+  description: site.tagline,
   robots: {
     index: true,
     follow: true,

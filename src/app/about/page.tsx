@@ -3,7 +3,7 @@ import { emailIsPublic, site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "About the studio and the watermarked previews.",
+  description: `${site.artistName}. ${site.tagline}.`,
 };
 
 export default function AboutPage() {
@@ -14,11 +14,14 @@ export default function AboutPage() {
       {site.biography ? (
         <p className="mt-6 max-w-prose text-lg leading-relaxed">{site.biography}</p>
       ) : (
-        <p className="mt-6 max-w-prose leading-relaxed">
-          {site.artistName} makes paintings and drawings. A short biography can be added
-          here when it is ready to be written in the artist’s own voice.
-        </p>
+        <p className="mt-6 max-w-prose text-lg leading-relaxed">{site.tagline}.</p>
       )}
+      {!site.biography ? (
+        <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
+          A longer account of the work can be added here when it is ready to be written
+          in the artist’s own voice.
+        </p>
+      ) : null}
 
       <h2 className="mt-14 font-heading text-3xl italic">The files</h2>
       <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
@@ -26,9 +29,10 @@ export default function AboutPage() {
         with a watermark repeated across it, and the camera information is removed.
       </p>
 
-      <h2 className="mt-14 font-heading text-3xl italic">Where to write</h2>
+      <h2 className="mt-14 font-heading text-3xl italic">Drop us a line</h2>
       <p className="mt-4 text-sm leading-relaxed">
-        {site.location}
+        {site.domain}
+        {site.location ? ` · ${site.location}` : ""}
         {emailIsPublic() ? (
           <>
             {" "}
@@ -40,7 +44,7 @@ export default function AboutPage() {
         ) : (
           <span className="text-muted-foreground">
             {" "}
-            · The public email address has not been set yet.
+            · A public email address has not been added yet.
           </span>
         )}
       </p>

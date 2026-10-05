@@ -3,42 +3,42 @@
     "field-in-ochre.jpg": {
       "width": 1400,
       "height": 784,
-      "sha256": "f2eb100398adb2326f8e15fb821eb756d33720808f7d815ec3ec4984c6a1abaf"
+      "sha256": "942d2de2f72a57bf087c20f97c13204569fa2b1d4611a2d165e980b63caac6c8"
     },
     "fig-branch.jpg": {
       "width": 1400,
       "height": 1400,
-      "sha256": "6385d2644a4e0020d6c29f6787a2e51205a353b171c0754e2e3dc2e2da246d9f"
+      "sha256": "8cbd54f0dd4a2ccd278aa3b345ddc65054118e23afc5ec27fc710a5ca078dc36"
     },
     "garden-after-dark.jpg": {
       "width": 1105,
       "height": 1400,
-      "sha256": "3b919ea4bd70132fcb799f9cacbf5f86036d006eee9824b6134716d5f162b7b0"
+      "sha256": "0b3fbcd0361d5016a59521493a2951724eb924d5a1064df3f00a4c74d433f254"
     },
     "harbor-late.jpg": {
       "width": 1400,
       "height": 980,
-      "sha256": "f5bc16b56b0c66e0a0932405e30b9e459ad1962a06ba57a71b490ed4eda099a2"
+      "sha256": "ed30937e55ae7d6560bc7509000955a1709c32bf173304d032d810c64bc9162e"
     },
     "market-flowers.jpg": {
       "width": 1105,
       "height": 1400,
-      "sha256": "916d1a9a88784e88b875ecc0a2f5b0a6a28048beba2e1ea09c1059de45866f93"
+      "sha256": "e8a50e8d459f3507a4cab40e73cfbf9556faa9546662a5440f7bee35ed416b17"
     },
     "pitcher-and-lemon.jpg": {
       "width": 1105,
       "height": 1400,
-      "sha256": "5425f8806d64f86b269441a2faacf0e349a3e03eac409cc5c997a257901f32b8"
+      "sha256": "edce83b95b9ea2041a7bfd9cc76c71eaaad68cdd8eae6d5aa80fde46fe7b0a7e"
     },
     "the-blue-room.jpg": {
       "width": 1071,
       "height": 1400,
-      "sha256": "bcd9954e80c409c5f54388a116e84553fe443df19728f22a277d1b77adf7c531"
+      "sha256": "22ea5255d37a478f424318e15229e220279164066b0f3c33c9b736ef22ef1453"
     },
     "window-in-winter.jpg": {
       "width": 1032,
       "height": 1400,
-      "sha256": "fcbbaf6c6e510ff9e3162f03bb71ede5050f5f28e873b90e42d576a0c45353fd"
+      "sha256": "c64dbc67857c1f1d6ed737eef1d9f962bfcb18f3aa4ced2dd9a1f94248c4b3a8"
     }
   }
 }

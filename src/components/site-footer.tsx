@@ -12,7 +12,12 @@ export function SiteFooter() {
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-10 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="font-heading text-2xl italic">{site.artistName}</p>
-          <p className="mt-1 text-sm text-muted-foreground">{site.location}</p>
+          {site.location ? (
+            <p className="mt-1 text-sm text-muted-foreground">{site.location}</p>
+          ) : null}
+          {site.domain ? (
+            <p className="mt-1 text-sm text-muted-foreground">{site.domain}</p>
+          ) : null}
           {emailIsPublic() ? (
             <a
               className="mt-2 inline-block text-sm underline-offset-4 hover:underline"
@@ -35,8 +40,8 @@ export function SiteFooter() {
         </nav>
       </div>
       <p className="mx-auto max-w-6xl px-5 pb-10 text-xs leading-relaxed text-muted-foreground">
-        Pictures on this site are reduced, watermarked previews. The full photographs are
-        not published.
+        © {site.artistName}. All rights reserved. Pictures on this site are reduced,
+        watermarked previews. The full photographs are not published.
       </p>
     </footer>
   );

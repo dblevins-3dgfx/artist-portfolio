@@ -1,9 +1,9 @@
 {
-  "artistName": "Artist Name",
-  "tagline": "Paintings and drawings, shown as previews.",
-  "location": "City, State",
+  "artistName": "Thomasene Art",
+  "tagline": "Art that inspires and captivates",
+  "location": "",
   "email": "studio@example.com",
-  "domain": "yourdomain.com",
+  "domain": "thomasene.art",
   "siteUrl": "",
   "watermark": "PREVIEW",
   "maxPreviewEdge": 1400,
