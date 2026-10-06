@@ -1,3 +1,10 @@
+/*
+ * Studio identity from content/studio.json. Importing JSON bundles it at
+ * build time; it is not read from disk on each request.
+ * NEXT_PUBLIC_ names would be visible in the browser bundle. This file is
+ * imported by server pages, so the JSON stays on the server unless a client
+ * component imports it too.
+ */
 import studio from "../../content/studio.json";
 
 export const site = studio;

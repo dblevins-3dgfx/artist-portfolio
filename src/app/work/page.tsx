@@ -1,3 +1,8 @@
+/*
+ * /work. The list is grouped by subject in Gallery, which is a Client
+ * Component because the search box and the filter buttons need browser state.
+ * This file stays on the server and only hands the catalog down as props.
+ */
 import type { Metadata } from "next";
 import { Gallery } from "@/components/gallery";
 import type { CatalogWork } from "@/lib/types";

@@ -1,3 +1,12 @@
+/*
+ * Frame around every page. A folder under src/app is a URL: src/app/work/page.tsx
+ * is /work, and this file wraps each of those pages.
+ *
+ * The default export is a Server Component. It runs while HTML is produced,
+ * not in the browser, and it is a function rather than a class. JSX (`<html>`)
+ * is a typed description of the DOM. `className` values are Tailwind utilities,
+ * not class names you defined in a stylesheet. `@/` means src/.
+ */
 import type { Metadata } from "next";
 import { Fraunces, Outfit } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";

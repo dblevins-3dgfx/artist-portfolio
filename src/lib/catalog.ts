@@ -1,3 +1,15 @@
+/*
+ * The catalog document, shared by the site and the desk.
+ *
+ * parseWorks / serializeWorks are the only translation between the JSON file
+ * and a Work[]. Callers pass `unknown` (a value the type checker will not
+ * let you touch until you narrow it). There is no void* equivalent that
+ * type-checks as anything.
+ *
+ * assertCatalogPath is the allow-list for anything written to disk or Git.
+ * A save may touch content/works.json, content/art-manifest.json, and
+ * public/art/<slug>.jpg. Nothing else.
+ */
 import path from "path";
 import { parseSubject } from "@/lib/subjects";
 import type { OriginalStatus, Work } from "@/lib/types";

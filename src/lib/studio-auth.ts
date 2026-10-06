@@ -1,3 +1,13 @@
+/*
+ * Studio-desk session. The cookie holds an HMAC of a fixed string, keyed by
+ * the password. It does not hold the password. comparing digests with
+ * timingSafeEqual avoids a byte-by-byte early exit.
+ *
+ * cookies() and headers() are request-scoped Next APIs. Calling them marks
+ * the route dynamic. The failed-login map hangs off globalThis because a
+ * module-level Map would look like one, but on Vercel each instance has its
+ * own memory and cold starts wipe it. The limit is per process, not global.
+ */
 import { createHash, createHmac, timingSafeEqual } from "crypto";
 import { cookies, headers } from "next/headers";
 

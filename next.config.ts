@@ -1,3 +1,10 @@
+/*
+ * Build settings. Vercel runs this as a Node server, so the studio desk can
+ * check a password and commit. GitHub Pages sets GITHUB_PAGES=1 and gets a
+ * static export instead: HTML files only, no server actions.
+ *
+ * `import type` is erased after type-checking. It is not a runtime include.
+ */
 import type { NextConfig } from "next";
 
 const basePath = process.env.BASE_PATH?.replace(/\/$/, "") || "";

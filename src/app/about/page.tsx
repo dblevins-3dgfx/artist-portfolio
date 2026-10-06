@@ -1,3 +1,7 @@
+/*
+ * /about. Copy comes from content/studio.json through src/lib/site.ts.
+ * The portrait and the easel photo are static files in public/studio/.
+ */
 import type { Metadata } from "next";
 import Image from "next/image";
 import { emailIsPublic, site } from "@/lib/site";

@@ -1,5 +1,12 @@
 "use client";
 
+/*
+ * Browser half of /work. "use client" must stay the first statement. This
+ * module, and the components it imports, are shipped to the browser.
+ * useState is component memory: it survives re-renders of this function,
+ * it is not a global, and it resets on a full page load.
+ * The catalog itself was already parsed on the server and passed in as props.
+ */
 import { useMemo, useState } from "react";
 import { WorkCard } from "@/components/work-card";
 import { Input } from "@/components/ui/input";

@@ -1,5 +1,10 @@
 "use client";
 
+/*
+ * The header is a Client Component only because it highlights the current
+ * URL (usePathname) and opens the mobile menu. Link is Next's <a>: it
+ * prefetches the route instead of doing a full browser navigation.
+ */
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MenuIcon } from "lucide-react";

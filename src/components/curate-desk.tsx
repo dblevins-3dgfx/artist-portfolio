@@ -1,5 +1,15 @@
 "use client";
 
+/*
+ * Desk UI. Forms post to saveWork / logout, which are Server Actions: the
+ * browser calls those functions on the server rather than a URL you named.
+ * useActionState keeps the last `{ error }` beside the form that produced it.
+ * useFormStatus is how the submit button knows the post is still in flight.
+ *
+ * next/image normally runs pictures through the image optimizer. Desk
+ * previews pass unoptimized because our custom loader ignores width, and
+ * these URLs are either local files or raw GitHub bytes.
+ */
 import Image from "next/image";
 import { useActionState, type MouseEvent, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
@@ -51,6 +61,8 @@ function PendingButtons({
   allowRemove: boolean;
 }) {
   const { pending } = useFormStatus();
+  // The button's name/value is not a reliable submit intent with this button
+  // primitive. A hidden field, set before the post, is what the server reads.
   const setIntent = (event: MouseEvent<HTMLButtonElement>, intent: "save" | "delete") => {
     const field = event.currentTarget.form?.elements.namedItem("intent");
     if (field instanceof HTMLInputElement) field.value = intent;

@@ -1,3 +1,8 @@
+/*
+ * The only subject ids the catalog accepts. `as const` freezes the literals,
+ * so SubjectId is "children" | "animals" | "places" rather than string.
+ * Adding an entry here is enough for the desk menu and the work-page groups.
+ */
 export const SUBJECTS = [
   { id: "children", label: "Children" },
   { id: "animals", label: "Animals" },

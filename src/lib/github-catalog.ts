@@ -1,3 +1,13 @@
+/*
+ * GitHub commit path for the studio desk. Vercel’s disk is wiped between
+ * requests, so a save is a git commit on the catalog repo. Vercel then
+ * rebuilds the public site from that commit.
+ *
+ * This file does not parse forms or render previews. commitGitFiles writes
+ * one tree: blobs for new bytes, and sha:null for a delete (Git’s way to
+ * remove a path from the tree). The ref update is not forced, so a racing
+ * desk save comes back as 409/422 and the caller retries once.
+ */
 import { assertCatalogPath } from "@/lib/catalog";
 
 const DEFAULT_REPO = "dblevins-3dgfx/artist-portfolio";
@@ -101,6 +111,7 @@ export async function commitGitFiles(head: GitHead, message: string, files: GitF
   const treeEntries = [];
   for (const file of files) {
     if (file.bytes === null) {
+      // sha null deletes the path from the new tree.
       treeEntries.push({ path: file.path, mode: "100644", type: "blob", sha: null });
       continue;
     }

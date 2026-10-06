@@ -1,3 +1,8 @@
+/*
+ * One catalog tile. No "use client": it has no browser state. Gallery imports
+ * it, and a Client Component's imports are still bundled for the browser.
+ * `key` on the call site (not here) is how React tells tiles apart across renders.
+ */
 import Image from "next/image";
 import Link from "next/link";
 import { workAlt } from "@/lib/site";

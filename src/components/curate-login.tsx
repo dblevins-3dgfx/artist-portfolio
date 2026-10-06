@@ -1,5 +1,10 @@
 "use client";
 
+/*
+ * Password form. login() runs on the server (see curate/actions.ts).
+ * Pending state has to be read in a child of the form; useFormStatus does
+ * not see a form from the component that renders the <form> itself.
+ */
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";

@@ -1,5 +1,16 @@
 "use server";
 
+/*
+ * Server Actions: functions the browser may call, which always run on the
+ * server. "use server" at the top of the file marks every export that way.
+ * They are not HTTP routes you write by hand. A <form action={saveWork}>
+ * posts straight to saveWork.
+ *
+ * Return `{ error }` to show a message on the form. redirect() ends the
+ * action and loads another URL; code after it does not run.
+ * revalidatePath drops cached HTML for those URLs so the next view sees
+ * the catalog that was just saved.
+ */
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { removePainting, savePainting } from "@/lib/catalog-store";

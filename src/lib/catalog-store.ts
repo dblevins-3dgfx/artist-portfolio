@@ -1,3 +1,13 @@
+/*
+ * Desk orchestration. A save does three jobs that live elsewhere:
+ *   renderPreview()  — resize, strip camera data, watermark
+ *   parseWorks()     — shared catalog reader
+ *   commitGitFiles() — GitHub, or the local disk branch below when no token
+ *
+ * commitChange reloads the catalog and retries once on a git conflict.
+ * The in-memory catalog from the start of the request is not the source of
+ * truth; the repo is.
+ */
 import { createHash } from "crypto";
 import { readFile, unlink, writeFile, mkdir } from "fs/promises";
 import path from "path";

@@ -1,3 +1,10 @@
+/*
+ * Batch path for many photographs. The desk uploads one file at a time.
+ * This script reads originals/ (gitignored), writes watermarked JPEGs into
+ * public/art/, and updates content/works.json. It is plain JavaScript (.mjs)
+ * so it runs under node with no compile step. Re-running refreshes pixels
+ * and leaves titles and notes already stored in works.json alone.
+ */
 import { createHash } from "crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "fs";
 import { mkdir, readFile, writeFile } from "fs/promises";

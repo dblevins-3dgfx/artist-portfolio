@@ -1,3 +1,9 @@
+/*
+ * Desk form parsing. No GitHub, no image processing, no filesystem.
+ * A bad field returns `{ error }` so the form can show it. A good save
+ * returns `{ intent, fields }`. TypeScript narrows the union after
+ * `if ("error" in parsed)`, the way a tagged union would in C++.
+ */
 import type { WorkFields } from "@/lib/desk";
 import { isCatalogSlug } from "@/lib/catalog";
 import { parseSubject } from "@/lib/subjects";

@@ -1,3 +1,13 @@
+/*
+ * /curate, the private desk. force-dynamic means "do not cache this HTML":
+ * the password check and the catalog must run per request. runtime nodejs
+ * is required because saving uses sharp and the filesystem. maxDuration is
+ * the serverless time limit, in seconds, for an upload.
+ *
+ * searchParams is a Promise here. The query string (?saved=1) is how a server
+ * action tells this page that the last save finished. redirect() cannot
+ * return a value to the form the way a C function returns a struct.
+ */
 import type { Metadata } from "next";
 import { CurateDesk } from "@/components/curate-desk";
 import { CurateLogin } from "@/components/curate-login";

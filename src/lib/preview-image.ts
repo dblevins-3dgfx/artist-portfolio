@@ -1,3 +1,12 @@
+/*
+ * Turn an upload into the JPEG the site is allowed to publish.
+ * Long edge is capped, camera metadata (EXIF, including GPS) is dropped,
+ * and a repeating watermark is drawn from font outlines. Outlines, not a
+ * live font: the host that rasterizes SVG does not apply an embedded face,
+ * and the mark was coming out as empty boxes.
+ *
+ * sharp() is a native image library. The pipeline is lazy until toBuffer().
+ */
 import { createHash } from "crypto";
 import sharp from "sharp";
 import studio from "../../content/studio.json";

@@ -1,5 +1,9 @@
 "use client";
 
+/*
+ * Rendered when a page throws while rendering. Must be a Client Component:
+ * reset() asks Next to render that page again. The file name is the convention.
+ */
 import { Button } from "@/components/ui/button";
 
 export default function Error({ reset }: { error: Error; reset: () => void }) {

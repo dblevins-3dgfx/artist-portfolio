@@ -1,3 +1,10 @@
+/*
+ * One painting, at /work/<slug>. The [slug] folder is a path parameter, like
+ * a route argument. generateStaticParams lists every slug to prebuild.
+ * dynamicParams = false makes any other slug a 404 instead of rendering on demand.
+ *
+ * `params` is a Promise in this version of Next. Await it before reading slug.
+ */
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";

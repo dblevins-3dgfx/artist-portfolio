@@ -1,3 +1,8 @@
+/*
+ * Stand-in for src/app/curate/page.tsx during the GitHub Pages build only.
+ * scripts/prepare-pages-export.mjs copies this file over the real page.
+ * Do not import it from the app. The static export cannot run server actions.
+ */
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

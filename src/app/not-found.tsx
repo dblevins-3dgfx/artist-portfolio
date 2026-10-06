@@ -1,3 +1,7 @@
+/*
+ * Rendered for notFound() and for unknown URLs. The file name is the convention;
+ * nothing imports this module by path.
+ */
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";

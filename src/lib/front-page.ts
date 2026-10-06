@@ -1,3 +1,9 @@
+/*
+ * Which paintings the front page shows. Pure function of the catalog plus a
+ * date string: no Next APIs, so the same inputs always give the same set.
+ * Checked paintings are pinned. The rest fill to one large picture and six
+ * underneath, shuffled with the date as the seed.
+ */
 import type { Work } from "@/lib/types";
 
 /** How many pictures sit under the large one. */

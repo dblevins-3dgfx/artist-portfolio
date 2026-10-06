@@ -1,3 +1,10 @@
+/*
+ * Values that cross into the browser for the studio desk.
+ * DeskWork is one row on the form. WorkFields is the validated save payload.
+ * Publishing is where a save will land: GitHub (live site), this computer
+ * (local dev), or nowhere (Vercel with no token). The browser uses it only
+ * to choose which sentence to show.
+ */
 export type Publishing = "github" | "local" | "missing";
 
 export type DeskWork = {
