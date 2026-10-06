@@ -33,7 +33,8 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
-  const samples = getWorks().filter((work) => work.sample).length;
+  const works = getWorks();
+  const samples = works.filter((work) => work.sample).length;
 
   return (
     <html
@@ -49,7 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <div className="h-1 bg-primary" />
         <SiteHeader />
-        <SampleNotice count={samples} />
+        <SampleNotice count={samples} hasStudioWork={works.length > samples} />
         <main id="content" className="flex-1">
           {children}
         </main>

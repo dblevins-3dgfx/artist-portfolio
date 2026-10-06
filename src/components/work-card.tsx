@@ -20,7 +20,9 @@ export function WorkCard({ work }: { work: CatalogWork }) {
         <span className="shrink-0 text-xs tracking-wide text-muted-foreground">{work.year}</span>
       </div>
       <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-        <span>{work.medium}</span>
+        {work.medium.trim() || work.surface.trim() ? (
+          <span>{work.medium.trim() || work.surface.trim()}</span>
+        ) : null}
         {work.sample ? <Badge variant="outline">Sample</Badge> : null}
       </p>
     </Link>

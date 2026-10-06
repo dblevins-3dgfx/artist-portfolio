@@ -72,8 +72,8 @@ export default function HomePage() {
           <h2 className="mt-3 font-heading text-3xl italic">A painting in progress</h2>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
             Thomasene paints outdoors. This photograph shows one landscape while it was
-            still on the easel. The pictures in the catalog are stand-ins until her own
-            work is added.
+            still on the easel. Stand-in pictures in the catalog are marked. The others
+            are her paintings.
           </p>
           <Link href="/about" className="mt-6 inline-block text-sm underline-offset-4 hover:underline">
             About Thomasene

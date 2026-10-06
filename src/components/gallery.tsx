@@ -10,7 +10,10 @@ export function Gallery({ works }: { works: CatalogWork[] }) {
   const [query, setQuery] = useState("");
   const [medium, setMedium] = useState("all");
   const mediums = useMemo(
-    () => [...new Set(works.map((work) => work.medium))].sort((a, b) => a.localeCompare(b)),
+    () =>
+      [...new Set(works.map((work) => work.medium.trim()).filter(Boolean))].sort((a, b) =>
+        a.localeCompare(b),
+      ),
     [works],
   );
 

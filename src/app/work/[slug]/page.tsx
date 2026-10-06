@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { formatInches, workAlt } from "@/lib/site";
+import { formatInches, formatMaterials, workAlt } from "@/lib/site";
 import { getWork, getWorks } from "@/lib/works";
 
 export function generateStaticParams() {
@@ -46,6 +46,7 @@ export default async function WorkDetailPage({
   if (!work) notFound();
 
   const inches = formatInches(work.widthIn, work.heightIn);
+  const materials = formatMaterials(work);
   const others = getWorks().filter((entry) => entry.slug !== work.slug).slice(0, 3);
 
   return (
@@ -73,12 +74,12 @@ export default async function WorkDetailPage({
         <div className="lg:sticky lg:top-24">
           <div className="flex flex-wrap gap-2">
             {work.sample ? <Badge variant="outline">Sample</Badge> : null}
-            <Badge variant="secondary">{work.medium}</Badge>
+            {work.medium.trim() ? <Badge variant="secondary">{work.medium.trim()}</Badge> : null}
           </div>
           <h1 className="mt-4 font-heading text-5xl italic leading-tight">{work.title}</h1>
           <p className="mt-3 text-sm text-muted-foreground">
             {work.year}
-            {work.surface ? ` · ${work.medium} on ${work.surface}` : ` · ${work.medium}`}
+            {materials ? ` · ${materials}` : ""}
             {inches ? ` · ${inches}` : ""}
           </p>
           {work.statement ? (
