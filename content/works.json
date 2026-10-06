@@ -1,22 +1,5 @@
 [
   {
-    "title": "The blue room",
-    "year": 2025,
-    "medium": "Acrylic",
-    "surface": "linen",
-    "widthIn": 15,
-    "heightIn": 20,
-    "statement": "A window, a chair, and a patch of floor light in a blue room.",
-    "featured": true,
-    "originalStatus": "in-studio",
-    "printsAvailable": true,
-    "sample": true,
-    "slug": "the-blue-room",
-    "image": "/art/the-blue-room.jpg",
-    "imageWidth": 1071,
-    "imageHeight": 1400
-  },
-  {
     "title": "Fig branch",
     "year": 2023,
     "medium": "Ink",
