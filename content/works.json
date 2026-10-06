@@ -236,5 +236,22 @@
     "image": "/art/butterfly-secrets.jpg",
     "imageWidth": 1050,
     "imageHeight": 1400
+  },
+  {
+    "title": "Strummin",
+    "year": 2022,
+    "medium": "Oil",
+    "surface": "Canvas",
+    "widthIn": 12,
+    "heightIn": 16,
+    "statement": "",
+    "subject": "",
+    "featured": false,
+    "originalStatus": "not-for-sale",
+    "printsAvailable": false,
+    "slug": "strummin",
+    "image": "/art/strummin.jpg",
+    "imageWidth": 1045,
+    "imageHeight": 1400
   }
 ]
