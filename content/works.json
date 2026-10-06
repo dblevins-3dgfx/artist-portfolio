@@ -83,5 +83,22 @@
     "image": "/art/sisters-in-the-sand.jpg",
     "imageWidth": 1400,
     "imageHeight": 1110
+  },
+  {
+    "title": "Blessings and Prosperity",
+    "year": 2021,
+    "medium": "Oil",
+    "surface": "Canvas",
+    "widthIn": 12,
+    "heightIn": 8,
+    "statement": "",
+    "featured": false,
+    "originalStatus": "not-for-sale",
+    "printsAvailable": false,
+    "sample": false,
+    "slug": "blessings-and-prosperity",
+    "image": "/art/blessings-and-prosperity.jpg",
+    "imageWidth": 1400,
+    "imageHeight": 1096
   }
 ]
