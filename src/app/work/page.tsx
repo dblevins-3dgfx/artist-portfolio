@@ -11,7 +11,6 @@ function catalogWorks(): CatalogWork[] {
     medium: work.medium,
     surface: work.surface,
     statement: work.statement,
-    sample: work.sample,
     image: work.image,
     imageWidth: work.imageWidth,
     imageHeight: work.imageHeight,

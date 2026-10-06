@@ -2,7 +2,7 @@
 
 A catalog of original work. People look through reduced, watermarked previews. The full photographs stay in a private folder and are never published.
 
-The public site does not list prices, print sizes, or a way to order. That keeps it within Vercel’s free Hobby plan, which is for personal, non-commercial projects. The artist’s name, email, and biography live in [`content/studio.json`](content/studio.json). The eight pictures currently on the site are stand-ins, so the catalog can be tried before any real photographs are added.
+The public site does not list prices, print sizes, or a way to order. That keeps it within Vercel’s free Hobby plan, which is for personal, non-commercial projects. The artist’s name, email, and biography live in [`content/studio.json`](content/studio.json).
 
 An earlier version of this project had a print-request flow. It is still in the git history. Putting it back on the public site means moving the Vercel project to a paid plan first.
 
@@ -71,7 +71,7 @@ Each photograph becomes a JPEG in `public/art/` whose long edge is at most 1400 
 
 The catalog entries are in `content/works.json`. The first run fills them in. Later runs refresh the picture and leave your wording alone. `content/art-manifest.json` records a hash of each preview. `npm run build` checks that every public image is one of those previews, is small enough, and still has no camera data. Dropping a full-resolution file straight into `public/` fails the build.
 
-Remove a sample, or any picture, by deleting its entry in `content/works.json`, its entry in `content/art-manifest.json`, and the file in `public/art/`.
+Remove a picture by deleting its entry in `content/works.json`, its entry in `content/art-manifest.json`, and the file in `public/art/`. The studio desk can do that from the browser.
 
 Keep a private backup of `originals/`. The site cannot reconstruct the full photograph from a preview.
 

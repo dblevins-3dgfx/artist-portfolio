@@ -73,7 +73,6 @@ export default async function WorkDetailPage({
         </figure>
         <div className="lg:sticky lg:top-24">
           <div className="flex flex-wrap gap-2">
-            {work.sample ? <Badge variant="outline">Sample</Badge> : null}
             {work.medium.trim() ? <Badge variant="secondary">{work.medium.trim()}</Badge> : null}
           </div>
           <h1 className="mt-4 font-heading text-5xl italic leading-tight">{work.title}</h1>

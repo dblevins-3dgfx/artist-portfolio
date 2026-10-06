@@ -23,8 +23,7 @@ A file named `evening-shore.tif` becomes the picture `evening-shore`. To set the
   "widthIn": 24,
   "heightIn": 18,
   "statement": "One sentence about the picture.",
-  "featured": false,
-  "sample": false
+  "featured": false
 }
 ```
 

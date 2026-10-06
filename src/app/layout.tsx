@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Fraunces, Outfit } from "next/font/google";
-import { SampleNotice } from "@/components/sample-notice";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { site } from "@/lib/site";
-import { getWorks } from "@/lib/works";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -33,9 +31,6 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
-  const works = getWorks();
-  const samples = works.filter((work) => work.sample).length;
-
   return (
     <html
       lang="en"
@@ -50,7 +45,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <div className="h-1 bg-primary" />
         <SiteHeader />
-        <SampleNotice count={samples} hasStudioWork={works.length > samples} />
         <main id="content" className="flex-1">
           {children}
         </main>

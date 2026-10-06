@@ -285,7 +285,6 @@ export function toDeskWorks(catalog: LoadedCatalog): DeskWork[] {
     heightIn: work.heightIn,
     statement: work.statement,
     featured: work.featured,
-    sample: work.sample,
     previewUrl: previewFor(work, catalog),
     imageWidth: work.imageWidth,
     imageHeight: work.imageHeight,

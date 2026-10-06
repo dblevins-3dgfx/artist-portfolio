@@ -10,7 +10,6 @@ export type DeskWork = {
   heightIn: number;
   statement: string;
   featured: boolean;
-  sample: boolean;
   previewUrl: string;
   imageWidth: number;
   imageHeight: number;

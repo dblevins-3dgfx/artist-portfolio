@@ -7,7 +7,6 @@ export type CatalogWork = {
   medium: string;
   surface: string;
   statement: string;
-  sample: boolean;
   image: string;
   imageWidth: number;
   imageHeight: number;

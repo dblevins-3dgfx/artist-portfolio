@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import { workAlt } from "@/lib/site";
 import type { CatalogWork } from "@/lib/types";
 
@@ -23,7 +22,6 @@ export function WorkCard({ work }: { work: CatalogWork }) {
         {work.medium.trim() || work.surface.trim() ? (
           <span>{work.medium.trim() || work.surface.trim()}</span>
         ) : null}
-        {work.sample ? <Badge variant="outline">Sample</Badge> : null}
       </p>
     </Link>
   );

@@ -183,7 +183,6 @@ function WorkForm({ work, canSave }: { work: DeskWork; canSave: boolean }) {
         <p className="mt-2 text-xs text-muted-foreground">
           Preview{work.imageWidth ? `, ${work.imageWidth} × ${work.imageHeight}` : ""}
         </p>
-        {work.sample ? <p className="mt-1 text-xs tracking-wide uppercase">Sample</p> : null}
       </div>
       <div className="grid gap-4">
         <PaintingFields idPrefix={work.slug} work={work} />
@@ -242,7 +241,6 @@ export function CurateDesk({
   notice: "saved" | "removed" | null;
 }) {
   const canSave = publishing !== "missing";
-  const samples = works.filter((work) => work.sample).length;
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
@@ -279,11 +277,6 @@ export function CurateDesk({
       ) : null}
       {notice === "saved" ? <p className="mt-4 text-sm">Saved.</p> : null}
       {notice === "removed" ? <p className="mt-4 text-sm">That painting was removed.</p> : null}
-      {samples > 0 ? (
-        <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
-          Pictures marked Sample are stand-ins. Remove them when the real paintings are in.
-        </p>
-      ) : null}
 
       <div className="mt-10">
         <NewWorkForm canSave={canSave} />
