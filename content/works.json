@@ -126,5 +126,21 @@
     "image": "/art/papa-and-me.jpg",
     "imageWidth": 1045,
     "imageHeight": 1400
+  },
+  {
+    "title": "Puppy Love",
+    "year": 2024,
+    "medium": "Oil",
+    "surface": "Canvas",
+    "widthIn": 12,
+    "heightIn": 16,
+    "statement": "",
+    "featured": false,
+    "originalStatus": "not-for-sale",
+    "printsAvailable": false,
+    "slug": "puppy-love",
+    "image": "/art/puppy-love.jpg",
+    "imageWidth": 1045,
+    "imageHeight": 1400
   }
 ]
