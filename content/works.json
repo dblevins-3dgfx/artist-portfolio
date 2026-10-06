@@ -219,5 +219,22 @@
     "image": "/art/summer-afternoon.jpg",
     "imageWidth": 1400,
     "imageHeight": 665
+  },
+  {
+    "title": "Butterfly Secrets",
+    "year": 2016,
+    "medium": "Oil",
+    "surface": "Canvas",
+    "widthIn": 24,
+    "heightIn": 24,
+    "statement": "",
+    "subject": "",
+    "featured": false,
+    "originalStatus": "not-for-sale",
+    "printsAvailable": false,
+    "slug": "butterfly-secrets",
+    "image": "/art/butterfly-secrets.jpg",
+    "imageWidth": 1050,
+    "imageHeight": 1400
   }
 ]
