@@ -29,6 +29,11 @@
       "width": 1400,
       "height": 1110,
       "sha256": "4cc2c00dbd9194687adcdf13a5d1417224668820a93a7299091e575bd57b0efb"
+    },
+    "the-nest.jpg": {
+      "width": 1189,
+      "height": 1214,
+      "sha256": "37b003079246f412d505d553212d717fdf7ceadc6e0a90ad092cf28b485d0f89"
     }
   }
 }
