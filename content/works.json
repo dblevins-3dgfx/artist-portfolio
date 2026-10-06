@@ -134,5 +134,22 @@
     "image": "/art/window-in-winter.jpg",
     "imageWidth": 1032,
     "imageHeight": 1400
+  },
+  {
+    "title": "Brotherly Love",
+    "year": 2026,
+    "medium": "",
+    "surface": "Canvas",
+    "widthIn": 12,
+    "heightIn": 12,
+    "statement": "Prints available",
+    "featured": false,
+    "originalStatus": "not-for-sale",
+    "printsAvailable": false,
+    "sample": false,
+    "slug": "brotherly-love",
+    "image": "/art/brotherly-love.jpg",
+    "imageWidth": 1400,
+    "imageHeight": 1329
   }
 ]
