@@ -49,5 +49,22 @@
     "image": "/art/bon-voyage.jpg",
     "imageWidth": 1032,
     "imageHeight": 1400
+  },
+  {
+    "title": "Goin’ on a Bear Hunt",
+    "year": 2023,
+    "medium": "Oil",
+    "surface": "Canvas",
+    "widthIn": 16,
+    "heightIn": 8,
+    "statement": "",
+    "featured": false,
+    "originalStatus": "not-for-sale",
+    "printsAvailable": false,
+    "sample": false,
+    "slug": "goin-on-a-bear-hunt",
+    "image": "/art/goin-on-a-bear-hunt.jpg",
+    "imageWidth": 1400,
+    "imageHeight": 1086
   }
 ]
