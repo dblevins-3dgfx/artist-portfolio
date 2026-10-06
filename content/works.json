@@ -253,5 +253,22 @@
     "image": "/art/strummin.jpg",
     "imageWidth": 1045,
     "imageHeight": 1400
+  },
+  {
+    "title": "Strength",
+    "year": 2019,
+    "medium": "Oil",
+    "surface": "Canvas",
+    "widthIn": 24,
+    "heightIn": 36,
+    "statement": "I had fun painting this large buffalo. There is a serenity about him along with his strength.",
+    "subject": "animals",
+    "featured": false,
+    "originalStatus": "not-for-sale",
+    "printsAvailable": false,
+    "slug": "strength",
+    "image": "/art/strength.jpg",
+    "imageWidth": 915,
+    "imageHeight": 1400
   }
 ]
