@@ -66,5 +66,22 @@
     "image": "/art/goin-on-a-bear-hunt.jpg",
     "imageWidth": 1400,
     "imageHeight": 1086
+  },
+  {
+    "title": "Sisters in the Sand",
+    "year": 2020,
+    "medium": "Oil",
+    "surface": "Canvas",
+    "widthIn": 16,
+    "heightIn": 12,
+    "statement": "",
+    "featured": false,
+    "originalStatus": "not-for-sale",
+    "printsAvailable": false,
+    "sample": false,
+    "slug": "sisters-in-the-sand",
+    "image": "/art/sisters-in-the-sand.jpg",
+    "imageWidth": 1400,
+    "imageHeight": 1110
   }
 ]
