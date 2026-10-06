@@ -1,22 +1,5 @@
 [
   {
-    "title": "Flowers from the market",
-    "year": 2025,
-    "medium": "Watercolor",
-    "surface": "paper",
-    "widthIn": 16,
-    "heightIn": 20,
-    "statement": "A bunch reduced to discs of brick, ochre, cream, and sage in a gray vase.",
-    "featured": false,
-    "originalStatus": "in-studio",
-    "printsAvailable": false,
-    "sample": true,
-    "slug": "market-flowers",
-    "image": "/art/market-flowers.jpg",
-    "imageWidth": 1105,
-    "imageHeight": 1400
-  },
-  {
     "title": "Field in ochre",
     "year": 2024,
     "medium": "Oil",
