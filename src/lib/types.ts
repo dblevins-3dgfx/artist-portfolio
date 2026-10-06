@@ -24,7 +24,6 @@ export type Work = {
   featured: boolean;
   originalStatus: OriginalStatus;
   printsAvailable: boolean;
-  sample: boolean;
   image: string;
   imageWidth: number;
   imageHeight: number;

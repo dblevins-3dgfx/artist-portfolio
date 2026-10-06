@@ -141,7 +141,6 @@ for (const file of files) {
     featured: false,
     originalStatus: "not-for-sale",
     printsAvailable: true,
-    sample: false,
     ...sidecar,
     slug,
     image: `/art/${outputName}`,
@@ -149,6 +148,7 @@ for (const file of files) {
     imageHeight: published.height,
   };
   delete created.svg;
+  delete created.sample;
 
   if (existing) {
     existing.image = created.image;

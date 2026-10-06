@@ -8,7 +8,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "make-samples": "node scripts/make-samples.mjs",
     "process-images": "node scripts/process-images.mjs",
     "check-images": "node scripts/check-public-images.mjs"
   },
