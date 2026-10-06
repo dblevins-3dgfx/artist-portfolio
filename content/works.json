@@ -202,5 +202,22 @@
     "image": "/art/rain-rain-go-away.jpg",
     "imageWidth": 685,
     "imageHeight": 1400
+  },
+  {
+    "title": "Summer Afternoon",
+    "year": 2024,
+    "medium": "Oil",
+    "surface": "Canvaa",
+    "widthIn": 40,
+    "heightIn": 18,
+    "statement": "",
+    "subject": "children",
+    "featured": false,
+    "originalStatus": "not-for-sale",
+    "printsAvailable": false,
+    "slug": "summer-afternoon",
+    "image": "/art/summer-afternoon.jpg",
+    "imageWidth": 1400,
+    "imageHeight": 665
   }
 ]
