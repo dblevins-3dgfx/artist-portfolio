@@ -41,8 +41,7 @@ export function SiteFooter() {
         </nav>
       </div>
       <p className="mx-auto max-w-6xl px-5 pb-10 text-xs leading-relaxed text-muted-foreground">
-        © {site.artistName}. All rights reserved. Pictures on this site are reduced,
-        watermarked previews. The full photographs are not published.
+        © {site.artistName}. All rights reserved.
       </p>
     </footer>
   );

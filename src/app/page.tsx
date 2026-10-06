@@ -22,9 +22,6 @@ export default function HomePage() {
             {site.artistName}
           </h1>
           <p className="mt-5 max-w-md text-lg leading-relaxed">{site.tagline}</p>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-            {site.intro}
-          </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/work" className={cn(buttonVariants(), "inline-flex h-11 px-4")}>
               Browse the work
@@ -58,10 +55,6 @@ export default function HomePage() {
         ) : (
           <div className="border border-border bg-card p-8">
             <h2 className="font-heading text-3xl italic">No pictures yet</h2>
-            <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              Photographs of the work are added from a private folder, then reduced and
-              watermarked before they appear here.
-            </p>
           </div>
         )}
       </section>
@@ -81,37 +74,6 @@ export default function HomePage() {
           </div>
         </section>
       ) : null}
-
-      <section className="mx-auto max-w-6xl px-5 py-12">
-        <h2 className="border-t border-border pt-10 font-heading text-3xl italic">
-          What is published
-        </h2>
-        <ol className="mt-8 grid gap-8 md:grid-cols-3">
-          <li>
-            <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">01</p>
-            <h3 className="mt-2 font-heading text-2xl italic">A catalog</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Each picture has a title, a year, and the medium. Open one for a closer look
-              and a short note.
-            </p>
-          </li>
-          <li>
-            <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">02</p>
-            <h3 className="mt-2 font-heading text-2xl italic">A preview</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              The image is reduced and watermarked, and the camera data is removed. The
-              full photograph stays with the studio.
-            </p>
-          </li>
-          <li>
-            <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">03</p>
-            <h3 className="mt-2 font-heading text-2xl italic">A way to write</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              The about page carries the studio’s line, and an email for a note.
-            </p>
-          </li>
-        </ol>
-      </section>
     </div>
   );
 }

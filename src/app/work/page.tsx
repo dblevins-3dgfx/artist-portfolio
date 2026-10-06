@@ -29,10 +29,6 @@ export default function WorkPage() {
     <div className="mx-auto max-w-6xl px-5 py-12">
       <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">Catalog</p>
       <h1 className="mt-3 font-heading text-5xl italic">The work</h1>
-      <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-        Every picture here is a reduced, watermarked preview. Open one to read the title,
-        the year, and a short note.
-      </p>
       {works.length === 0 ? (
         <p className="mt-12 max-w-md text-lg">
           No pictures have been published yet. They appear after the studio processes

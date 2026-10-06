@@ -65,11 +65,6 @@ export default function AboutPage() {
           <div>
             <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">At the easel</p>
             <h2 className="mt-3 font-heading text-3xl italic">A painting in progress</h2>
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              A landscape painted outdoors. The photograph is published smaller than the
-              original, and the camera information has been removed. The painting itself
-              stays with the studio.
-            </p>
           </div>
           <figure>
             <Image

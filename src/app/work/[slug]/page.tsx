@@ -67,9 +67,6 @@ export default async function WorkDetailPage({
             sizes="(min-width: 1024px) 58vw, 100vw"
             className="h-auto w-full border border-border bg-card"
           />
-          <figcaption className="mt-3 text-xs leading-relaxed text-muted-foreground">
-            Reduced preview, watermarked. The full photograph stays with the studio.
-          </figcaption>
         </figure>
         <div className="lg:sticky lg:top-24">
           <div className="flex flex-wrap gap-2">
