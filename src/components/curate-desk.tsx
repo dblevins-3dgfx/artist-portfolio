@@ -177,6 +177,7 @@ function WorkForm({ work, canSave }: { work: DeskWork; canSave: boolean }) {
           alt={work.title}
           width={work.imageWidth || 160}
           height={work.imageHeight || 160}
+          unoptimized
           className="aspect-[4/5] w-full border border-border object-cover"
         />
         <p className="mt-2 text-xs text-muted-foreground">
