@@ -174,5 +174,21 @@
     "image": "/art/clouds-and-canola.jpg",
     "imageWidth": 1069,
     "imageHeight": 1400
+  },
+  {
+    "title": "Rain Rain Go Away!",
+    "year": 2024,
+    "medium": "Oil",
+    "surface": "Canvas",
+    "widthIn": 12,
+    "heightIn": 24,
+    "statement": "",
+    "featured": false,
+    "originalStatus": "not-for-sale",
+    "printsAvailable": false,
+    "slug": "rain-rain-go-away",
+    "image": "/art/rain-rain-go-away.jpg",
+    "imageWidth": 685,
+    "imageHeight": 1400
   }
 ]
