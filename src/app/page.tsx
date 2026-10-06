@@ -1,15 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
+import { connection } from "next/server";
 import { WorkCard } from "@/components/work-card";
 import { buttonVariants } from "@/components/ui/button";
+import { frontPageDateKey, selectFrontPage } from "@/lib/front-page";
 import { site, workAlt } from "@/lib/site";
 import { getWorks } from "@/lib/works";
 import { cn } from "@/lib/utils";
 
-export default function HomePage() {
-  const works = getWorks();
-  const featured = works.find((work) => work.featured) ?? works[0];
-  const selected = works.filter((work) => work.slug !== featured?.slug).slice(0, 6);
+export default async function HomePage() {
+  // The static catalog build has no request, so it keeps the set from that build.
+  if (process.env.GITHUB_PAGES !== "1") {
+    await connection();
+  }
+  const { lead, selected } = selectFrontPage(getWorks(), frontPageDateKey());
 
   return (
     <div>
@@ -34,22 +38,22 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-        {featured ? (
-          <Link href={`/work/${featured.slug}`} className="group block">
+        {lead ? (
+          <Link href={`/work/${lead.slug}`} className="group block">
             <Image
-              src={featured.image}
-              alt={workAlt(featured)}
-              width={featured.imageWidth}
-              height={featured.imageHeight}
+              src={lead.image}
+              alt={workAlt(lead)}
+              width={lead.imageWidth}
+              height={lead.imageHeight}
               priority
               sizes="(min-width: 1024px) 50vw, 100vw"
               className="h-auto w-full border border-border bg-card"
             />
             <p className="mt-3 flex items-baseline justify-between gap-3 text-sm">
               <span className="font-heading text-xl italic group-hover:underline">
-                {featured.title}
+                {lead.title}
               </span>
-              <span className="text-muted-foreground">{featured.year}</span>
+              <span className="text-muted-foreground">{lead.year}</span>
             </p>
           </Link>
         ) : (
