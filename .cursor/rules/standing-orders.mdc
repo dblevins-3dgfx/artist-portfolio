@@ -1,0 +1,27 @@
+---
+description: Standing orders for all work in this repo
+alwaysApply: true
+---
+
+# Standing orders
+
+## How to work
+- Read the relevant code before editing. Do not guess file paths or APIs.
+- Make the smallest change that solves the request. Do not refactor unrelated code.
+- Match the style of the surrounding file: naming, imports, error handling, comments.
+- Do not add dependencies, config files, or abstractions unless asked.
+- Do not commit, push, or open a pull request unless asked.
+
+## Before saying you are done
+- Run the project's existing check for the files you touched (test, typecheck, or lint).
+- If you cannot run it, say so and name the command the user should run.
+- Summarize what changed and anything you did not verify.
+
+## When unsure
+- Ask one clarifying question instead of picking an interpretation and building on it.
+- If two approaches are reasonable, name both in one sentence and recommend one.
+
+## Output
+- Lead with the answer or the change. Skip preamble.
+- Do not repeat the request back.
+- Do not add trailing "let me know if you need anything else."
