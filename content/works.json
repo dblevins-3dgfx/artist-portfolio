@@ -168,5 +168,22 @@
     "image": "/art/blue-sky-blue-lake.jpg",
     "imageWidth": 1116,
     "imageHeight": 1400
+  },
+  {
+    "title": "Bon Voyage",
+    "year": 2026,
+    "medium": "",
+    "surface": "Canvas",
+    "widthIn": 12,
+    "heightIn": 16,
+    "statement": "",
+    "featured": false,
+    "originalStatus": "not-for-sale",
+    "printsAvailable": false,
+    "sample": false,
+    "slug": "bon-voyage",
+    "image": "/art/bon-voyage.jpg",
+    "imageWidth": 1032,
+    "imageHeight": 1400
   }
 ]
