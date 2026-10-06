@@ -3,49 +3,72 @@
 import { useMemo, useState } from "react";
 import { WorkCard } from "@/components/work-card";
 import { Input } from "@/components/ui/input";
+import { SUBJECTS, subjectLabel } from "@/lib/subjects";
 import type { CatalogWork } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
+function matchesQuery(work: CatalogWork, needle: string) {
+  if (!needle) return true;
+  return [work.title, work.medium, work.statement, subjectLabel(work.subject), String(work.year)]
+    .join(" ")
+    .toLowerCase()
+    .includes(needle);
+}
+
 export function Gallery({ works }: { works: CatalogWork[] }) {
   const [query, setQuery] = useState("");
-  const [medium, setMedium] = useState("all");
-  const mediums = useMemo(
-    () =>
-      [...new Set(works.map((work) => work.medium.trim()).filter(Boolean))].sort((a, b) =>
-        a.localeCompare(b),
-      ),
+  const [subject, setSubject] = useState("all");
+  const groups = useMemo(
+    () => SUBJECTS.filter((entry) => works.some((work) => work.subject === entry.id)),
     [works],
   );
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return works.filter((work) => {
-      if (medium !== "all" && work.medium !== medium) return false;
-      if (!needle) return true;
-      return [work.title, work.medium, work.statement, String(work.year)]
-        .join(" ")
-        .toLowerCase()
-        .includes(needle);
+      if (subject !== "all" && work.subject !== subject) return false;
+      return matchesQuery(work, needle);
     });
-  }, [works, query, medium]);
+  }, [works, query, subject]);
+
+  const sections = useMemo(() => {
+    if (subject !== "all" || query.trim()) return null;
+    const named: { id: string; label: string; works: CatalogWork[] }[] = groups
+      .map((entry) => ({
+        id: entry.id,
+        label: entry.label,
+        works: filtered.filter((work) => work.subject === entry.id),
+      }))
+      .filter((entry) => entry.works.length > 0);
+    if (named.length === 0) return null;
+    const rest = filtered.filter((work) => !work.subject);
+    if (rest.length > 0) {
+      named.push({ id: "other", label: "Other pictures", works: rest });
+    }
+    return named;
+  }, [filtered, groups, query, subject]);
 
   return (
     <div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by medium">
-          <FilterButton active={medium === "all"} onClick={() => setMedium("all")}>
-            All
-          </FilterButton>
-          {mediums.map((entry) => (
-            <FilterButton
-              key={entry}
-              active={medium === entry}
-              onClick={() => setMedium(entry)}
-            >
-              {entry}
+        {groups.length > 0 ? (
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by subject">
+            <FilterButton active={subject === "all"} onClick={() => setSubject("all")}>
+              All
             </FilterButton>
-          ))}
-        </div>
+            {groups.map((entry) => (
+              <FilterButton
+                key={entry.id}
+                active={subject === entry.id}
+                onClick={() => setSubject(entry.id)}
+              >
+                {entry.label}
+              </FilterButton>
+            ))}
+          </div>
+        ) : (
+          <div />
+        )}
         <label className="block w-full sm:max-w-xs">
           <span className="sr-only">Search pictures</span>
           <Input
@@ -61,13 +84,28 @@ export function Gallery({ works }: { works: CatalogWork[] }) {
       </p>
       {filtered.length === 0 ? (
         <p className="mt-10 max-w-md text-lg">No pictures match that search.</p>
-      ) : (
-        <div className="mt-8 columns-1 gap-x-8 sm:columns-2 lg:columns-3">
-          {filtered.map((work) => (
-            <WorkCard key={work.slug} work={work} />
+      ) : sections ? (
+        <div className="mt-10 grid gap-14">
+          {sections.map((section) => (
+            <section key={section.id}>
+              <h2 className="font-heading text-3xl italic">{section.label}</h2>
+              <CardGrid works={section.works} />
+            </section>
           ))}
         </div>
+      ) : (
+        <CardGrid works={filtered} />
       )}
+    </div>
+  );
+}
+
+function CardGrid({ works }: { works: CatalogWork[] }) {
+  return (
+    <div className="mt-8 columns-1 gap-x-8 sm:columns-2 lg:columns-3">
+      {works.map((work) => (
+        <WorkCard key={work.slug} work={work} />
+      ))}
     </div>
   );
 }

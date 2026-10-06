@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import type { DeskWork, Publishing } from "@/lib/desk";
+import { SUBJECTS } from "@/lib/subjects";
 
 function Field({
   id,
@@ -143,6 +144,21 @@ function PaintingFields({
           defaultValue={work?.heightIn ? String(work.heightIn) : ""}
           maxLength={8}
         />
+      </Field>
+      <Field id={`${idPrefix}-subject`} label="Subject">
+        <select
+          id={`${idPrefix}-subject`}
+          name="subject"
+          defaultValue={work?.subject || ""}
+          className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          <option value="">No group</option>
+          {SUBJECTS.map((subject) => (
+            <option key={subject.id} value={subject.id}>
+              {subject.label}
+            </option>
+          ))}
+        </select>
       </Field>
       <Field id={`${idPrefix}-statement`} label="Note" className="sm:col-span-2">
         <Textarea

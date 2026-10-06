@@ -9,6 +9,7 @@ export type DeskWork = {
   widthIn: number;
   heightIn: number;
   statement: string;
+  subject: string;
   featured: boolean;
   previewUrl: string;
   imageWidth: number;
@@ -24,5 +25,6 @@ export type WorkFields = {
   widthIn: number;
   heightIn: number;
   statement: string;
+  subject: string;
   featured: boolean;
 };

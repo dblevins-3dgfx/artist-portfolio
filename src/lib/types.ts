@@ -6,6 +6,7 @@ export type CatalogWork = {
   year: number;
   medium: string;
   surface: string;
+  subject: string;
   statement: string;
   image: string;
   imageWidth: number;
@@ -21,6 +22,7 @@ export type Work = {
   widthIn: number;
   heightIn: number;
   statement: string;
+  subject: string;
   featured: boolean;
   originalStatus: OriginalStatus;
   printsAvailable: boolean;

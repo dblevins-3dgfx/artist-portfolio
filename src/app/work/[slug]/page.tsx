@@ -3,8 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { formatInches, formatMaterials, workAlt } from "@/lib/site";
+import { buttonVariants } from "@/components/ui/button";
+import { emailIsPublic, formatInches, formatMaterials, site, workAlt } from "@/lib/site";
+import { subjectLabel } from "@/lib/subjects";
 import { getWork, getWorks } from "@/lib/works";
+import { cn } from "@/lib/utils";
 
 export function generateStaticParams() {
   return getWorks().map((work) => ({ slug: work.slug }));
@@ -47,7 +50,12 @@ export default async function WorkDetailPage({
 
   const inches = formatInches(work.widthIn, work.heightIn);
   const materials = formatMaterials(work);
-  const others = getWorks().filter((entry) => entry.slug !== work.slug).slice(0, 3);
+  const subject = subjectLabel(work.subject);
+  const rest = getWorks().filter((entry) => entry.slug !== work.slug);
+  const others = [
+    ...rest.filter((entry) => work.subject && entry.subject === work.subject),
+    ...rest.filter((entry) => !work.subject || entry.subject !== work.subject),
+  ].slice(0, 3);
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-10 lg:py-14">
@@ -70,6 +78,7 @@ export default async function WorkDetailPage({
         </figure>
         <div className="lg:sticky lg:top-24">
           <div className="flex flex-wrap gap-2">
+            {subject ? <Badge variant="secondary">{subject}</Badge> : null}
             {work.medium.trim() ? <Badge variant="secondary">{work.medium.trim()}</Badge> : null}
           </div>
           <h1 className="mt-4 font-heading text-5xl italic leading-tight">{work.title}</h1>
@@ -80,6 +89,14 @@ export default async function WorkDetailPage({
           </p>
           {work.statement ? (
             <p className="mt-6 max-w-prose leading-relaxed">{work.statement}</p>
+          ) : null}
+          {emailIsPublic() ? (
+            <a
+              className={cn(buttonVariants({ variant: "outline" }), "mt-8 inline-flex h-11 bg-card px-4")}
+              href={`mailto:${site.email}?subject=${encodeURIComponent(`About ${work.title}`)}`}
+            >
+              Write about this painting
+            </a>
           ) : null}
         </div>
       </div>

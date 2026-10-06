@@ -2,6 +2,7 @@ import { createHash } from "crypto";
 import { readFile, unlink, writeFile, mkdir } from "fs/promises";
 import path from "path";
 import type { DeskWork, Publishing, WorkFields } from "@/lib/desk";
+import { parseSubject } from "@/lib/subjects";
 import { renderPreview } from "@/lib/preview-image";
 import type { OriginalStatus, Work } from "@/lib/types";
 
@@ -148,6 +149,7 @@ function parseWorks(text: string): Work[] {
       widthIn: typeof record.widthIn === "number" ? record.widthIn : 0,
       heightIn: typeof record.heightIn === "number" ? record.heightIn : 0,
       statement: typeof record.statement === "string" ? record.statement : "",
+      subject: parseSubject(record.subject),
       featured: record.featured === true,
       originalStatus,
       printsAvailable: record.printsAvailable === true,
@@ -185,6 +187,7 @@ function serializeWorks(works: Work[]) {
       widthIn: work.widthIn,
       heightIn: work.heightIn,
       statement: work.statement,
+      subject: work.subject,
       featured: work.featured,
       originalStatus: work.originalStatus,
       printsAvailable: work.printsAvailable,
@@ -282,6 +285,7 @@ export function toDeskWorks(catalog: LoadedCatalog): DeskWork[] {
     widthIn: work.widthIn,
     heightIn: work.heightIn,
     statement: work.statement,
+    subject: work.subject,
     featured: work.featured,
     previewUrl: previewFor(work, catalog),
     imageWidth: work.imageWidth,
@@ -347,6 +351,7 @@ export function readWorkForm(
     widthIn,
     heightIn,
     statement,
+    subject: parseSubject(textField(formData, "subject", 40)),
     featured: formData.get("featured") === "on",
   };
   return { intent: "save" as const, existingSlug, fields };
@@ -518,6 +523,7 @@ export async function savePainting(
         widthIn: fields.widthIn,
         heightIn: fields.heightIn,
         statement: fields.statement,
+        subject: fields.subject,
         featured: fields.featured,
         originalStatus: existing?.originalStatus ?? "not-for-sale",
         printsAvailable: existing?.printsAvailable ?? false,

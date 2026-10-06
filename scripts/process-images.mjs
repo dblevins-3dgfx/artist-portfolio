@@ -138,6 +138,7 @@ for (const file of files) {
     widthIn: 0,
     heightIn: 0,
     statement: "",
+    subject: "",
     featured: false,
     originalStatus: "not-for-sale",
     printsAvailable: true,
@@ -149,6 +150,7 @@ for (const file of files) {
   };
   delete created.svg;
   delete created.sample;
+  if (!["children", "animals", "places"].includes(created.subject)) created.subject = "";
 
   if (existing) {
     existing.image = created.image;
