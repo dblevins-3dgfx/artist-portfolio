@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { imageFromForm, readWorkForm, removePainting, savePainting } from "@/lib/catalog-store";
+import { removePainting, savePainting } from "@/lib/catalog-store";
+import { imageFromForm, readWorkForm } from "@/lib/work-form";
 import { isSignedIn, signIn, signOut } from "@/lib/studio-auth";
 
 export type DeskFormState = { error: string } | null;
