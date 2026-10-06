@@ -14,6 +14,7 @@ const studio = JSON.parse(readFileSync(path.join(root, "content", "studio.json")
 const MAX_EDGE = Number(studio.maxPreviewEdge) || 1400;
 const EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".tif", ".tiff", ".webp"]);
 const FONT_CANDIDATES = [
+  path.join(root, "assets/fonts/LiberationSerif-Bold.ttf"),
   "/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf",
   "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf",
   "/Library/Fonts/Georgia Bold.ttf",

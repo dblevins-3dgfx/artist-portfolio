@@ -25,8 +25,11 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Build static site
-        run: npm run build
+        run: |
+          node scripts/prepare-pages-export.mjs
+          npm run build
         env:
+          GITHUB_PAGES: "1"
           BASE_PATH: ${{ github.event.repository.name == format('{0}.github.io', github.repository_owner) && '' || format('/{0}', github.event.repository.name) }}
       - run: touch out/.nojekyll
       - uses: actions/upload-pages-artifact@v3

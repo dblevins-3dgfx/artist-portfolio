@@ -4,6 +4,7 @@ import { emailIsPublic, site } from "@/lib/site";
 const links = [
   { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
+  { href: "/curate", label: "Studio desk" },
 ];
 
 export function SiteFooter() {

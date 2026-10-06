@@ -1,5 +1,7 @@
 # Originals stay in this folder
 
+The studio desk on the Vercel site (`/curate`) can add one painting at a time. This folder is the way to prepare many photographs at once.
+
 Put the full photographs here (JPEG, PNG, TIFF, or WebP). They can sit in subfolders.
 
 This folder is not published and is not committed to git, except for this note. The website only receives a smaller, watermarked JPEG.

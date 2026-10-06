@@ -8,6 +8,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
+      disallow: ["/curate", "/curate/"],
     },
     ...(site.siteUrl ? { sitemap: `${site.siteUrl.replace(/\/$/, "")}/sitemap.xml` } : {}),
   };
