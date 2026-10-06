@@ -1,58 +1,9 @@
 import { createHash } from "crypto";
-import { existsSync, readFileSync } from "fs";
-import path from "path";
 import sharp from "sharp";
 import studio from "../../content/studio.json";
+import { watermarkSvg } from "./watermark-svg.mjs";
 
 const MAX_EDGE = Number(studio.maxPreviewEdge) || 1400;
-
-const FONT_CANDIDATES = [
-  path.join(process.cwd(), "assets/fonts/LiberationSerif-Bold.ttf"),
-  "/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf",
-  "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf",
-];
-
-function escapeXml(value: string) {
-  return value.replace(/[&<>"']/g, (character) => {
-    switch (character) {
-      case "&":
-        return "&amp;";
-      case "<":
-        return "&lt;";
-      case ">":
-        return "&gt;";
-      case '"':
-        return "&quot;";
-      default:
-        return "&apos;";
-    }
-  });
-}
-
-let fontFace: string | null = null;
-
-function loadFontFace() {
-  if (fontFace) return fontFace;
-  const found = FONT_CANDIDATES.find((candidate) => existsSync(candidate));
-  if (!found) {
-    throw new Error("The watermark font is missing from this copy of the site.");
-  }
-  const base64 = readFileSync(found).toString("base64");
-  fontFace = `@font-face{font-family:"Mark";src:url("data:font/ttf;base64,${base64}") format("truetype");font-weight:700;}`;
-  return fontFace;
-}
-
-function watermarkSvg(label: string, credit: string) {
-  const creditSize = credit.length > 32 ? 13 : 16;
-  return Buffer.from(`<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="560" height="320">
-  <style>${loadFontFace()}</style>
-  <g transform="rotate(-28 280 160)">
-    <text x="280" y="156" text-anchor="middle" font-family="Mark, Liberation Serif, serif" font-size="40" letter-spacing="6" fill="rgba(255,252,247,0.7)" stroke="rgba(24,18,14,0.62)" stroke-width="1.5" paint-order="stroke">${escapeXml(label)}</text>
-    <text x="280" y="188" text-anchor="middle" font-family="Mark, Liberation Serif, serif" font-size="${creditSize}" letter-spacing="1.6" fill="rgba(255,252,247,0.62)" stroke="rgba(24,18,14,0.45)" stroke-width="0.75" paint-order="stroke">${escapeXml(credit)}</text>
-  </g>
-</svg>`);
-}
 
 async function meanDiff(left: Buffer, right: Buffer) {
   const a = await sharp(left).raw().toBuffer();
