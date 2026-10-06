@@ -151,5 +151,22 @@
     "image": "/art/brotherly-love.jpg",
     "imageWidth": 1400,
     "imageHeight": 1329
+  },
+  {
+    "title": "Blue Sky, Blue Lake",
+    "year": 2026,
+    "medium": "",
+    "surface": "Canvas",
+    "widthIn": 16,
+    "heightIn": 20,
+    "statement": "",
+    "featured": false,
+    "originalStatus": "not-for-sale",
+    "printsAvailable": false,
+    "sample": false,
+    "slug": "blue-sky-blue-lake",
+    "image": "/art/blue-sky-blue-lake.jpg",
+    "imageWidth": 1116,
+    "imageHeight": 1400
   }
 ]
