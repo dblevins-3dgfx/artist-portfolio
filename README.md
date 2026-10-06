@@ -1,8 +1,14 @@
-# Artist portfolio
+# Thomasene Art
 
-A catalog of original work. People look through reduced, watermarked previews. The full photographs stay in a private folder and are never published.
+A catalog of original paintings. The pictures on the site are reduced, watermarked previews. The full photographs stay in a private folder and are never published.
+
+- [GitHub repository](https://github.com/dblevins-3dgfx/artist-portfolio)
+- [GitHub Pages](https://dblevins-3dgfx.github.io/artist-portfolio/) — static catalog. `/curate` on this copy only points to the Vercel desk.
+- [Vercel](https://artist-portfolio-mu-snowy.vercel.app/) — the live site, including the studio desk at `/curate`.
 
 The public site does not list prices, print sizes, or a way to order. That keeps it within Vercel’s free Hobby plan, which is for personal, non-commercial projects. The artist’s name, email, and biography live in [`content/studio.json`](content/studio.json).
+
+The front page keeps any painting marked “Show on the front page.” When that does not fill the page, the open spots are a daily selection that changes at midnight in Coeur d’Alene. The work page groups paintings by subject: Children, Animals, or Places.
 
 An earlier version of this project had a print-request flow. It is still in the git history. Putting it back on the public site means moving the Vercel project to a paid plan first.
 
@@ -15,30 +21,30 @@ npm run dev
 
 ## Publish on Vercel
 
-Import the GitHub repository into a Hobby project, leave `BASE_PATH` unset, and use the `vercel.app` address Vercel assigns. That address is enough to look through the catalog. The GoDaddy registration and the current welcome page can stay as they are until you decide the public name should point here.
+The live site is [https://artist-portfolio-mu-snowy.vercel.app/](https://artist-portfolio-mu-snowy.vercel.app/). It is a normal Next.js app on the Hobby plan. Leave `BASE_PATH` unset. Do not turn on a static export: the studio desk at `/curate` is the one page that runs on the server. The desk is personal use of the site. It does not list prices or take orders.
 
-The public pages are still a catalog. The studio desk at `/curate` is the one page that runs on the server, so the Vercel project must stay a normal Next.js app. Do not turn on a static export there. The desk is personal use of the site: it does not list prices or take orders.
+[thomasene.art](https://thomasene.art/) still serves the GoDaddy website builder. The registration can stay at GoDaddy. When that name should open this catalog, add the domain in the Vercel project and copy the DNS records Vercel shows into GoDaddy. Disconnect GoDaddy’s website builder or domain forwarding first, or the old page keeps answering. Do not upload the `originals/` folder.
 
-When that day comes, add the domain in the Vercel project and copy the DNS records Vercel shows into GoDaddy. Disconnect GoDaddy’s website builder or domain forwarding first, or the old page keeps answering. The registration can stay at GoDaddy. Do not upload the `originals/` folder.
-
-Set `siteUrl` in `content/studio.json` to the public address, including `https://`, so the sitemap uses it. Then publish again.
+`siteUrl` in `content/studio.json` is still empty, so the sitemap is empty. Set it to the public address, including `https://`, when that address is the one you want indexed. Then publish again.
 
 ## Publish on GitHub Pages
 
-Pushing to `main` also runs `.github/workflows/pages.yml`, which builds a static copy for GitHub Pages. In the repository settings, Pages deploys from GitHub Actions. The public address is `https://<user>.github.io/<repository>/` unless the repository is a user site named `<user>.github.io`. The workflow sets `BASE_PATH` for that project-site prefix. Leave `BASE_PATH` empty on Vercel.
+Pushing to `main` also runs `.github/workflows/pages.yml`, which builds a static copy. The published address is [https://dblevins-3dgfx.github.io/artist-portfolio/](https://dblevins-3dgfx.github.io/artist-portfolio/). Pages deploys from GitHub Actions. The workflow sets `BASE_PATH` to `/artist-portfolio` because this is a project site, not a user site named `<user>.github.io`. Leave `BASE_PATH` empty on Vercel.
 
-GitHub Pages cannot check a password or accept an upload. On that copy, `/curate` only explains that the working desk is the Vercel address.
+GitHub Pages cannot check a password or accept an upload. On that copy, `/curate` only explains that the working desk is the Vercel address. The front-page selection on Pages is the set from the last build, not a new set each day.
 
-## Put the studio’s name on it
+## Studio details
 
-In `content/studio.json`, replace:
+[`content/studio.json`](content/studio.json) already has the studio’s name, tagline, location, email, domain, and biography. Those fields are:
 
 - `artistName` — also burned into the watermark
 - `location`
-- `email` — shown on the about page once it is a real address
-- `domain` — the GoDaddy domain, without `https://`
-- `siteUrl` — full address once the site is public, such as `https://yourdomain.com`
-- `biography` — a short paragraph in the artist’s voice; leave it blank until then
+- `email` — shown when it contains `@` and does not end in `@example.com`
+- `domain` — `thomasene.art`, without `https://`. Also burned into the watermark
+- `siteUrl` — still empty. The sitemap uses it once it is a full `https://` address
+- `biography` — the about page
+- `watermark` — the word drawn across previews (`PREVIEW`)
+- `maxPreviewEdge` — longest side of a published preview, in pixels (`1400`)
 
 After the name or domain changes, rebuild the previews so the watermark matches:
 
@@ -48,11 +54,11 @@ npm run process-images
 
 ## Studio desk
 
-Open `/curate` on the Vercel address. Thomasene signs in with the studio password, then adds a painting, edits its title, year, medium, surface, size, and note, or removes it. Each photograph is reduced to a long edge of 1400 pixels, stripped of camera information, and watermarked before it is saved. The original file is discarded after that. It is never written into the repository.
+Open `/curate` on the Vercel address. Thomasene signs in with the studio password, then adds a painting, edits its title, year, medium, surface, size, subject, note, and “Show on the front page,” or removes it. Each photograph is reduced to a long edge of 1400 pixels, stripped of camera information, and watermarked before it is saved. The original file is discarded after that. It is never written into the repository.
 
 Each save publishes a new commit, and Vercel rebuilds the catalog from that commit. That suits one painting at a time. For a large batch, use the photograph folder below.
 
-The desk stays locked until two values are set in the Vercel project (Settings → Environment Variables), for Production:
+The live desk already uses two Vercel environment variables (Settings → Environment Variables), for Production. A project without them stays locked:
 
 - `STUDIO_PASSWORD` — a long password. This is what she types. It is not stored in the repository.
 - `STUDIO_GITHUB_TOKEN` — a GitHub fine-grained personal access token for this repository only, with Contents set to Read and write. The desk uses it to commit the watermarked preview and the catalog. Do not use a token that can see other repositories.
