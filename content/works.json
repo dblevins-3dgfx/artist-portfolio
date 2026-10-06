@@ -142,5 +142,21 @@
     "image": "/art/puppy-love.jpg",
     "imageWidth": 1045,
     "imageHeight": 1400
+  },
+  {
+    "title": "Let Me Give You a Hand",
+    "year": 2024,
+    "medium": "Oil",
+    "surface": "Canvas",
+    "widthIn": 10,
+    "heightIn": 8,
+    "statement": "",
+    "featured": false,
+    "originalStatus": "not-for-sale",
+    "printsAvailable": false,
+    "slug": "let-me-give-you-a-hand",
+    "image": "/art/let-me-give-you-a-hand.jpg",
+    "imageWidth": 1116,
+    "imageHeight": 1400
   }
 ]
