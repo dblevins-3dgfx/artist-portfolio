@@ -1,17 +1,11 @@
 /*
- * The only subject ids the catalog accepts. `as const` freezes the literals,
- * so SubjectId is one of those ids rather than string.
- * Adding an entry here is enough for the desk menu and the work-page groups.
- * The batch script keeps the same ids in scripts/process-images.mjs.
+ * Typed view of the subject list in subjects.mjs. That file is the one
+ * copy of the ids and labels. SubjectId is one of those ids rather than
+ * string.
  */
-export const SUBJECTS = [
-  { id: "children", label: "Children" },
-  { id: "animals", label: "Animals" },
-  { id: "places", label: "Places" },
-  { id: "birds-and-flowers", label: "Birds & Flowers" },
-  { id: "still-life", label: "Still Life" },
-  { id: "portraits", label: "Portraits" },
-] as const;
+import { SUBJECTS } from "./subjects.mjs";
+
+export { SUBJECTS };
 
 export type SubjectId = (typeof SUBJECTS)[number]["id"];
 
