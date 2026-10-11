@@ -272,23 +272,6 @@
     "imageHeight": 1400
   },
   {
-    "title": "001 Original",
-    "year": 2026,
-    "medium": "Painting",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subject": "",
-    "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "slug": "001-original",
-    "image": "/art/001-original.jpg",
-    "imageWidth": 1163,
-    "imageHeight": 1400
-  },
-  {
     "title": "002 Original",
     "year": 2026,
     "medium": "Painting",
