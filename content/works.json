@@ -374,23 +374,6 @@
     "imageHeight": 684
   },
   {
-    "title": "IMG 0136",
-    "year": 2026,
-    "medium": "Painting",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subject": "",
-    "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "slug": "img-0136",
-    "image": "/art/img-0136.jpg",
-    "imageWidth": 685,
-    "imageHeight": 1400
-  },
-  {
     "title": "IMG 0311",
     "year": 2026,
     "medium": "Painting",
@@ -476,23 +459,6 @@
     "imageHeight": 1121
   },
   {
-    "title": "IMG 0696",
-    "year": 2026,
-    "medium": "Painting",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subject": "",
-    "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "slug": "img-0696",
-    "image": "/art/img-0696.jpg",
-    "imageWidth": 1400,
-    "imageHeight": 1086
-  },
-  {
     "title": "IMG 1083 Original",
     "year": 2026,
     "medium": "Painting",
@@ -524,23 +490,6 @@
     "slug": "img-1224-original",
     "image": "/art/img-1224-original.jpg",
     "imageWidth": 1050,
-    "imageHeight": 1400
-  },
-  {
-    "title": "IMG 1398",
-    "year": 2026,
-    "medium": "Painting",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subject": "",
-    "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "slug": "img-1398",
-    "image": "/art/img-1398.jpg",
-    "imageWidth": 1045,
     "imageHeight": 1400
   },
   {
@@ -745,23 +694,6 @@
     "slug": "img-3128-original",
     "image": "/art/img-3128-original.jpg",
     "imageWidth": 1049,
-    "imageHeight": 1400
-  },
-  {
-    "title": "IMG 3164",
-    "year": 2026,
-    "medium": "Painting",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subject": "",
-    "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "slug": "img-3164",
-    "image": "/art/img-3164.jpg",
-    "imageWidth": 1032,
     "imageHeight": 1400
   },
   {
@@ -1326,23 +1258,6 @@
     "imageHeight": 1240
   },
   {
-    "title": "IMG 4997",
-    "year": 2026,
-    "medium": "Painting",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subject": "",
-    "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "slug": "img-4997",
-    "image": "/art/img-4997.jpg",
-    "imageWidth": 1189,
-    "imageHeight": 1214
-  },
-  {
     "title": "IMG 5075",
     "year": 2026,
     "medium": "Painting",
@@ -1462,23 +1377,6 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 6037 Original",
-    "year": 2026,
-    "medium": "Painting",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subject": "",
-    "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "slug": "img-6037-original",
-    "image": "/art/img-6037-original.jpg",
-    "imageWidth": 1400,
-    "imageHeight": 1096
-  },
-  {
     "title": "IMG 6100 Original",
     "year": 2026,
     "medium": "Painting",
@@ -1581,23 +1479,6 @@
     "imageHeight": 1060
   },
   {
-    "title": "IMG 6817 Original",
-    "year": 2026,
-    "medium": "Painting",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subject": "",
-    "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "slug": "img-6817-original",
-    "image": "/art/img-6817-original.jpg",
-    "imageWidth": 1050,
-    "imageHeight": 1400
-  },
-  {
     "title": "IMG 6925 Original",
     "year": 2026,
     "medium": "Painting",
@@ -1612,23 +1493,6 @@
     "slug": "img-6925-original",
     "image": "/art/img-6925-original.jpg",
     "imageWidth": 1102,
-    "imageHeight": 1400
-  },
-  {
-    "title": "IMG 7489",
-    "year": 2026,
-    "medium": "Painting",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subject": "",
-    "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "slug": "img-7489",
-    "image": "/art/img-7489.jpg",
-    "imageWidth": 915,
     "imageHeight": 1400
   },
   {
@@ -1734,23 +1598,6 @@
     "imageHeight": 684
   },
   {
-    "title": "IMG 7890",
-    "year": 2026,
-    "medium": "Painting",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subject": "",
-    "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "slug": "img-7890",
-    "image": "/art/img-7890.jpg",
-    "imageWidth": 1116,
-    "imageHeight": 1400
-  },
-  {
     "title": "IMG 7975",
     "year": 2026,
     "medium": "Painting",
@@ -1853,23 +1700,6 @@
     "imageHeight": 1115
   },
   {
-    "title": "IMG 8621",
-    "year": 2026,
-    "medium": "Painting",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subject": "",
-    "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "slug": "img-8621",
-    "image": "/art/img-8621.jpg",
-    "imageWidth": 1069,
-    "imageHeight": 1400
-  },
-  {
     "title": "IMG 8630 Original",
     "year": 2026,
     "medium": "Painting",
@@ -1936,23 +1766,6 @@
     "image": "/art/img-9245.jpg",
     "imageWidth": 1400,
     "imageHeight": 1094
-  },
-  {
-    "title": "IMG 9416",
-    "year": 2026,
-    "medium": "Painting",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subject": "",
-    "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "slug": "img-9416",
-    "image": "/art/img-9416.jpg",
-    "imageWidth": 1116,
-    "imageHeight": 1400
   },
   {
     "title": "IMG 9475",
@@ -2057,23 +1870,6 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 9617",
-    "year": 2026,
-    "medium": "Painting",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subject": "",
-    "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "slug": "img-9617",
-    "image": "/art/img-9617.jpg",
-    "imageWidth": 1400,
-    "imageHeight": 1110
-  },
-  {
     "title": "IMG 9689",
     "year": 2026,
     "medium": "Painting",
@@ -2088,23 +1884,6 @@
     "slug": "img-9689",
     "image": "/art/img-9689.jpg",
     "imageWidth": 1179,
-    "imageHeight": 1400
-  },
-  {
-    "title": "IMG 9805",
-    "year": 2026,
-    "medium": "Painting",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subject": "",
-    "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "slug": "img-9805",
-    "image": "/art/img-9805.jpg",
-    "imageWidth": 1045,
     "imageHeight": 1400
   },
   {
