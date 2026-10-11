@@ -10,7 +10,7 @@
 import { createHash } from "crypto";
 import sharp from "sharp";
 import studio from "../../content/studio.json";
-import { watermarkSvg } from "./watermark-svg.mjs";
+import { applyWatermark } from "./watermark-svg.mjs";
 
 const MAX_EDGE = Number(studio.maxPreviewEdge) || 1400;
 
@@ -60,7 +60,6 @@ export async function renderPreview(input: Buffer): Promise<PreviewImage> {
   const label = String(studio.watermark || "PREVIEW").slice(0, 24);
   const showDomain = studio.domain && studio.domain !== "yourdomain.com";
   const credit = (showDomain ? `${studio.artistName} · ${studio.domain}` : studio.artistName).slice(0, 48);
-  const tile = watermarkSvg(label, credit);
 
   let plain: Buffer;
   try {
@@ -83,10 +82,7 @@ export async function renderPreview(input: Buffer): Promise<PreviewImage> {
     );
   }
 
-  const marked = await sharp(plain)
-    .composite([{ input: tile, tile: true, blend: "over" }])
-    .jpeg({ quality: 70, progressive: true })
-    .toBuffer();
+  const marked = await applyWatermark(plain, label, credit);
 
   const changed = await meanDiff(plain, marked);
   if (changed < 0.15) {
