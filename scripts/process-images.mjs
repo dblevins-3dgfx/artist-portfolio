@@ -10,6 +10,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "fs";
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import sharp from "sharp";
+import { previewFingerprint } from "../src/lib/image-hash.mjs";
 import { applyWatermark } from "../src/lib/watermark-svg.mjs";
 
 const root = process.cwd();
@@ -175,6 +176,7 @@ for (const file of files) {
     width: published.width,
     height: published.height,
     sha256: hash,
+    fingerprint: await previewFingerprint(marked),
   };
   console.log(`${file.relative} → public/art/${outputName} (${published.width}×${published.height}, mark ${changed.toFixed(2)})`);
 }

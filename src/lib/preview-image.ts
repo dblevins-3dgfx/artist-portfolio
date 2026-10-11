@@ -10,6 +10,7 @@
 import { createHash } from "crypto";
 import sharp from "sharp";
 import studio from "../../content/studio.json";
+import { previewFingerprint } from "./image-hash.mjs";
 import { applyWatermark } from "./watermark-svg.mjs";
 
 const MAX_EDGE = Number(studio.maxPreviewEdge) || 1400;
@@ -50,6 +51,7 @@ export type PreviewImage = {
   width: number;
   height: number;
   sha256: string;
+  fingerprint: string;
 };
 
 export async function renderPreview(input: Buffer): Promise<PreviewImage> {
@@ -102,5 +104,6 @@ export async function renderPreview(input: Buffer): Promise<PreviewImage> {
     width: published.width,
     height: published.height,
     sha256: createHash("sha256").update(marked).digest("hex"),
+    fingerprint: await previewFingerprint(marked),
   };
 }
