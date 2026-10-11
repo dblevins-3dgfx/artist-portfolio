@@ -22,6 +22,7 @@ import {
   serializeWorks,
   type Manifest,
 } from "@/lib/catalog";
+import { catalogLikeness } from "@/lib/duplicates";
 import type { DeskWork, Publishing, WorkFields } from "@/lib/desk";
 import { commitGitFiles, isGitConflict, readGitFile, readGitHead } from "@/lib/github-catalog";
 import { renderPreview } from "@/lib/preview-image";
@@ -109,6 +110,7 @@ function previewFor(work: Work, catalog: LoadedCatalog) {
 }
 
 export function toDeskWorks(catalog: LoadedCatalog): DeskWork[] {
+  const likeness = catalogLikeness(catalog.works, catalog.manifest);
   return catalog.works.map((work) => ({
     slug: work.slug,
     title: work.title,
@@ -123,6 +125,7 @@ export function toDeskWorks(catalog: LoadedCatalog): DeskWork[] {
     previewUrl: previewFor(work, catalog),
     imageWidth: work.imageWidth,
     imageHeight: work.imageHeight,
+    duplicateOf: likeness.notes[work.slug] ?? "",
   }));
 }
 
@@ -231,6 +234,7 @@ export async function savePainting(
           width: rendered.width,
           height: rendered.height,
           sha256: rendered.sha256,
+          fingerprint: rendered.fingerprint,
         };
         imageWidth = rendered.width;
         imageHeight = rendered.height;

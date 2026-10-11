@@ -19,7 +19,11 @@ export const MANIFEST_PATH = "content/art-manifest.json";
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-export type ManifestFile = { width: number; height: number; sha256: string };
+const FINGERPRINT = /^[0-9a-f]{16}$/;
+
+// fingerprint is a 16-character likeness mark. The desk compares these.
+// Keeping it here means a later save does not wipe the marks off the manifest.
+export type ManifestFile = { width: number; height: number; sha256: string; fingerprint?: string };
 export type Manifest = { files: Record<string, ManifestFile> };
 
 export function isCatalogSlug(value: string) {
@@ -85,11 +89,15 @@ export function parseManifest(value: unknown): Manifest {
   for (const [name, entry] of Object.entries(files)) {
     const file = asRecord(entry);
     if (!file || typeof file.sha256 !== "string") continue;
-    manifest.files[name] = {
+    const parsed: ManifestFile = {
       width: typeof file.width === "number" ? file.width : 0,
       height: typeof file.height === "number" ? file.height : 0,
       sha256: file.sha256,
     };
+    if (typeof file.fingerprint === "string" && FINGERPRINT.test(file.fingerprint)) {
+      parsed.fingerprint = file.fingerprint;
+    }
+    manifest.files[name] = parsed;
   }
   return manifest;
 }

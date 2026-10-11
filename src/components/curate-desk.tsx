@@ -197,7 +197,7 @@ function PaintingFields({
 function WorkForm({ work, canSave }: { work: DeskWork; canSave: boolean }) {
   const [state, action] = useActionState(saveWork, null as DeskFormState);
   return (
-    <form action={action} className="grid gap-6 border border-border bg-card p-4 sm:grid-cols-[9rem_minmax(0,1fr)] sm:p-5">
+    <form id={work.slug} action={action} className="grid gap-6 border border-border bg-card p-4 sm:grid-cols-[9rem_minmax(0,1fr)] sm:p-5">
       <input type="hidden" name="existingSlug" value={work.slug} />
       <div>
         <Image
@@ -211,6 +211,7 @@ function WorkForm({ work, canSave }: { work: DeskWork; canSave: boolean }) {
         <p className="mt-2 text-xs text-muted-foreground">
           Preview{work.imageWidth ? `, ${work.imageWidth} × ${work.imageHeight}` : ""}
         </p>
+        {work.duplicateOf ? <p className="mt-2 text-sm leading-relaxed">{work.duplicateOf}</p> : null}
       </div>
       <div className="grid gap-4">
         <PaintingFields idPrefix={work.slug} work={work} />
@@ -259,14 +260,42 @@ function NewWorkForm({ canSave }: { canSave: boolean }) {
   );
 }
 
+function DuplicateList({ groups }: { groups: { slug: string; title: string }[][] }) {
+  if (groups.length === 0) return null;
+  return (
+    <section className="mt-8 border border-border bg-card p-4 sm:p-5" aria-label="Possible duplicates">
+      <h2 className="font-heading text-2xl italic">Possible duplicates</h2>
+      <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
+        These photographs look alike. They may be the same painting saved more than once.
+      </p>
+      <ul className="mt-4 grid gap-2 text-sm">
+        {groups.map((members) => (
+          <li key={members.map((member) => member.slug).join("-")}>
+            {members.map((member, index) => (
+              <span key={member.slug}>
+                {index === 0 ? "" : index === members.length - 1 ? (members.length === 2 ? " and " : ", and ") : ", "}
+                <a href={`#${member.slug}`} className="underline-offset-4 hover:underline">
+                  {member.title}
+                </a>
+              </span>
+            ))}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export function CurateDesk({
   works,
   publishing,
   notice,
+  duplicateGroups,
 }: {
   works: DeskWork[];
   publishing: Publishing;
   notice: "saved" | "removed" | null;
+  duplicateGroups: { slug: string; title: string }[][];
 }) {
   const canSave = publishing !== "missing";
 
@@ -309,6 +338,8 @@ export function CurateDesk({
       <div className="mt-10">
         <NewWorkForm canSave={canSave} />
       </div>
+
+      <DuplicateList groups={duplicateGroups} />
 
       <h2 className="mt-14 font-heading text-3xl italic">In the catalog</h2>
       {works.length === 0 ? (

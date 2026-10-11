@@ -2,6 +2,7 @@ import { createHash } from "crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "fs";
 import path from "path";
 import sharp from "sharp";
+import { previewFingerprint } from "../src/lib/image-hash.mjs";
 
 const root = process.cwd();
 const studio = JSON.parse(readFileSync(path.join(root, "content", "studio.json"), "utf8"));
@@ -55,6 +56,10 @@ for (const name of artFiles) {
   const hash = createHash("sha256").update(bytes).digest("hex");
   if (hash !== recorded.sha256) {
     errors.push(`public/art/${name} does not match the processed file on record. Run npm run process-images.`);
+  }
+  const fingerprint = await previewFingerprint(bytes);
+  if (recorded.fingerprint !== fingerprint) {
+    errors.push(`content/art-manifest.json is missing the likeness fingerprint for ${name}, or it does not match the preview.`);
   }
   if (recorded.width > maxEdge || recorded.height > maxEdge) {
     errors.push(`content/art-manifest.json allows ${name} above ${maxEdge}px.`);
