@@ -10,7 +10,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "fs";
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import sharp from "sharp";
-import { watermarkSvg } from "../src/lib/watermark-svg.mjs";
+import { applyWatermark } from "../src/lib/watermark-svg.mjs";
 
 const root = process.cwd();
 const originalsDir = path.join(root, "originals");
@@ -85,7 +85,6 @@ const used = new Set();
 const label = String(studio.watermark || "PREVIEW").slice(0, 24);
 const showDomain = studio.domain && studio.domain !== "yourdomain.com";
 const credit = (showDomain ? `${studio.artistName} · ${studio.domain}` : studio.artistName).slice(0, 48);
-const tile = watermarkSvg(label, credit);
 
 for (const file of files) {
   const base = path.basename(file.relative, path.extname(file.relative));
@@ -112,10 +111,14 @@ for (const file of files) {
     .jpeg({ quality: 70, progressive: true })
     .toBuffer();
 
-  const marked = await sharp(plain)
-    .composite([{ input: tile, tile: true, blend: "over" }])
-    .jpeg({ quality: 70, progressive: true })
-    .toBuffer();
+  let marked;
+  try {
+    marked = await applyWatermark(plain, label, credit);
+  } catch (error) {
+    const size = await sharp(plain).metadata();
+    const reason = error instanceof Error ? error.message : String(error);
+    throw new Error(`${file.relative} could not be watermarked at ${size.width}×${size.height}. ${reason}`);
+  }
 
   const changed = await meanDiff(plain, marked);
   if (changed < 0.15) {

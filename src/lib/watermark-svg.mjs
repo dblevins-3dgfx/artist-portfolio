@@ -2,6 +2,7 @@ import { createRequire } from "node:module";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import sharp from "sharp";
 
 const require = createRequire(import.meta.url);
 const opentype = require("opentype.js");
@@ -66,4 +67,56 @@ export function watermarkSvg(label, credit) {
     <path d="${note}"/>
   </g>
 </svg>`);
+}
+
+/*
+ * The mark is one 560×320 tile, repeated. Sharp rejects a tile that is
+ * wider or taller than the photograph, even with tile:true. A wide crop,
+ * a tall crop, or a file already under that size hits that check.
+ * Rasterize once so the tile has a known pixel size, then shrink it to
+ * fit. A photograph already large enough keeps the full tile.
+ */
+const preparedTiles = new Map();
+
+async function preparedTile(label, credit) {
+  const key = `${label}\0${credit}`;
+  const cached = preparedTiles.get(key);
+  if (cached) return cached;
+  const pending = sharp(watermarkSvg(label, credit))
+    .png()
+    .toBuffer()
+    .then(async (png) => {
+      const meta = await sharp(png).metadata();
+      return { png, width: meta.width, height: meta.height };
+    });
+  preparedTiles.set(key, pending);
+  try {
+    return await pending;
+  } catch (error) {
+    preparedTiles.delete(key);
+    throw error;
+  }
+}
+
+export async function applyWatermark(plain, label, credit) {
+  const tile = await preparedTile(label, credit);
+  const photo = await sharp(plain).metadata();
+  const photoWidth = photo.width ?? tile.width;
+  const photoHeight = photo.height ?? tile.height;
+  let input = tile.png;
+  if (photoWidth < tile.width || photoHeight < tile.height) {
+    input = await sharp(tile.png)
+      .resize({
+        width: photoWidth,
+        height: photoHeight,
+        fit: "inside",
+        withoutEnlargement: true,
+      })
+      .png()
+      .toBuffer();
+  }
+  return sharp(plain)
+    .composite([{ input, tile: true, blend: "over" }])
+    .jpeg({ quality: 70, progressive: true })
+    .toBuffer();
 }
