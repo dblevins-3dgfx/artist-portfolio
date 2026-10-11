@@ -162,7 +162,7 @@ for (const file of files) {
   delete created.svg;
   delete created.sample;
   // Keep in step with the ids in src/lib/subjects.ts.
-  if (!["children", "animals", "places", "birds-and-flowers", "still-life"].includes(created.subject)) {
+  if (!["children", "animals", "places", "birds-and-flowers", "still-life", "portraits"].includes(created.subject)) {
     created.subject = "";
   }
 

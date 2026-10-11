@@ -10,6 +10,7 @@ export const SUBJECTS = [
   { id: "places", label: "Places" },
   { id: "birds-and-flowers", label: "Birds & Flowers" },
   { id: "still-life", label: "Still Life" },
+  { id: "portraits", label: "Portraits" },
 ] as const;
 
 export type SubjectId = (typeof SUBJECTS)[number]["id"];
