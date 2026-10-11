@@ -11,6 +11,7 @@ import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import sharp from "sharp";
 import { previewFingerprint } from "../src/lib/image-hash.mjs";
+import { SUBJECTS } from "../src/lib/subjects.mjs";
 import { applyWatermark } from "../src/lib/watermark-svg.mjs";
 
 const root = process.cwd();
@@ -22,6 +23,7 @@ const studio = JSON.parse(readFileSync(path.join(root, "content", "studio.json")
 
 const MAX_EDGE = Number(studio.maxPreviewEdge) || 1400;
 const EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".tif", ".tiff", ".webp"]);
+const subjectIds = new Set(SUBJECTS.map((subject) => subject.id));
 
 function slugify(value) {
   return value
@@ -161,8 +163,7 @@ for (const file of files) {
   };
   delete created.svg;
   delete created.sample;
-  // Keep in step with the ids in src/lib/subjects.ts.
-  if (!["children", "animals", "places", "birds-and-flowers", "still-life", "portraits"].includes(created.subject)) {
+  if (!subjectIds.has(created.subject)) {
     created.subject = "";
   }
 
