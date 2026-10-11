@@ -55,5 +55,7 @@ export async function saveWork(_state: DeskFormState, formData: FormData): Promi
   const saved = await savePainting(parsed.existingSlug, parsed.fields, image.bytes);
   if ("error" in saved) return saved;
   await refreshCatalog();
-  redirect("/curate?saved=1");
+  // `at` brings the desk back to this painting after the reload; hash
+  // fragments are unreliable on redirects, so the slug is a query param.
+  redirect(`/curate?saved=1&at=${encodeURIComponent(parsed.fields.slug)}`);
 }

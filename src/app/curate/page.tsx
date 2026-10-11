@@ -7,10 +7,12 @@
  * searchParams is a Promise here. The query string (?saved=1) is how a server
  * action tells this page that the last save finished. redirect() cannot
  * return a value to the form the way a C function returns a struct.
+ * Optional `at` is the painting slug to scroll back to after that reload.
  */
 import type { Metadata } from "next";
 import { CurateDesk } from "@/components/curate-desk";
 import { CurateLogin } from "@/components/curate-login";
+import { isCatalogSlug } from "@/lib/catalog";
 import { loadCatalog, publishingMode, toDeskWorks } from "@/lib/catalog-store";
 import { catalogLikeness, type LikenessMember } from "@/lib/duplicates";
 import { isSignedIn, studioPassword } from "@/lib/studio-auth";
@@ -27,7 +29,7 @@ export const metadata: Metadata = {
 export default async function CuratePage({
   searchParams,
 }: {
-  searchParams: Promise<{ saved?: string; removed?: string }>;
+  searchParams: Promise<{ saved?: string; removed?: string; at?: string }>;
 }) {
   if (!studioPassword()) {
     return (
@@ -50,6 +52,7 @@ export default async function CuratePage({
 
   const query = await searchParams;
   const notice = query.saved === "1" ? "saved" : query.removed === "1" ? "removed" : null;
+  const focusSlug = notice === "saved" && query.at && isCatalogSlug(query.at) ? query.at : null;
   let works: Awaited<ReturnType<typeof toDeskWorks>> = [];
   let duplicateGroups: LikenessMember[][] = [];
   let loadError = "";
@@ -77,6 +80,7 @@ export default async function CuratePage({
       works={works}
       publishing={publishingMode()}
       notice={notice}
+      focusSlug={focusSlug}
       duplicateGroups={duplicateGroups}
     />
   );

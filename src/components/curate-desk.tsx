@@ -11,7 +11,7 @@
  * these URLs are either local files or raw GitHub bytes.
  */
 import Image from "next/image";
-import { useActionState, type MouseEvent, type ReactNode } from "react";
+import { useActionState, useEffect, type MouseEvent, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 import { logout, saveWork, type DeskFormState } from "@/app/curate/actions";
 import { Button } from "@/components/ui/button";
@@ -194,10 +194,22 @@ function PaintingFields({
   );
 }
 
-function WorkForm({ work, canSave }: { work: DeskWork; canSave: boolean }) {
+function WorkForm({
+  work,
+  canSave,
+  justSaved,
+}: {
+  work: DeskWork;
+  canSave: boolean;
+  justSaved: boolean;
+}) {
   const [state, action] = useActionState(saveWork, null as DeskFormState);
   return (
-    <form id={work.slug} action={action} className="grid gap-6 border border-border bg-card p-4 sm:grid-cols-[9rem_minmax(0,1fr)] sm:p-5">
+    <form
+      id={work.slug}
+      action={action}
+      className="grid scroll-mt-24 gap-6 border border-border bg-card p-4 sm:grid-cols-[9rem_minmax(0,1fr)] sm:p-5"
+    >
       <input type="hidden" name="existingSlug" value={work.slug} />
       <div>
         <Image
@@ -226,6 +238,7 @@ function WorkForm({ work, canSave }: { work: DeskWork; canSave: boolean }) {
         <p className="text-sm text-muted-foreground">
           Leave the file empty to keep the current preview. A new photograph is reduced and watermarked. The original is not kept.
         </p>
+        {justSaved ? <p className="text-sm">Saved.</p> : null}
         <FormError error={state?.error} />
         <PendingButtons canSave={canSave} saveLabel="Save" pendingLabel="Saving…" allowRemove />
       </div>
@@ -290,14 +303,23 @@ export function CurateDesk({
   works,
   publishing,
   notice,
+  focusSlug,
   duplicateGroups,
 }: {
   works: DeskWork[];
   publishing: Publishing;
   notice: "saved" | "removed" | null;
+  focusSlug: string | null;
   duplicateGroups: { slug: string; title: string }[][];
 }) {
   const canSave = publishing !== "missing";
+
+  useEffect(() => {
+    if (!focusSlug) return;
+    const painting = document.getElementById(focusSlug);
+    if (!painting) return;
+    painting.scrollIntoView({ block: "start" });
+  }, [focusSlug]);
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
@@ -332,7 +354,7 @@ export function CurateDesk({
           The desk can open, but it cannot save yet. Add <span className="font-medium">STUDIO_GITHUB_TOKEN</span> in the Vercel project, then redeploy.
         </p>
       ) : null}
-      {notice === "saved" ? <p className="mt-4 text-sm">Saved.</p> : null}
+      {notice === "saved" && !focusSlug ? <p className="mt-4 text-sm">Saved.</p> : null}
       {notice === "removed" ? <p className="mt-4 text-sm">That painting was removed.</p> : null}
 
       <div className="mt-10">
@@ -347,7 +369,12 @@ export function CurateDesk({
       ) : (
         <div className="mt-6 grid gap-6">
           {works.map((work) => (
-            <WorkForm key={work.slug} work={work} canSave={canSave} />
+            <WorkForm
+              key={work.slug}
+              work={work}
+              canSave={canSave}
+              justSaved={focusSlug === work.slug}
+            />
           ))}
         </div>
       )}
