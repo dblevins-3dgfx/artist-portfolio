@@ -161,7 +161,10 @@ for (const file of files) {
   };
   delete created.svg;
   delete created.sample;
-  if (!["children", "animals", "places"].includes(created.subject)) created.subject = "";
+  // Keep in step with the ids in src/lib/subjects.ts.
+  if (!["children", "animals", "places", "birds-and-flowers", "still-life", "portraits"].includes(created.subject)) {
+    created.subject = "";
+  }
 
   if (existing) {
     existing.image = created.image;
