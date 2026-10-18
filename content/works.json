@@ -853,14 +853,16 @@
     "imageHeight": 900
   },
   {
-    "title": "IMG 3837",
-    "year": 2026,
+    "title": "Stormy at Rest",
+    "year": 2018,
     "medium": "Oil",
-    "surface": "",
+    "surface": "Canvas",
     "widthIn": 0,
     "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "statement": "A faithful farm cat taking a well deserved rest.",
+    "subjects": [
+      "animals"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
