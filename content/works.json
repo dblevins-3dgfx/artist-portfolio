@@ -745,9 +745,10 @@
     "surface": "Canvas",
     "widthIn": 12,
     "heightIn": 18,
-    "statement": "",
+    "statement": "A moody chicken",
     "subjects": [
-      "animals"
+      "animals",
+      "birds-and-flowers"
     ],
     "featured": false,
     "originalStatus": "not-for-sale",
