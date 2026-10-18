@@ -325,9 +325,11 @@
     "surface": "Canvas",
     "widthIn": 24,
     "heightIn": 36,
-    "statement": "",
+    "statement": "A whimsical painting of my son inspired by the Russian Painting “The Three Bogatyrs by Viktor Vasnetsov.",
     "subjects": [
-      "portraits"
+      "animals",
+      "portraits",
+      "narratives"
     ],
     "featured": false,
     "originalStatus": "not-for-sale",
