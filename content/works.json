@@ -833,14 +833,17 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 3832",
+    "title": "Surprised by Joy!",
     "year": 2026,
     "medium": "Oil",
     "surface": "",
     "widthIn": 0,
     "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "statement": "Psalm 116",
+    "subjects": [
+      "children",
+      "narratives"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
