@@ -875,11 +875,13 @@
     "title": "Three Brown Cows",
     "year": 2026,
     "medium": "Oil",
-    "surface": "",
+    "surface": "Canvas",
     "widthIn": 0,
     "heightIn": 0,
     "statement": "Three beauties!",
-    "subjects": [],
+    "subjects": [
+      "animals"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
