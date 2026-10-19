@@ -908,14 +908,17 @@
     "imageHeight": 1110
   },
   {
-    "title": "IMG 3864 Original",
+    "title": "Make a Wish",
     "year": 2026,
     "medium": "Oil",
-    "surface": "",
+    "surface": "Canvas",
     "widthIn": 0,
     "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "statement": "A special Boy!",
+    "subjects": [
+      "children",
+      "portraits"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
