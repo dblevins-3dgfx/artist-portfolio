@@ -889,14 +889,16 @@
     "imageHeight": 1040
   },
   {
-    "title": "IMG 3853 Original",
+    "title": "The Smiling Pig",
     "year": 2026,
     "medium": "Oil",
-    "surface": "",
+    "surface": "Canvas",
     "widthIn": 0,
     "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "statement": "Another fun farm critter!",
+    "subjects": [
+      "animals"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
