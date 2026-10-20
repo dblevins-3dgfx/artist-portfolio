@@ -102,7 +102,9 @@
     "widthIn": 12,
     "heightIn": 8,
     "statement": "Pomegranates represent blessing and prosperity in the Bible and in the land of Israel.",
-    "subjects": [],
+    "subjects": [
+      "still-life"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": false,
