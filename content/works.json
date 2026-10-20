@@ -218,7 +218,8 @@
     "heightIn": 24,
     "statement": "Haven’t we all felt this way?",
     "subjects": [
-      "children"
+      "children",
+      "portraits"
     ],
     "featured": false,
     "originalStatus": "not-for-sale",
