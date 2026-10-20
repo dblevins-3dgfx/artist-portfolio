@@ -636,11 +636,13 @@
     "title": "A Florida Beach",
     "year": 2026,
     "medium": "Oil",
-    "surface": "",
+    "surface": "Canvas",
     "widthIn": 0,
     "heightIn": 0,
     "statement": "Somewhere near Tarpin Springs",
-    "subjects": [],
+    "subjects": [
+      "places"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
