@@ -1934,7 +1934,8 @@
     "heightIn": 0,
     "statement": "",
     "subjects": [
-      "children"
+      "children",
+      "animals"
     ],
     "featured": false,
     "originalStatus": "not-for-sale",
