@@ -941,11 +941,13 @@
     "title": "IMG 3874 Original",
     "year": 2026,
     "medium": "Oil",
-    "surface": "",
+    "surface": "Cedar Shingle",
     "widthIn": 0,
     "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "statement": "Patience with Stormy",
+    "subjects": [
+      "animals"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
