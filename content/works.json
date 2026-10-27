@@ -1933,7 +1933,9 @@
     "widthIn": 0,
     "heightIn": 0,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "children"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
