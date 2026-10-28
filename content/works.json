@@ -1093,14 +1093,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 4593",
+    "title": "Summer Afternoon",
     "year": 2026,
     "medium": "Oil",
-    "surface": "",
+    "surface": "Canvas",
     "widthIn": 0,
     "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "statement": "SUMMER AFTERNOON—summer afternoon; to me those have always been the two most beautiful words in the English language,” wrote Henry James - and I agree!",
+    "subjects": [
+      "children"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
