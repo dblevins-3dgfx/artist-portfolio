@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import type { DeskWork, Publishing } from "@/lib/desk";
+import { withStaleCheck } from "@/lib/stale-page";
 import { SUBJECTS } from "@/lib/subjects";
 
 function Field({
@@ -40,12 +41,23 @@ function Field({
   );
 }
 
-function FormError({ error }: { error?: string }) {
-  if (!error) return null;
+// Wrapped once, at load, rather than on every render. Both forms share it.
+const saveFromDesk = withStaleCheck(saveWork);
+
+// A stale page (see lib/stale-page.ts) cannot recover by itself: its
+// JavaScript still names the old actions, so only a full reload helps.
+// window.location.reload() is the same as pressing the browser's reload.
+function FormError({ state }: { state: DeskFormState }) {
+  if (!state?.error) return null;
   return (
-    <p role="alert" className="text-sm text-destructive">
-      {error}
-    </p>
+    <div role="alert" className="grid justify-items-start gap-3 text-sm text-destructive">
+      <p>{state.error}</p>
+      {state.stale ? (
+        <Button type="button" variant="outline" onClick={() => window.location.reload()}>
+          Reload the page
+        </Button>
+      ) : null}
+    </div>
   );
 }
 
@@ -230,7 +242,7 @@ function WorkForm({
   canSave: boolean;
   justSaved: boolean;
 }) {
-  const [state, action] = useActionState(saveWork, null as DeskFormState);
+  const [state, action] = useActionState(saveFromDesk, null as DeskFormState);
   return (
     <form
       id={work.slug}
@@ -267,7 +279,7 @@ function WorkForm({
           Leave the file empty to keep the current preview. A new photograph is reduced and watermarked. The original is not kept.
         </p>
         {justSaved ? <p className="text-sm">Saved.</p> : null}
-        <FormError error={state?.error} />
+        <FormError state={state} />
         <PendingButtons canSave={canSave} saveLabel="Save" pendingLabel="Saving…" allowRemove />
       </div>
     </form>
@@ -275,7 +287,7 @@ function WorkForm({
 }
 
 function NewWorkForm({ canSave }: { canSave: boolean }) {
-  const [state, action] = useActionState(saveWork, null as DeskFormState);
+  const [state, action] = useActionState(saveFromDesk, null as DeskFormState);
   return (
     <form action={action} className="grid gap-4 border border-border bg-card p-4 sm:p-5">
       <input type="hidden" name="existingSlug" value="" />
@@ -296,7 +308,7 @@ function NewWorkForm({ canSave }: { canSave: boolean }) {
         />
       </Field>
       <PaintingFields idPrefix="new" />
-      <FormError error={state?.error} />
+      <FormError state={state} />
       <PendingButtons canSave={canSave} saveLabel="Add to the catalog" pendingLabel="Adding…" allowRemove={false} />
     </form>
   );
