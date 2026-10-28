@@ -11,6 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login, type DeskFormState } from "@/app/curate/actions";
+import { withStaleCheck } from "@/lib/stale-page";
+
+// See lib/stale-page.ts: a login page left open across a deploy is stale too.
+const loginFromForm = withStaleCheck(login);
 
 function SubmitPassword() {
   const { pending } = useFormStatus();
@@ -22,7 +26,7 @@ function SubmitPassword() {
 }
 
 export function CurateLogin() {
-  const [state, action] = useActionState(login, null as DeskFormState);
+  const [state, action] = useActionState(loginFromForm, null as DeskFormState);
 
   return (
     <div className="mx-auto max-w-md px-5 py-16">
@@ -46,6 +50,11 @@ export function CurateLogin() {
           <p role="alert" className="text-sm text-destructive">
             {state.error}
           </p>
+        ) : null}
+        {state?.stale ? (
+          <Button type="button" variant="outline" onClick={() => window.location.reload()}>
+            Reload the page
+          </Button>
         ) : null}
         <SubmitPassword />
       </form>

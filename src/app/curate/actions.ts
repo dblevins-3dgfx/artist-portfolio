@@ -6,7 +6,9 @@
  * They are not HTTP routes you write by hand. A <form action={saveWork}>
  * posts straight to saveWork.
  *
- * Return `{ error }` to show a message on the form. redirect() ends the
+ * Return `{ error }` to show a message on the form. `stale` is set only in
+ * the browser, by withStaleCheck (lib/stale-page.ts), when the page is from
+ * an older build; it adds a Reload button. redirect() ends the
  * action and loads another URL; code after it does not run.
  * revalidatePath drops cached HTML for those URLs so the next view sees
  * the catalog that was just saved.
@@ -17,7 +19,7 @@ import { removePainting, savePainting } from "@/lib/catalog-store";
 import { imageFromForm, readWorkForm } from "@/lib/work-form";
 import { isSignedIn, signIn, signOut } from "@/lib/studio-auth";
 
-export type DeskFormState = { error: string } | null;
+export type DeskFormState = { error: string; stale?: boolean } | null;
 
 async function refreshCatalog() {
   revalidatePath("/curate");
