@@ -957,14 +957,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 3950 Original",
+    "title": "Mooove Over",
     "year": 2026,
     "medium": "Oil",
-    "surface": "",
+    "surface": "Canvas",
     "widthIn": 0,
     "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "statement": "Two very good milk cows.",
+    "subjects": [
+      "animals"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
