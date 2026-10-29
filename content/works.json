@@ -977,14 +977,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 4381",
-    "year": 2026,
+    "title": "Stealth",
+    "year": 2022,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 12,
+    "heightIn": 16,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "birds-and-flowers"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
