@@ -1017,14 +1017,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 4476 Original",
-    "year": 2026,
+    "title": "Mikey’s Rocket",
+    "year": 2018,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 8,
+    "heightIn": 10,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "still-life"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
