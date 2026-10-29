@@ -1,8 +1,7 @@
 /*
  * Front page. Checked paintings stay up. Open spots are a daily pick from
  * front-page.ts. `connection()` tells Next not to freeze this page at build
- * time, so the date is read when someone asks for the page. The GitHub Pages
- * export has no request, so that build keeps whatever day it ran.
+ * time, so the date is read when someone asks for the page.
  */
 import Image from "next/image";
 import Link from "next/link";
@@ -15,9 +14,7 @@ import { getWorks } from "@/lib/works";
 import { cn } from "@/lib/utils";
 
 export default async function HomePage() {
-  if (process.env.GITHUB_PAGES !== "1") {
-    await connection();
-  }
+  await connection();
   const { lead, selected } = selectFrontPage(getWorks(), frontPageDateKey());
 
   return (
