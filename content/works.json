@@ -996,14 +996,18 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 4435",
-    "year": 2026,
+    "title": "Your Shoes Look Tasty!",
+    "year": 2024,
     "medium": "Oil",
-    "surface": "",
+    "surface": "Canvaa",
     "widthIn": 0,
     "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "statement": "This was a fun day with my granddaughter at a friend’s farm. The goats  were so full of mischief!",
+    "subjects": [
+      "children",
+      "animals",
+      "narratives"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
