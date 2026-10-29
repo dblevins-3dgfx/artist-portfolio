@@ -11,10 +11,12 @@
  * draws the first letter of the page title, which is the plain "T" you saw.
  *
  * The PNGs (apple-icon.png, public/icon-192.png, public/icon-512.png) are
- * rasterised copies of src/app/icon.svg, the browser-tab icon, with an opaque
- * background because iOS fills transparent pixels with black. If you change
- * icon.svg, re-render them with sharp (already a dependency), e.g.
- *   sharp("src/app/icon.svg", { density: 72 * 512 / 32 }).resize(512, 512).png()
+ * rasterised copies of src/app/icon.svg, the browser-tab icon (the artist's
+ * signature monogram), with an opaque background because iOS fills
+ * transparent pixels with black. If you change icon.svg, re-render them with
+ * sharp (already a dependency). SVG has no pixel size of its own, so `density`
+ * (dots per inch, 72 = one SVG unit per pixel) scales its 1000-unit viewBox:
+ *   sharp("src/app/icon.svg", { density: 72 * 512 / 1000 }).resize(512, 512).png()
  * Files in public/ are served as-is from the site root, so public/icon-192.png
  * is /icon-192.png.
  */
