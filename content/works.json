@@ -1146,14 +1146,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 4706",
+    "title": "Cola Bottle",
     "year": 2026,
     "medium": "Oil",
-    "surface": "",
+    "surface": "Cedar Shingle",
     "widthIn": 0,
     "heightIn": 0,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "still-life"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
