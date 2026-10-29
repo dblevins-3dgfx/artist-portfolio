@@ -958,14 +958,16 @@
     "imageHeight": 1092
   },
   {
-    "title": "IMG 4169",
-    "year": 2026,
+    "title": "Strummin’",
+    "year": 2023,
     "medium": "Oil",
-    "surface": "",
+    "surface": "Canvas",
     "widthIn": 0,
     "heightIn": 0,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "children"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
