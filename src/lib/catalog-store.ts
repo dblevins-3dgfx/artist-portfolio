@@ -105,8 +105,7 @@ function previewFor(work: Work, catalog: LoadedCatalog) {
   if (catalog.mode === "github") {
     return `https://raw.githubusercontent.com/${catalog.repo}/${catalog.revision}/public/art/${file}`;
   }
-  const base = (process.env.NEXT_PUBLIC_BASE_PATH || "").replace(/\/$/, "");
-  return `${base}${work.image}?v=${catalog.revision.slice(0, 12)}`;
+  return `${work.image}?v=${catalog.revision.slice(0, 12)}`;
 }
 
 export function toDeskWorks(catalog: LoadedCatalog): DeskWork[] {

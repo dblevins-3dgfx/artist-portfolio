@@ -3,7 +3,6 @@
 A catalog of original paintings. The pictures on the site are reduced, watermarked previews. The full photographs stay in a private folder and are never published.
 
 - [GitHub repository](https://github.com/dblevins-3dgfx/artist-portfolio)
-- [GitHub Pages](https://dblevins-3dgfx.github.io/artist-portfolio/) — static catalog. `/curate` on this copy only points to the Vercel desk.
 - [Vercel](https://artist-portfolio-mu-snowy.vercel.app/) — the live site, including the studio desk at `/curate`.
 
 The public site does not list prices, print sizes, or a way to order. That keeps it within Vercel’s free Hobby plan, which is for personal, non-commercial projects. The artist’s name, email, and biography live in [`content/studio.json`](content/studio.json).
@@ -21,17 +20,11 @@ npm run dev
 
 ## Publish on Vercel
 
-The live site is [https://artist-portfolio-mu-snowy.vercel.app/](https://artist-portfolio-mu-snowy.vercel.app/). It is a normal Next.js app on the Hobby plan. Leave `BASE_PATH` unset. Do not turn on a static export: the studio desk at `/curate` is the one page that runs on the server. The desk is personal use of the site. It does not list prices or take orders.
+The live site is [https://artist-portfolio-mu-snowy.vercel.app/](https://artist-portfolio-mu-snowy.vercel.app/). It is a normal Next.js app on the Hobby plan. Do not turn on a static export: the studio desk at `/curate` is the one page that runs on the server. The desk is personal use of the site. It does not list prices or take orders.
 
 [thomasene.art](https://thomasene.art/) still serves the GoDaddy website builder. The registration can stay at GoDaddy. When that name should open this catalog, add the domain in the Vercel project and copy the DNS records Vercel shows into GoDaddy. Disconnect GoDaddy’s website builder or domain forwarding first, or the old page keeps answering. Do not upload the `originals/` folder.
 
 `siteUrl` in `content/studio.json` is still empty, so the sitemap is empty. Set it to the public address, including `https://`, when that address is the one you want indexed. Then publish again.
-
-## Publish on GitHub Pages
-
-Pushing to `main` also runs `.github/workflows/pages.yml`, which builds a static copy. The published address is [https://dblevins-3dgfx.github.io/artist-portfolio/](https://dblevins-3dgfx.github.io/artist-portfolio/). Pages deploys from GitHub Actions. The workflow sets `BASE_PATH` to `/artist-portfolio` because this is a project site, not a user site named `<user>.github.io`. Leave `BASE_PATH` empty on Vercel.
-
-GitHub Pages cannot check a password or accept an upload. On that copy, `/curate` only explains that the working desk is the Vercel address. The front-page selection on Pages is the set from the last build, not a new set each day.
 
 ## Studio details
 
