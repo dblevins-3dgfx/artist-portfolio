@@ -1036,14 +1036,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 4513",
-    "year": 2026,
+    "title": "Bucket Buddies",
+    "year": 2024,
     "medium": "Oil",
-    "surface": "",
+    "surface": "Canvas",
     "widthIn": 0,
     "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "statement": "These two little boys couldn’t be more different but they are best of friends!",
+    "subjects": [
+      "children"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
