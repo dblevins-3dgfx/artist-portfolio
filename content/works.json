@@ -1129,14 +1129,16 @@
     "imageHeight": 1114
   },
   {
-    "title": "IMG 4645 Original",
-    "year": 2026,
+    "title": "Got Carrots?",
+    "year": 2021,
     "medium": "Oil",
-    "surface": "",
+    "surface": "Canvas",
     "widthIn": 0,
     "heightIn": 0,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "animals"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
