@@ -1055,14 +1055,16 @@
     "imageHeight": 1097
   },
   {
-    "title": "IMG 4514",
+    "title": "Billowy Clouds and Sails",
     "year": 2026,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "surface": "Canvas",
+    "widthIn": 40,
+    "heightIn": 30,
+    "statement": "Sail boats on Lake Coeur d’Alene.",
+    "subjects": [
+      "places"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
