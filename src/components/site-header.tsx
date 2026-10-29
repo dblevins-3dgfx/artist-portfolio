@@ -8,6 +8,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MenuIcon } from "lucide-react";
+import { SignatureMark } from "@/components/signature-mark";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -60,7 +61,13 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
-        <Link href="/" className="font-heading text-2xl leading-none italic tracking-tight">
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 font-heading text-2xl leading-none italic tracking-tight"
+        >
+          {/* aria-hidden: the name beside it already labels the link, so
+              screen readers skip the decorative mark. */}
+          <SignatureMark aria-hidden="true" className="h-8 w-auto shrink-0 text-primary" />
           {site.artistName}
         </Link>
         <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
