@@ -1074,14 +1074,16 @@
     "imageHeight": 873
   },
   {
-    "title": "IMG 4524",
+    "title": "Full Spectrum Zion",
     "year": 2026,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 16,
+    "heightIn": 20,
     "statement": "Inspired by a trip to Zion National Park in February.",
-    "subjects": [],
+    "subjects": [
+      "places"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
