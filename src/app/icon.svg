@@ -1,6 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="227 527 1000 1000">
   <!-- Thomasene's "tb" signature monogram, traced from a photo of her mark.
-       Coordinates are pixels in that photo, so the viewBox crops to it. -->
+       Coordinates are pixels in that photo, so the viewBox crops to it.
+       The same paths are inlined in src/components/signature-mark.tsx for
+       the site header; if the tracing changes, change both. -->
   <rect x="227" y="527" width="1000" height="1000" fill="#f3efe6"/>
   <g fill="none" stroke="#7a332c" stroke-width="52" stroke-linecap="round" stroke-linejoin="round">
     <path d="M655 662 C648 720 630 780 620 830 C610 900 600 980 596 1050 C594 1110 620 1140 680 1146 L860 1146 C925 1150 958 1210 952 1272 C946 1340 890 1392 815 1392 C770 1392 742 1375 740 1345 C745 1180 775 980 795 826"/>
