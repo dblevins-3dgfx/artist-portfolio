@@ -541,7 +541,7 @@ export function CurateDesk({
           <Link href="/curate/new" className={buttonVariants()}>
             Add a painting
           </Link>
-          <Link href="/curate/prices" className={buttonVariants({ variant: "outline" })}>
+          <Link href="/curate/prices" className={cn(buttonVariants({ variant: "outline" }))}>
             Print prices
           </Link>
           <form action={logout}>
