@@ -58,9 +58,13 @@ export async function saveWork(_state: DeskFormState, formData: FormData): Promi
   const saved = await savePainting(parsed.existingSlug, parsed.fields, image.bytes);
   if ("error" in saved) return saved;
   await refreshCatalog();
-  // `at` brings the desk back to this painting after the reload; hash
-  // fragments are unreliable on redirects, so the slug is a query param.
-  redirect(`/curate?saved=1&at=${encodeURIComponent(parsed.fields.slug)}`);
+  const slug = encodeURIComponent(parsed.fields.slug);
+  // An edit stays on the painting's page (under its new web name, if that
+  // changed), so Previous/Next are one click away. A new painting lands on
+  // the list at that painting; `at` scrolls there, since hash fragments are
+  // unreliable on redirects.
+  if (parsed.existingSlug) redirect(`/curate/${slug}?saved=1`);
+  redirect(`/curate?saved=1&at=${slug}`);
 }
 
 // The price grid arrives as one JSON field, because its rows and columns

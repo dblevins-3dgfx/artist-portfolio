@@ -120,3 +120,29 @@ export function formSignature(formData: FormData) {
   }
   return JSON.stringify(parts);
 }
+
+// Previous / Next on a painting's edit page. The walk covers what the desk
+// list shows under the chosen filter, in catalog order. The painting being
+// edited always keeps its place, even if a save just took it out of the
+// filter, so stepping on from it never loses the artist's spot. No wrap at
+// the ends, so it is clear when a queue is finished. `position` is only
+// given while the painting itself matches the filter.
+export function stepThrough(
+  works: DeskWork[],
+  slug: string,
+  filterId: string,
+): { previous?: string; next?: string; position?: number; total: number; matches: boolean } {
+  const filter = deskFilter(filterId);
+  const walk = works.filter((work) => work.slug === slug || filter.matches(work));
+  const total = works.filter(filter.matches).length;
+  const index = walk.findIndex((work) => work.slug === slug);
+  if (index < 0) return { total, matches: false };
+  const matches = filter.matches(walk[index]);
+  return {
+    previous: walk[index - 1]?.slug,
+    next: walk[index + 1]?.slug,
+    position: matches ? walk.slice(0, index + 1).filter(filter.matches).length : undefined,
+    total,
+    matches,
+  };
+}

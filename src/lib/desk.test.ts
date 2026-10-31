@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { DESK_FILTERS, deskFilter, formSignature, missingDetails, needsWork } from "@/lib/desk";
+import { DESK_FILTERS, deskFilter, formSignature, missingDetails, needsWork, stepThrough } from "@/lib/desk";
 
 const complete = {
   title: "Blue Sky, Blue Lake",
@@ -111,4 +111,33 @@ test("a changed field, checkbox, or chosen photograph changes the signature", ()
 
 test("the buttons' own intent field does not count as a change", () => {
   assert.equal(sent(loaded.map(([k, v]) => [k, k === "intent" ? "delete" : v])), sent(loaded));
+});
+
+const catalog = ["a", "b", "c", "d", "e"].map((slug) => ({
+  ...row,
+  slug,
+  // b and d have no size, so they are the "No size" queue.
+  heightIn: slug === "b" || slug === "d" ? 0 : row.heightIn,
+}));
+
+test("with All, Previous and Next walk the whole catalog in order, without wrapping", () => {
+  assert.deepEqual(stepThrough(catalog, "a", "all"), { previous: undefined, next: "b", position: 1, total: 5, matches: true });
+  assert.deepEqual(stepThrough(catalog, "c", "all"), { previous: "b", next: "d", position: 3, total: 5, matches: true });
+  assert.deepEqual(stepThrough(catalog, "e", "all"), { previous: "d", next: undefined, position: 5, total: 5, matches: true });
+});
+
+test("with a filter, they step only through the paintings it shows", () => {
+  assert.deepEqual(stepThrough(catalog, "b", "size"), { previous: undefined, next: "d", position: 1, total: 2, matches: true });
+  assert.deepEqual(stepThrough(catalog, "d", "size"), { previous: "b", next: undefined, position: 2, total: 2, matches: true });
+});
+
+test("a painting no longer in the filter keeps its place, with no position", () => {
+  assert.deepEqual(stepThrough(catalog, "c", "size"), { previous: "b", next: "d", position: undefined, total: 2, matches: false });
+  assert.deepEqual(stepThrough(catalog, "a", "size"), { previous: undefined, next: "b", position: undefined, total: 2, matches: false });
+});
+
+test("a one-painting queue and an unknown painting have nowhere to go", () => {
+  const one = catalog.map((work) => ({ ...work, heightIn: work.slug === "c" ? 0 : 16 }));
+  assert.deepEqual(stepThrough(one, "c", "size"), { previous: undefined, next: undefined, position: 1, total: 1, matches: true });
+  assert.deepEqual(stepThrough(catalog, "zzz", "all"), { total: 5, matches: false });
 });

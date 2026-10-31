@@ -1,8 +1,9 @@
 /*
  * /curate/<slug>, one painting's edit form. Same gate and settings as the
  * list at /curate: sign-in check, no caching, Node runtime for sharp, and
- * the upload time limit. A save or remove redirects back to the list
- * (see curate/actions.ts), so this page only ever shows a form error.
+ * the upload time limit. A save comes back here with ?saved=1; a remove
+ * redirects to the list (see curate/actions.ts). The whole catalog is
+ * passed down so Previous/Next can follow the list's filter.
  *
  * An unknown slug, such as a painting removed in another tab, gets a
  * message and a link back rather than the public 404 page.
@@ -25,7 +26,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function CuratePaintingPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CuratePaintingPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ saved?: string }>;
+}) {
   if (!studioPassword()) return <DeskSwitchedOff />;
 
   if (!(await isSignedIn())) {
@@ -60,5 +67,17 @@ export default async function CuratePaintingPage({ params }: { params: Promise<{
     );
   }
 
-  return <CurateEditor work={work} publishing={publishingMode()} />;
+  const { saved } = await searchParams;
+  // The key remounts the editor whenever the saved painting changes, so
+  // after a save the form, its unsaved-changes snapshot, and the leave
+  // check all start again from what was just saved.
+  return (
+    <CurateEditor
+      key={JSON.stringify(work)}
+      work={work}
+      works={works}
+      justSaved={saved === "1"}
+      publishing={publishingMode()}
+    />
+  );
 }

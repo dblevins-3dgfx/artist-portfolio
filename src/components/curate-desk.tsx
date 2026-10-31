@@ -34,7 +34,15 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { DESK_FILTERS, deskFilter, formSignature, missingDetails, type DeskWork, type Publishing } from "@/lib/desk";
+import {
+  DESK_FILTERS,
+  deskFilter,
+  formSignature,
+  missingDetails,
+  stepThrough,
+  type DeskWork,
+  type Publishing,
+} from "@/lib/desk";
 import { withStaleCheck } from "@/lib/stale-page";
 import { SUBJECTS } from "@/lib/subjects";
 import { cn } from "@/lib/utils";
@@ -136,7 +144,7 @@ function useLeaveGuard(question: string) {
   const guardLink = (event: MouseEvent<HTMLAnchorElement>) => {
     if (!confirmLeave()) event.preventDefault();
   };
-  return { setChanged, leave, guardLink };
+  return { changed, setChanged, leave, guardLink };
 }
 
 // A stale page (see lib/stale-page.ts) cannot recover by itself: its
@@ -718,11 +726,50 @@ export function CurateDesk({
   );
 }
 
-export function CurateEditor({ work, publishing }: { work: DeskWork; publishing: Publishing }) {
-  const back = `/curate#${work.slug}`;
-  const { setChanged, leave, guardLink } = useLeaveGuard(
+// Previous / Next, or a disabled stand-in when there is nowhere to go or
+// the form has unsaved changes.
+function StepButton({ href, label, children }: { href?: string; label: string; children: ReactNode }) {
+  if (!href) {
+    return (
+      <Button type="button" variant="outline" size="sm" disabled aria-label={label}>
+        {children}
+      </Button>
+    );
+  }
+  return (
+    <Link href={`/curate/${href}`} aria-label={label} className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
+      {children}
+    </Link>
+  );
+}
+
+export function CurateEditor({
+  work,
+  works,
+  justSaved,
+  publishing,
+}: {
+  work: DeskWork;
+  works: DeskWork[];
+  justSaved: boolean;
+  publishing: Publishing;
+}) {
+  // Right after a save, going back shows the painting's Saved badge on the
+  // list, the same way a save used to land there.
+  const back = justSaved ? `/curate?saved=1&at=${encodeURIComponent(work.slug)}` : `/curate#${work.slug}`;
+  const { changed, setChanged, leave, guardLink } = useLeaveGuard(
     `Discard your changes to “${work.title}”? Choose OK to discard them, or Cancel to keep editing.`,
   );
+  // The list's filter, remembered for this tab (see readFilter above), so
+  // Previous/Next step through the same paintings the list shows.
+  const filter = deskFilter(useSyncExternalStore(subscribeFilter, readFilter, () => "all"));
+  const step = stepThrough(works, work.slug, filter.id);
+  const where =
+    filter.id === "all"
+      ? `${step.position} of ${step.total}`
+      : step.matches
+        ? `${step.position} of ${step.total} in “${filter.label}”`
+        : `Not in “${filter.label}” now`;
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
       <p className="text-sm">
@@ -733,6 +780,21 @@ export function CurateEditor({ work, publishing }: { work: DeskWork; publishing:
       <p className="mt-6 text-xs tracking-[0.18em] text-muted-foreground uppercase">Studio desk</p>
       <h1 className="mt-3 font-heading text-5xl italic">{work.title}</h1>
       <PaintingBadges work={work} className="mt-4" />
+      {justSaved ? (
+        <p role="status" className="mt-4 text-sm">
+          Saved.
+        </p>
+      ) : null}
+      <nav aria-label="Other paintings" className="mt-6 flex flex-wrap items-center gap-3 text-sm">
+        <StepButton href={changed ? undefined : step.previous} label="Previous painting">
+          ← Previous
+        </StepButton>
+        <span className="text-muted-foreground">{where}</span>
+        <StepButton href={changed ? undefined : step.next} label="Next painting">
+          Next →
+        </StepButton>
+        {changed ? <span className="text-muted-foreground">Save or cancel your changes first.</span> : null}
+      </nav>
       <PublishingNote publishing={publishing} />
       <div className="mt-10">
         <WorkForm
