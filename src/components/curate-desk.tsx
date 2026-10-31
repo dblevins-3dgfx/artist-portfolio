@@ -23,7 +23,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { DeskWork, Publishing } from "@/lib/desk";
+import { missingDetails, type DeskWork, type Publishing } from "@/lib/desk";
 import { withStaleCheck } from "@/lib/stale-page";
 import { SUBJECTS } from "@/lib/subjects";
 
@@ -346,11 +346,18 @@ function PaintingRow({ work, justSaved }: { work: DeskWork; justSaved: boolean }
         <span className="min-w-0 flex-1">
           <span className="block truncate font-medium">{work.title}</span>
           <span className="block text-sm text-muted-foreground">{work.year}</span>
-        </span>
-        <span className="flex shrink-0 flex-wrap justify-end gap-1.5">
-          {justSaved ? <Badge>Saved</Badge> : null}
-          {work.featured ? <Badge variant="secondary">Front page</Badge> : null}
-          {work.duplicateOf ? <Badge variant="outline">Possible duplicate</Badge> : null}
+          {/* Under the title, so a row with several badges wraps them
+              instead of squeezing the title on a narrow screen. */}
+          <span className="mt-1.5 flex flex-wrap gap-1.5 empty:hidden">
+            {justSaved ? <Badge>Saved</Badge> : null}
+            {work.featured ? <Badge variant="secondary">Front page</Badge> : null}
+            {work.duplicateOf ? <Badge variant="outline">Possible duplicate</Badge> : null}
+            {missingDetails(work).map((detail) => (
+              <Badge key={detail} variant="outline">
+                {detail}
+              </Badge>
+            ))}
+          </span>
         </span>
       </Link>
     </li>
