@@ -289,13 +289,15 @@
   },
   {
     "title": "Kitten on panel",
-    "year": 2026,
+    "year": 2015,
     "medium": "Oil",
     "surface": "Cedar panel",
-    "widthIn": 0,
-    "heightIn": 0,
+    "widthIn": 8,
+    "heightIn": 10,
     "statement": "This kitty is quite a princess!",
-    "subjects": [],
+    "subjects": [
+      "animals"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
