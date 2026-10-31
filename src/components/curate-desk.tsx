@@ -6,8 +6,8 @@
  * the form for a new painting at /curate/new.
  * Forms post to saveWork / logout, which are Server Actions: the
  * browser calls those functions on the server rather than a URL you named.
- * useActionState keeps the last `{ error }` beside the form that produced it.
- * useFormStatus is how the submit button knows the post is still in flight.
+ * useActionState keeps the last `{ error }` beside the form that produced it,
+ * and its pending flag is how the buttons know a save is still in flight.
  *
  * next/image normally runs pictures through the image optimizer. Desk
  * previews pass unoptimized because our custom loader ignores width, and
@@ -16,14 +16,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  startTransition,
   useActionState,
   useEffect,
   useSyncExternalStore,
   type ChangeEvent,
+  type FormEvent,
   type MouseEvent,
   type ReactNode,
 } from "react";
-import { useFormStatus } from "react-dom";
 import { logout, saveWork, type DeskFormState } from "@/app/curate/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -56,6 +57,22 @@ function Field({
 
 // Wrapped once, at load, rather than on every render. Both forms share it.
 const saveFromDesk = withStaleCheck(saveWork);
+
+// React 19 resets a <form action={…}> once the action finishes, even when it
+// returned an error, which emptied every field and the chosen photograph.
+// Submitting from onSubmit avoids that: preventDefault stops the browser's
+// own post, and startTransition runs the action the way <form action> would,
+// so redirect() after a save and the pending flag still work. The browser's
+// own checks (required fields, the photo size) still run before onSubmit.
+function useDeskForm() {
+  const [state, action, pending] = useActionState(saveFromDesk, null as DeskFormState);
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    startTransition(() => action(formData));
+  };
+  return { state, pending, onSubmit };
+}
 
 // A stale page (see lib/stale-page.ts) cannot recover by itself: its
 // JavaScript still names the old actions, so only a full reload helps.
@@ -94,17 +111,18 @@ function checkPhotoSize(event: ChangeEvent<HTMLInputElement>) {
 }
 
 function PendingButtons({
+  pending,
   canSave,
   saveLabel,
   pendingLabel,
   allowRemove,
 }: {
+  pending: boolean;
   canSave: boolean;
   saveLabel: string;
   pendingLabel: string;
   allowRemove: boolean;
 }) {
-  const { pending } = useFormStatus();
   // The button's name/value is not a reliable submit intent with this button
   // primitive. A hidden field, set before the post, is what the server reads.
   const setIntent = (event: MouseEvent<HTMLButtonElement>, intent: "save" | "delete") => {
@@ -247,10 +265,10 @@ function PaintingFields({
 }
 
 function WorkForm({ work, canSave }: { work: DeskWork; canSave: boolean }) {
-  const [state, action] = useActionState(saveFromDesk, null as DeskFormState);
+  const { state, pending, onSubmit } = useDeskForm();
   return (
     <form
-      action={action}
+      onSubmit={onSubmit}
       className="grid gap-6 border border-border bg-card p-4 sm:grid-cols-[9rem_minmax(0,1fr)] sm:p-5"
     >
       <input type="hidden" name="existingSlug" value={work.slug} />
@@ -283,16 +301,16 @@ function WorkForm({ work, canSave }: { work: DeskWork; canSave: boolean }) {
           Leave the file empty to keep the current preview. A new photograph is reduced and watermarked. The original is not kept.
         </p>
         <FormError state={state} />
-        <PendingButtons canSave={canSave} saveLabel="Save" pendingLabel="Saving…" allowRemove />
+        <PendingButtons pending={pending} canSave={canSave} saveLabel="Save" pendingLabel="Saving…" allowRemove />
       </div>
     </form>
   );
 }
 
 function NewWorkForm({ canSave }: { canSave: boolean }) {
-  const [state, action] = useActionState(saveFromDesk, null as DeskFormState);
+  const { state, pending, onSubmit } = useDeskForm();
   return (
-    <form action={action} className="grid gap-4 border border-border bg-card p-4 sm:p-5">
+    <form onSubmit={onSubmit} className="grid gap-4 border border-border bg-card p-4 sm:p-5">
       <input type="hidden" name="existingSlug" value="" />
       <Field id="new-image" label="Photograph">
         <Input
@@ -306,7 +324,13 @@ function NewWorkForm({ canSave }: { canSave: boolean }) {
       </Field>
       <PaintingFields idPrefix="new" />
       <FormError state={state} />
-      <PendingButtons canSave={canSave} saveLabel="Add to the catalog" pendingLabel="Adding…" allowRemove={false} />
+      <PendingButtons
+        pending={pending}
+        canSave={canSave}
+        saveLabel="Add to the catalog"
+        pendingLabel="Adding…"
+        allowRemove={false}
+      />
     </form>
   );
 }
