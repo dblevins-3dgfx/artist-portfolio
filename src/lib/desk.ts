@@ -8,6 +8,8 @@
  *
  * missingDetails lists what a painting still lacks, for the badges on the
  * desk list. It reads only the row, so the browser can call it.
+ * DESK_FILTERS are the list's filter buttons. Each badge filter matches on
+ * the same text the badge shows, so a badge and its filter cannot disagree.
  */
 import type { SubjectId } from "@/lib/subjects";
 
@@ -58,4 +60,36 @@ export function missingDetails(
   if (!work.surface.trim()) missing.push("No surface");
   if (!work.widthIn || !work.heightIn) missing.push("No size");
   return missing;
+}
+
+export type DeskFilter = {
+  id: string;
+  label: string;
+  matches: (work: DeskWork) => boolean;
+};
+
+function hasBadge(label: string) {
+  return (work: DeskWork) => missingDetails(work).includes(label);
+}
+
+// "Needs work" is any missing detail or a possible duplicate. Front page and
+// Saved are badges too, but neither is a problem to fix.
+export function needsWork(work: DeskWork) {
+  return missingDetails(work).length > 0 || work.duplicateOf !== "";
+}
+
+export const DESK_FILTERS: DeskFilter[] = [
+  { id: "all", label: "All", matches: () => true },
+  { id: "needs-work", label: "Needs work", matches: needsWork },
+  { id: "title", label: "Title from file name", matches: hasBadge("Title from file name") },
+  { id: "subject", label: "No subject", matches: hasBadge("No subject") },
+  { id: "medium", label: "No medium", matches: hasBadge("No medium") },
+  { id: "surface", label: "No surface", matches: hasBadge("No surface") },
+  { id: "size", label: "No size", matches: hasBadge("No size") },
+  { id: "duplicate", label: "Possible duplicate", matches: (work) => work.duplicateOf !== "" },
+  { id: "front-page", label: "Front page", matches: (work) => work.featured },
+];
+
+export function deskFilter(id: string | null | undefined): DeskFilter {
+  return DESK_FILTERS.find((filter) => filter.id === id) ?? DESK_FILTERS[0];
 }

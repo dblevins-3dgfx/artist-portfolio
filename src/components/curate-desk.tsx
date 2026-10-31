@@ -15,7 +15,14 @@
  */
 import Image from "next/image";
 import Link from "next/link";
-import { useActionState, useEffect, type ChangeEvent, type MouseEvent, type ReactNode } from "react";
+import {
+  useActionState,
+  useEffect,
+  useSyncExternalStore,
+  type ChangeEvent,
+  type MouseEvent,
+  type ReactNode,
+} from "react";
 import { useFormStatus } from "react-dom";
 import { logout, saveWork, type DeskFormState } from "@/app/curate/actions";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +30,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { missingDetails, type DeskWork, type Publishing } from "@/lib/desk";
+import { DESK_FILTERS, deskFilter, missingDetails, type DeskWork, type Publishing } from "@/lib/desk";
 import { withStaleCheck } from "@/lib/stale-page";
 import { SUBJECTS } from "@/lib/subjects";
 import { cn } from "@/lib/utils";
@@ -373,6 +380,47 @@ function PaintingRow({ work, justSaved }: { work: DeskWork; justSaved: boolean }
   );
 }
 
+// The list filter is kept for this browser tab, so it survives opening a
+// painting, saving, and landing back on the list. useSyncExternalStore reads
+// it during render; the server always renders "all". If the browser blocks
+// storage, the choice still works but lives only until the page reloads.
+const FILTER_KEY = "studio-desk-filter";
+let chosenFilter: string | null = null;
+const filterListeners = new Set<() => void>();
+
+function readFilter() {
+  if (chosenFilter === null) {
+    try {
+      chosenFilter = window.sessionStorage.getItem(FILTER_KEY) ?? "all";
+    } catch {
+      chosenFilter = "all";
+    }
+  }
+  return chosenFilter;
+}
+
+function chooseFilter(id: string) {
+  chosenFilter = id;
+  try {
+    window.sessionStorage.setItem(FILTER_KEY, id);
+  } catch {
+    // Storage is blocked; the in-memory choice above still applies.
+  }
+  for (const listener of filterListeners) listener();
+}
+
+function subscribeFilter(listener: () => void) {
+  filterListeners.add(listener);
+  return () => {
+    filterListeners.delete(listener);
+  };
+}
+
+// True once the page is running in the browser, after hydration. The stored
+// filter is applied in that same render, so the scroll to a just-saved row
+// waits for it instead of landing where the unfiltered list put the row.
+const subscribeNothing = () => () => {};
+
 export function CurateDesk({
   works,
   publishing,
@@ -384,12 +432,27 @@ export function CurateDesk({
   notice: "saved" | "removed" | null;
   focusSlug: string | null;
 }) {
+  const active = deskFilter(useSyncExternalStore(subscribeFilter, readFilter, () => "all"));
+  const hydrated = useSyncExternalStore(subscribeNothing, () => true, () => false);
+
   useEffect(() => {
-    if (!focusSlug) return;
+    if (!focusSlug || !hydrated) return;
     const painting = document.getElementById(focusSlug);
     if (!painting) return;
     painting.scrollIntoView({ block: "start" });
-  }, [focusSlug]);
+  }, [focusSlug, hydrated]);
+
+  const counts = new Map(DESK_FILTERS.map((filter) => [filter.id, works.filter(filter.matches).length]));
+  const matching = counts.get(active.id) ?? 0;
+  // A filter with nothing in it is hidden, unless it is the one in use: after
+  // fixing the last painting in a queue, the button stays so the empty result
+  // makes sense.
+  const offered = DESK_FILTERS.filter(
+    (filter) => filter.id === "all" || filter.id === "needs-work" || filter.id === active.id || (counts.get(filter.id) ?? 0) > 0,
+  );
+  // The painting just saved stays in view, with its Saved badge, even if the
+  // fix took it out of the filter. It drops out on the next visit.
+  const shown = works.filter((work) => active.matches(work) || work.slug === focusSlug);
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
@@ -423,11 +486,35 @@ export function CurateDesk({
         <p className="mt-4 text-sm text-muted-foreground">Nothing is in the catalog yet.</p>
       ) : (
         <>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {works.length === 1 ? "1 painting" : `${works.length} paintings`}. Choose one to edit it.
+          <div role="group" aria-label="Show paintings" className="mt-6 flex flex-wrap gap-2">
+            {offered.map((filter) => {
+              const chosen = filter.id === active.id;
+              return (
+                <Button
+                  key={filter.id}
+                  type="button"
+                  size="sm"
+                  variant={chosen ? "default" : "outline"}
+                  aria-pressed={chosen}
+                  onClick={() => chooseFilter(filter.id)}
+                >
+                  {filter.label}
+                  <span className="tabular-nums opacity-75">{counts.get(filter.id)}</span>
+                </Button>
+              );
+            })}
+          </div>
+          <p aria-live="polite" className="mt-4 text-sm text-muted-foreground">
+            {active.id === "all"
+              ? `${works.length === 1 ? "1 painting" : `${works.length} paintings`}. Choose one to edit it.`
+              : matching === 0
+                ? active.id === "needs-work"
+                  ? "Every painting has its details."
+                  : `No painting shows “${active.label}” now.`
+                : `${matching} of ${works.length} paintings. Choose one to edit it.`}
           </p>
           <ul className="mt-6 grid gap-2">
-            {works.map((work) => (
+            {shown.map((work) => (
               <PaintingRow key={work.slug} work={work} justSaved={focusSlug === work.slug} />
             ))}
           </ul>
