@@ -77,7 +77,7 @@ function useDeskForm() {
 // A stale page (see lib/stale-page.ts) cannot recover by itself: its
 // JavaScript still names the old actions, so only a full reload helps.
 // window.location.reload() is the same as pressing the browser's reload.
-function FormError({ state }: { state: DeskFormState }) {
+export function FormError({ state }: { state: DeskFormState }) {
   if (!state?.error) return null;
   return (
     <div role="alert" className="grid justify-items-start gap-3 text-sm text-destructive">
@@ -387,7 +387,7 @@ function NewWorkForm({ canSave }: { canSave: boolean }) {
   );
 }
 
-function PublishingNote({ publishing }: { publishing: Publishing }) {
+export function PublishingNote({ publishing }: { publishing: Publishing }) {
   if (publishing === "github") {
     return (
       <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
@@ -540,6 +540,9 @@ export function CurateDesk({
         <div className="flex flex-wrap gap-3">
           <Link href="/curate/new" className={buttonVariants()}>
             Add a painting
+          </Link>
+          <Link href="/curate/prices" className={cn(buttonVariants({ variant: "outline" }))}>
+            Print prices
           </Link>
           <form action={logout}>
             <Button type="submit" variant="outline">

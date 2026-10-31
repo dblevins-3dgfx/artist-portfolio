@@ -7,12 +7,17 @@
  * commitChange reloads the catalog and retries once on a git conflict.
  * The in-memory catalog from the start of the request is not the source of
  * truth; the repo is.
+ *
+ * The print price list (lib/print-prices.ts) rides the same commit path, but
+ * its change carries no works or manifest, so a price save touches only
+ * content/print-prices.json.
  */
 import { createHash } from "crypto";
 import { readFile, unlink, writeFile, mkdir } from "fs/promises";
 import path from "path";
 import {
   MANIFEST_PATH,
+  PRINT_PRICES_PATH,
   WORKS_PATH,
   assertCatalogPath,
   catalogFilePath,
@@ -26,6 +31,7 @@ import { catalogLikeness } from "@/lib/duplicates";
 import type { DeskWork, Publishing, WorkFields } from "@/lib/desk";
 import { commitGitFiles, isGitConflict, readGitFile, readGitHead } from "@/lib/github-catalog";
 import { renderPreview } from "@/lib/preview-image";
+import { parsePrintPrices, serializePrintPrices, type PrintPrices } from "@/lib/print-prices";
 import type { Work } from "@/lib/types";
 
 export type { DeskWork, Publishing, WorkFields };
@@ -43,10 +49,11 @@ type LoadedCatalog = {
 
 type FileChange = { path: string; bytes: Buffer | null };
 
+// works and manifest are rewritten only when a change carries them.
 type CatalogChange = {
   message: string;
-  works: Work[];
-  manifest: Manifest;
+  works?: Work[];
+  manifest?: Manifest;
   files: FileChange[];
 };
 
@@ -144,13 +151,9 @@ async function readArt(catalog: LoadedCatalog, slug: string) {
 }
 
 async function persist(catalog: LoadedCatalog, change: CatalogChange) {
-  const worksBytes = Buffer.from(serializeWorks(change.works));
-  const manifestBytes = Buffer.from(serializeManifest(change.manifest));
-  const files = [
-    ...change.files,
-    { path: WORKS_PATH, bytes: worksBytes },
-    { path: MANIFEST_PATH, bytes: manifestBytes },
-  ];
+  const files = [...change.files];
+  if (change.works) files.push({ path: WORKS_PATH, bytes: Buffer.from(serializeWorks(change.works)) });
+  if (change.manifest) files.push({ path: MANIFEST_PATH, bytes: Buffer.from(serializeManifest(change.manifest)) });
   for (const file of files) assertCatalogPath(file.path);
 
   if (catalog.mode === "local") {
@@ -166,7 +169,9 @@ async function persist(catalog: LoadedCatalog, change: CatalogChange) {
       await mkdir(path.dirname(absolute), { recursive: true });
       await writeFile(absolute, file.bytes);
     }
-    return createHash("sha256").update(worksBytes).digest("hex");
+    const digest = createHash("sha256");
+    for (const file of files) digest.update(file.path).update(file.bytes ?? "");
+    return digest.digest("hex");
   }
 
   if (!catalog.parentSha || !catalog.baseTree) {
@@ -321,6 +326,33 @@ export async function removePainting(existingSlug: string): Promise<{ error: str
         files,
       };
     });
+  } catch (error) {
+    return { error: friendlySaveError(error) };
+  }
+  return { ok: true as const };
+}
+
+// The price list as the desk last saved it: the committed file on GitHub,
+// or the project's own file locally. A missing file is an empty list.
+export async function loadPrintPrices(): Promise<PrintPrices> {
+  let text: string | null = null;
+  if (process.env.STUDIO_GITHUB_TOKEN?.trim()) {
+    const head = await readGitHead();
+    text = (await readGitFile(PRINT_PRICES_PATH, head.parentSha))?.toString("utf8") ?? null;
+  } else {
+    text = await readFile(catalogFilePath(PRINT_PRICES_PATH), "utf8").catch(() => null);
+  }
+  return parsePrintPrices(text ? (JSON.parse(text) as unknown) : null);
+}
+
+// The whole list is replaced on each save, so a retry after a conflict
+// writes the same bytes on top of the newer commit.
+export async function savePrintPrices(list: PrintPrices): Promise<{ error: string } | { ok: true }> {
+  try {
+    await commitChange(async () => ({
+      message: "Update print prices from the studio desk",
+      files: [{ path: PRINT_PRICES_PATH, bytes: Buffer.from(serializePrintPrices(list)) }],
+    }));
   } catch (error) {
     return { error: friendlySaveError(error) };
   }

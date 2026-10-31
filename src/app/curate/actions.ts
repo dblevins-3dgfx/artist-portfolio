@@ -15,7 +15,8 @@
  */
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { removePainting, savePainting } from "@/lib/catalog-store";
+import { removePainting, savePainting, savePrintPrices } from "@/lib/catalog-store";
+import { checkPrintPrices } from "@/lib/print-prices";
 import { imageFromForm, readWorkForm } from "@/lib/work-form";
 import { isSignedIn, signIn, signOut } from "@/lib/studio-auth";
 
@@ -60,4 +61,27 @@ export async function saveWork(_state: DeskFormState, formData: FormData): Promi
   // `at` brings the desk back to this painting after the reload; hash
   // fragments are unreliable on redirects, so the slug is a query param.
   redirect(`/curate?saved=1&at=${encodeURIComponent(parsed.fields.slug)}`);
+}
+
+// The price grid arrives as one JSON field, because its rows and columns
+// are named by the artist and can be added or removed. checkPrintPrices is
+// the gate: anything it does not accept never reaches the commit.
+export async function savePrintPriceList(_state: DeskFormState, formData: FormData): Promise<DeskFormState> {
+  if (!(await isSignedIn())) return { error: "Sign in again to change the price list." };
+  const text = formData.get("priceList");
+  if (typeof text !== "string" || text.length > 50_000) {
+    return { error: "The price list did not arrive. Reload the page and try again." };
+  }
+  let sent: unknown;
+  try {
+    sent = JSON.parse(text);
+  } catch {
+    return { error: "The price list did not arrive. Reload the page and try again." };
+  }
+  const list = checkPrintPrices(sent);
+  if ("error" in list) return list;
+  const saved = await savePrintPrices(list);
+  if ("error" in saved) return saved;
+  revalidatePath("/curate/prices");
+  redirect("/curate/prices?saved=1");
 }

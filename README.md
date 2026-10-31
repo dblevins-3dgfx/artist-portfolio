@@ -51,6 +51,8 @@ Open `/curate` on the Vercel address. Thomasene signs in with the studio passwor
 
 Each painting also has an Availability section: whether the original is Not for sale, Available, or Sold, the original’s price in whole US dollars (needed when Available), and whether prints are offered. These are stored in `content/works.json` as `originalStatus` (`not-for-sale`, `in-studio` for Available, or `sold`), `originalPrice`, and `printsAvailable`. The public pages never read them. This repository is public, so anyone can read those values, prices included, on GitHub.
 
+Print prices are one list for the whole catalog, not a price per painting. Open **Print prices** from the desk (`/curate/prices`) to set a price for each print size and material, in whole US dollars; leave a cell blank when that size is not offered in that material. Sizes and materials can be added, renamed, or removed there. The list is saved in `content/print-prices.json`; until the first save there is no file, and the list is empty. A painting only says whether prints are offered. The public site never reads this file (a unit test checks that no public page imports it), but like the rest of this public repository, anyone can read it on GitHub.
+
 Each save publishes a new commit, and Vercel rebuilds the catalog from that commit. That suits one painting at a time. For a large batch, use the photograph folder below.
 
 The live desk already uses two Vercel environment variables (Settings → Environment Variables), for Production. A project without them stays locked:
