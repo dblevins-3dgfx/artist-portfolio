@@ -1,8 +1,9 @@
 "use client";
 
 /*
- * Desk UI. CurateDesk is the list at /curate: the add form and one compact
- * row per painting. CurateEditor is one painting's form at /curate/<slug>.
+ * Desk UI. CurateDesk is the list at /curate: one compact row per painting.
+ * CurateEditor is one painting's form at /curate/<slug>, and CurateAdd is
+ * the form for a new painting at /curate/new.
  * Forms post to saveWork / logout, which are Server Actions: the
  * browser calls those functions on the server rather than a URL you named.
  * useActionState keeps the last `{ error }` beside the form that produced it.
@@ -18,7 +19,7 @@ import { useActionState, useEffect, type ChangeEvent, type MouseEvent, type Reac
 import { useFormStatus } from "react-dom";
 import { logout, saveWork, type DeskFormState } from "@/app/curate/actions";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -285,12 +286,6 @@ function NewWorkForm({ canSave }: { canSave: boolean }) {
   return (
     <form action={action} className="grid gap-4 border border-border bg-card p-4 sm:p-5">
       <input type="hidden" name="existingSlug" value="" />
-      <div>
-        <h2 className="font-heading text-3xl italic">Add a painting</h2>
-        <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
-          Choose one photograph. It is reduced, stripped of camera information, and watermarked before it is saved.
-        </p>
-      </div>
       <Field id="new-image" label="Photograph">
         <Input
           id="new-image"
@@ -373,8 +368,6 @@ export function CurateDesk({
   notice: "saved" | "removed" | null;
   focusSlug: string | null;
 }) {
-  const canSave = publishing !== "missing";
-
   useEffect(() => {
     if (!focusSlug) return;
     const painting = document.getElementById(focusSlug);
@@ -389,11 +382,16 @@ export function CurateDesk({
           <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">Private</p>
           <h1 className="mt-3 font-heading text-5xl italic">Studio desk</h1>
         </div>
-        <form action={logout}>
-          <Button type="submit" variant="outline">
-            Lock the desk
-          </Button>
-        </form>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/curate/new" className={buttonVariants()}>
+            Add a painting
+          </Link>
+          <form action={logout}>
+            <Button type="submit" variant="outline">
+              Lock the desk
+            </Button>
+          </form>
+        </div>
       </div>
 
       <p className="mt-6 max-w-prose text-lg leading-relaxed">
@@ -403,10 +401,6 @@ export function CurateDesk({
       <PublishingNote publishing={publishing} />
       {notice === "saved" && !focusSlug ? <p className="mt-4 text-sm">Saved.</p> : null}
       {notice === "removed" ? <p className="mt-4 text-sm">That painting was removed.</p> : null}
-
-      <div className="mt-10">
-        <NewWorkForm canSave={canSave} />
-      </div>
 
       <h2 className="mt-14 font-heading text-3xl italic">In the catalog</h2>
       {works.length === 0 ? (
@@ -440,6 +434,27 @@ export function CurateEditor({ work, publishing }: { work: DeskWork; publishing:
       <PublishingNote publishing={publishing} />
       <div className="mt-10">
         <WorkForm work={work} canSave={publishing !== "missing"} />
+      </div>
+    </div>
+  );
+}
+
+export function CurateAdd({ publishing }: { publishing: Publishing }) {
+  return (
+    <div className="mx-auto max-w-5xl px-5 py-12">
+      <p className="text-sm">
+        <Link href="/curate" className="underline underline-offset-4">
+          All paintings
+        </Link>
+      </p>
+      <p className="mt-6 text-xs tracking-[0.18em] text-muted-foreground uppercase">Studio desk</p>
+      <h1 className="mt-3 font-heading text-5xl italic">Add a painting</h1>
+      <p className="mt-6 max-w-prose text-lg leading-relaxed">
+        Choose one photograph. It is reduced, stripped of camera information, and watermarked before it is saved.
+      </p>
+      <PublishingNote publishing={publishing} />
+      <div className="mt-10">
+        <NewWorkForm canSave={publishing !== "missing"} />
       </div>
     </div>
   );
