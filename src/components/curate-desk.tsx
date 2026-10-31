@@ -26,6 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { missingDetails, type DeskWork, type Publishing } from "@/lib/desk";
 import { withStaleCheck } from "@/lib/stale-page";
 import { SUBJECTS } from "@/lib/subjects";
+import { cn } from "@/lib/utils";
 
 function Field({
   id,
@@ -325,6 +326,23 @@ function PublishingNote({ publishing }: { publishing: Publishing }) {
   );
 }
 
+// The same badges on a list row and on the painting's edit page. Saved is
+// only ever true on the list, right after the redirect from a save.
+function PaintingBadges({ work, justSaved = false, className }: { work: DeskWork; justSaved?: boolean; className?: string }) {
+  return (
+    <span className={cn("flex flex-wrap gap-1.5 empty:hidden", className)}>
+      {justSaved ? <Badge>Saved</Badge> : null}
+      {work.featured ? <Badge variant="secondary">Front page</Badge> : null}
+      {work.duplicateOf ? <Badge variant="outline">Possible duplicate</Badge> : null}
+      {missingDetails(work).map((detail) => (
+        <Badge key={detail} variant="outline">
+          {detail}
+        </Badge>
+      ))}
+    </span>
+  );
+}
+
 // One line of the list. The id is what ?at=<slug> scrolls to after a save.
 // next/image loads lazily unless told otherwise, so only rows near the
 // screen fetch their thumbnails.
@@ -348,16 +366,7 @@ function PaintingRow({ work, justSaved }: { work: DeskWork; justSaved: boolean }
           <span className="block text-sm text-muted-foreground">{work.year}</span>
           {/* Under the title, so a row with several badges wraps them
               instead of squeezing the title on a narrow screen. */}
-          <span className="mt-1.5 flex flex-wrap gap-1.5 empty:hidden">
-            {justSaved ? <Badge>Saved</Badge> : null}
-            {work.featured ? <Badge variant="secondary">Front page</Badge> : null}
-            {work.duplicateOf ? <Badge variant="outline">Possible duplicate</Badge> : null}
-            {missingDetails(work).map((detail) => (
-              <Badge key={detail} variant="outline">
-                {detail}
-              </Badge>
-            ))}
-          </span>
+          <PaintingBadges work={work} justSaved={justSaved} className="mt-1.5" />
         </span>
       </Link>
     </li>
@@ -438,6 +447,7 @@ export function CurateEditor({ work, publishing }: { work: DeskWork; publishing:
       </p>
       <p className="mt-6 text-xs tracking-[0.18em] text-muted-foreground uppercase">Studio desk</p>
       <h1 className="mt-3 font-heading text-5xl italic">{work.title}</h1>
+      <PaintingBadges work={work} className="mt-4" />
       <PublishingNote publishing={publishing} />
       <div className="mt-10">
         <WorkForm work={work} canSave={publishing !== "missing"} />
