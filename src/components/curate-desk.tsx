@@ -1,7 +1,9 @@
 "use client";
 
 /*
- * Desk UI. Forms post to saveWork / logout, which are Server Actions: the
+ * Desk UI. CurateDesk is the list at /curate: the add form and one compact
+ * row per painting. CurateEditor is one painting's form at /curate/<slug>.
+ * Forms post to saveWork / logout, which are Server Actions: the
  * browser calls those functions on the server rather than a URL you named.
  * useActionState keeps the last `{ error }` beside the form that produced it.
  * useFormStatus is how the submit button knows the post is still in flight.
@@ -11,9 +13,11 @@
  * these URLs are either local files or raw GitHub bytes.
  */
 import Image from "next/image";
+import Link from "next/link";
 import { useActionState, useEffect, type ChangeEvent, type MouseEvent, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 import { logout, saveWork, type DeskFormState } from "@/app/curate/actions";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -233,21 +237,12 @@ function PaintingFields({
   );
 }
 
-function WorkForm({
-  work,
-  canSave,
-  justSaved,
-}: {
-  work: DeskWork;
-  canSave: boolean;
-  justSaved: boolean;
-}) {
+function WorkForm({ work, canSave }: { work: DeskWork; canSave: boolean }) {
   const [state, action] = useActionState(saveFromDesk, null as DeskFormState);
   return (
     <form
-      id={work.slug}
       action={action}
-      className="grid scroll-mt-24 gap-6 border border-border bg-card p-4 sm:grid-cols-[9rem_minmax(0,1fr)] sm:p-5"
+      className="grid gap-6 border border-border bg-card p-4 sm:grid-cols-[9rem_minmax(0,1fr)] sm:p-5"
     >
       <input type="hidden" name="existingSlug" value={work.slug} />
       <div>
@@ -278,7 +273,6 @@ function WorkForm({
         <p className="text-sm text-muted-foreground">
           Leave the file empty to keep the current preview. A new photograph is reduced and watermarked. The original is not kept.
         </p>
-        {justSaved ? <p className="text-sm">Saved.</p> : null}
         <FormError state={state} />
         <PendingButtons canSave={canSave} saveLabel="Save" pendingLabel="Saving…" allowRemove />
       </div>
@@ -328,15 +322,69 @@ function DuplicateList({ groups }: { groups: { slug: string; title: string }[][]
             {members.map((member, index) => (
               <span key={member.slug}>
                 {index === 0 ? "" : index === members.length - 1 ? (members.length === 2 ? " and " : ", and ") : ", "}
-                <a href={`#${member.slug}`} className="underline-offset-4 hover:underline">
+                <Link href={`/curate/${member.slug}`} className="underline-offset-4 hover:underline">
                   {member.title}
-                </a>
+                </Link>
               </span>
             ))}
           </li>
         ))}
       </ul>
     </section>
+  );
+}
+
+function PublishingNote({ publishing }: { publishing: Publishing }) {
+  if (publishing === "github") {
+    return (
+      <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
+        Saving publishes the change. The public catalog updates when the next build finishes. Adding a large batch is still faster by running the photograph folder on a computer.
+      </p>
+    );
+  }
+  if (publishing === "local") {
+    return (
+      <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
+        This copy saves into the project on this computer. Nothing is published until those files are committed.
+      </p>
+    );
+  }
+  return (
+    <p role="status" className="mt-4 max-w-prose text-sm leading-relaxed">
+      The desk can open, but it cannot save yet. Add <span className="font-medium">STUDIO_GITHUB_TOKEN</span> in the Vercel project, then redeploy.
+    </p>
+  );
+}
+
+// One line of the list. The id is what ?at=<slug> scrolls to after a save.
+// next/image loads lazily unless told otherwise, so only rows near the
+// screen fetch their thumbnails.
+function PaintingRow({ work, justSaved }: { work: DeskWork; justSaved: boolean }) {
+  return (
+    <li id={work.slug} className="scroll-mt-24">
+      <Link
+        href={`/curate/${work.slug}`}
+        className="flex items-center gap-4 border border-border bg-card p-2 pr-4 hover:bg-muted"
+      >
+        <Image
+          src={work.previewUrl}
+          alt=""
+          width={work.imageWidth || 160}
+          height={work.imageHeight || 160}
+          unoptimized
+          className="size-14 shrink-0 border border-border object-cover"
+        />
+        <span className="min-w-0 flex-1">
+          <span className="block truncate font-medium">{work.title}</span>
+          <span className="block text-sm text-muted-foreground">{work.year}</span>
+        </span>
+        <span className="flex shrink-0 flex-wrap justify-end gap-1.5">
+          {justSaved ? <Badge>Saved</Badge> : null}
+          {work.featured ? <Badge variant="secondary">Front page</Badge> : null}
+          {work.duplicateOf ? <Badge variant="outline">Possible duplicate</Badge> : null}
+        </span>
+      </Link>
+    </li>
   );
 }
 
@@ -380,21 +428,7 @@ export function CurateDesk({
         Add a painting, rewrite its note, or take it down. Photographs are reduced and watermarked before they are saved. The full-size file is not kept on the site.
       </p>
 
-      {publishing === "github" ? (
-        <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
-          Saving publishes the change. The public catalog updates when the next build finishes. Adding a large batch is still faster by running the photograph folder on a computer.
-        </p>
-      ) : null}
-      {publishing === "local" ? (
-        <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
-          This copy saves into the project on this computer. Nothing is published until those files are committed.
-        </p>
-      ) : null}
-      {publishing === "missing" ? (
-        <p role="status" className="mt-4 max-w-prose text-sm leading-relaxed">
-          The desk can open, but it cannot save yet. Add <span className="font-medium">STUDIO_GITHUB_TOKEN</span> in the Vercel project, then redeploy.
-        </p>
-      ) : null}
+      <PublishingNote publishing={publishing} />
       {notice === "saved" && !focusSlug ? <p className="mt-4 text-sm">Saved.</p> : null}
       {notice === "removed" ? <p className="mt-4 text-sm">That painting was removed.</p> : null}
 
@@ -408,17 +442,35 @@ export function CurateDesk({
       {works.length === 0 ? (
         <p className="mt-4 text-sm text-muted-foreground">Nothing is in the catalog yet.</p>
       ) : (
-        <div className="mt-6 grid gap-6">
-          {works.map((work) => (
-            <WorkForm
-              key={work.slug}
-              work={work}
-              canSave={canSave}
-              justSaved={focusSlug === work.slug}
-            />
-          ))}
-        </div>
+        <>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {works.length === 1 ? "1 painting" : `${works.length} paintings`}. Choose one to edit it.
+          </p>
+          <ul className="mt-6 grid gap-2">
+            {works.map((work) => (
+              <PaintingRow key={work.slug} work={work} justSaved={focusSlug === work.slug} />
+            ))}
+          </ul>
+        </>
       )}
+    </div>
+  );
+}
+
+export function CurateEditor({ work, publishing }: { work: DeskWork; publishing: Publishing }) {
+  return (
+    <div className="mx-auto max-w-5xl px-5 py-12">
+      <p className="text-sm">
+        <Link href={`/curate#${work.slug}`} className="underline underline-offset-4">
+          All paintings
+        </Link>
+      </p>
+      <p className="mt-6 text-xs tracking-[0.18em] text-muted-foreground uppercase">Studio desk</p>
+      <h1 className="mt-3 font-heading text-5xl italic">{work.title}</h1>
+      <PublishingNote publishing={publishing} />
+      <div className="mt-10">
+        <WorkForm work={work} canSave={publishing !== "missing"} />
+      </div>
     </div>
   );
 }

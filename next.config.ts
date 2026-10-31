@@ -21,7 +21,9 @@ const nextConfig: NextConfig = {
     },
   },
   outputFileTracingIncludes: {
+    // The save action also runs from a painting's page, /curate/[slug].
     "/curate": ["./assets/fonts/LiberationSerif-Bold.ttf"],
+    "/curate/*": ["./assets/fonts/LiberationSerif-Bold.ttf"],
   },
   async headers() {
     return [
