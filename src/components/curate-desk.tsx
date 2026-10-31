@@ -15,6 +15,7 @@
  */
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   startTransition,
   useActionState,
@@ -67,32 +68,47 @@ const saveFromDesk = withStaleCheck(saveWork);
 // so redirect() after a save and the pending flag still work. The browser's
 // own checks (required fields, the photo size) still run before onSubmit.
 //
-// trackChanges is for a painting's edit page: the form is compared with a
-// snapshot taken when it first rendered, and `changed` says whether Save
-// has anything to send. Putting a field back the way it was makes the form
-// unchanged again. A failed save keeps the form as typed, so it stays
-// changed. While there are unsaved changes, closing or reloading the tab
-// asks first (beforeunload); links inside the desk do not.
-function useDeskForm({ trackChanges = false }: { trackChanges?: boolean } = {}) {
+// trackChanges compares the form with a snapshot taken when it first
+// rendered, and `changed` says whether anything differs. On the edit page
+// that decides whether Save has anything to send. Putting a field back the
+// way it was makes the form unchanged again. A failed save keeps the form
+// as typed, so it stays changed. While there are unsaved changes, closing
+// or reloading the tab asks first (beforeunload); leaving through the
+// desk's own Cancel and "All paintings" asks through useLeaveGuard, which
+// hears about changes through onChanged.
+// Set once the artist has chosen to discard and leave. The form's
+// close-tab warning stays registered until the next page replaces it, a
+// moment later; this keeps it from asking again in that moment.
+let discarding = false;
+
+function useDeskForm({
+  trackChanges = false,
+  onChanged,
+}: { trackChanges?: boolean; onChanged?: (changed: boolean) => void } = {}) {
   const [state, action, pending] = useActionState(saveFromDesk, null as DeskFormState);
   const formRef = useRef<HTMLFormElement>(null);
   const loaded = useRef<string | null>(null);
   const [changed, setChanged] = useState(false);
 
   useEffect(() => {
+    discarding = false;
     if (trackChanges && formRef.current) loaded.current = formSignature(new FormData(formRef.current));
   }, [trackChanges]);
 
   useEffect(() => {
     if (!changed) return;
-    const warn = (event: BeforeUnloadEvent) => event.preventDefault();
+    const warn = (event: BeforeUnloadEvent) => {
+      if (!discarding) event.preventDefault();
+    };
     window.addEventListener("beforeunload", warn);
     return () => window.removeEventListener("beforeunload", warn);
   }, [changed]);
 
   const onEdit = () => {
     if (!formRef.current || loaded.current === null) return;
-    setChanged(formSignature(new FormData(formRef.current)) !== loaded.current);
+    const next = formSignature(new FormData(formRef.current)) !== loaded.current;
+    setChanged(next);
+    onChanged?.(next);
   };
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -100,6 +116,27 @@ function useDeskForm({ trackChanges = false }: { trackChanges?: boolean } = {}) 
     startTransition(() => action(formData));
   };
   return { state, pending, onSubmit, formRef, onEdit, changed };
+}
+
+// Leaving a desk form page through Cancel or "All paintings". With unsaved
+// changes it asks first; without, it just goes. confirmLeave returns false
+// when the artist chooses to keep editing. The browser's own confirm box
+// shows OK and Cancel, so the question is worded to fit those buttons.
+function useLeaveGuard(question: string) {
+  const router = useRouter();
+  const [changed, setChanged] = useState(false);
+  const confirmLeave = () => {
+    if (!changed) return true;
+    discarding = window.confirm(question);
+    return discarding;
+  };
+  const leave = (href: string) => {
+    if (confirmLeave()) router.push(href);
+  };
+  const guardLink = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (!confirmLeave()) event.preventDefault();
+  };
+  return { setChanged, leave, guardLink };
 }
 
 // A stale page (see lib/stale-page.ts) cannot recover by itself: its
@@ -145,6 +182,7 @@ function PendingButtons({
   saveLabel,
   pendingLabel,
   allowRemove,
+  onCancel,
 }: {
   pending: boolean;
   canSave: boolean;
@@ -152,6 +190,7 @@ function PendingButtons({
   saveLabel: string;
   pendingLabel: string;
   allowRemove: boolean;
+  onCancel: () => void;
 }) {
   // The button's name/value is not a reliable submit intent with this button
   // primitive. A hidden field, set before the post, is what the server reads.
@@ -169,11 +208,16 @@ function PendingButtons({
       >
         {pending ? pendingLabel : saveLabel}
       </Button>
+      <Button type="button" variant="outline" disabled={pending} onClick={onCancel}>
+        Cancel
+      </Button>
+      {/* Remove sits apart from Save and Cancel, at the far end of the row. */}
       {allowRemove ? (
         <Button
           type="submit"
           variant="destructive"
           formNoValidate
+          className="ml-auto"
           disabled={pending || !canSave}
           onClick={(event) => {
             setIntent(event, "delete");
@@ -346,8 +390,18 @@ const ORIGINAL_CHOICES = [
   { value: "sold", label: "Sold" },
 ] as const;
 
-function WorkForm({ work, canSave }: { work: DeskWork; canSave: boolean }) {
-  const { state, pending, onSubmit, formRef, onEdit, changed } = useDeskForm({ trackChanges: true });
+function WorkForm({
+  work,
+  canSave,
+  onChanged,
+  onCancel,
+}: {
+  work: DeskWork;
+  canSave: boolean;
+  onChanged: (changed: boolean) => void;
+  onCancel: () => void;
+}) {
+  const { state, pending, onSubmit, formRef, onEdit, changed } = useDeskForm({ trackChanges: true, onChanged });
   return (
     <form
       ref={formRef}
@@ -396,16 +450,33 @@ function WorkForm({ work, canSave }: { work: DeskWork; canSave: boolean }) {
           saveLabel="Save"
           pendingLabel="Saving…"
           allowRemove
+          onCancel={onCancel}
         />
       </div>
     </form>
   );
 }
 
-function NewWorkForm({ canSave }: { canSave: boolean }) {
-  const { state, pending, onSubmit } = useDeskForm();
+// The add page tracks changes only so leaving can ask first; its button
+// does not wait for a change, and the browser requires a photograph.
+function NewWorkForm({
+  canSave,
+  onChanged,
+  onCancel,
+}: {
+  canSave: boolean;
+  onChanged: (changed: boolean) => void;
+  onCancel: () => void;
+}) {
+  const { state, pending, onSubmit, formRef, onEdit } = useDeskForm({ trackChanges: true, onChanged });
   return (
-    <form onSubmit={onSubmit} className="grid gap-4 border border-border bg-card p-4 sm:p-5">
+    <form
+      ref={formRef}
+      onSubmit={onSubmit}
+      onInput={onEdit}
+      onChange={onEdit}
+      className="grid gap-4 border border-border bg-card p-4 sm:p-5"
+    >
       <input type="hidden" name="existingSlug" value="" />
       <Field id="new-image" label="Photograph">
         <Input
@@ -425,6 +496,7 @@ function NewWorkForm({ canSave }: { canSave: boolean }) {
         saveLabel="Add to the catalog"
         pendingLabel="Adding…"
         allowRemove={false}
+        onCancel={onCancel}
       />
     </form>
   );
@@ -647,10 +719,14 @@ export function CurateDesk({
 }
 
 export function CurateEditor({ work, publishing }: { work: DeskWork; publishing: Publishing }) {
+  const back = `/curate#${work.slug}`;
+  const { setChanged, leave, guardLink } = useLeaveGuard(
+    `Discard your changes to “${work.title}”? Choose OK to discard them, or Cancel to keep editing.`,
+  );
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
       <p className="text-sm">
-        <Link href={`/curate#${work.slug}`} className="underline underline-offset-4">
+        <Link href={back} onClick={guardLink} className="underline underline-offset-4">
           All paintings
         </Link>
       </p>
@@ -659,17 +735,25 @@ export function CurateEditor({ work, publishing }: { work: DeskWork; publishing:
       <PaintingBadges work={work} className="mt-4" />
       <PublishingNote publishing={publishing} />
       <div className="mt-10">
-        <WorkForm work={work} canSave={publishing !== "missing"} />
+        <WorkForm
+          work={work}
+          canSave={publishing !== "missing"}
+          onChanged={setChanged}
+          onCancel={() => leave(back)}
+        />
       </div>
     </div>
   );
 }
 
 export function CurateAdd({ publishing }: { publishing: Publishing }) {
+  const { setChanged, leave, guardLink } = useLeaveGuard(
+    "Discard this new painting? Nothing has been saved. Choose OK to discard it, or Cancel to keep editing.",
+  );
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
       <p className="text-sm">
-        <Link href="/curate" className="underline underline-offset-4">
+        <Link href="/curate" onClick={guardLink} className="underline underline-offset-4">
           All paintings
         </Link>
       </p>
@@ -680,7 +764,7 @@ export function CurateAdd({ publishing }: { publishing: Publishing }) {
       </p>
       <PublishingNote publishing={publishing} />
       <div className="mt-10">
-        <NewWorkForm canSave={publishing !== "missing"} />
+        <NewWorkForm canSave={publishing !== "missing"} onChanged={setChanged} onCancel={() => leave("/curate")} />
       </div>
     </div>
   );
