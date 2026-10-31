@@ -3,6 +3,7 @@ import path from "node:path";
 import { test } from "node:test";
 import {
   MANIFEST_PATH,
+  PRINT_PRICES_PATH,
   WORKS_PATH,
   assertCatalogPath,
   catalogFilePath,
@@ -21,12 +22,13 @@ test("web names are lowercase words joined by single hyphens", () => {
   }
 });
 
-test("only the catalog, the manifest, and preview images may be written", () => {
-  for (const file of [WORKS_PATH, MANIFEST_PATH, "public/art/bon-voyage.jpg"]) {
+test("only the catalog, the manifest, the print prices, and preview images may be written", () => {
+  for (const file of [WORKS_PATH, MANIFEST_PATH, PRINT_PRICES_PATH, "public/art/bon-voyage.jpg"]) {
     assert.doesNotThrow(() => assertCatalogPath(file), file);
   }
   const refused = [
     "content/studio.json",
+    "content/print-prices.json.bak",
     "./content/works.json",
     "content/../content/works.json",
     "public/art/../../package.json",

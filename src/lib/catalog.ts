@@ -7,8 +7,8 @@
  * type-checks as anything.
  *
  * assertCatalogPath is the allow-list for anything written to disk or Git.
- * A save may touch content/works.json, content/art-manifest.json, and
- * public/art/<slug>.jpg. Nothing else.
+ * A save may touch content/works.json, content/art-manifest.json,
+ * content/print-prices.json, and public/art/<slug>.jpg. Nothing else.
  */
 import path from "path";
 import { parseSubjects } from "@/lib/subjects";
@@ -16,6 +16,7 @@ import type { CatalogWork, OriginalStatus, Work } from "@/lib/types";
 
 export const WORKS_PATH = "content/works.json";
 export const MANIFEST_PATH = "content/art-manifest.json";
+export const PRINT_PRICES_PATH = "content/print-prices.json";
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -34,6 +35,7 @@ export function assertCatalogPath(filePath: string) {
   const allowed =
     filePath === WORKS_PATH ||
     filePath === MANIFEST_PATH ||
+    filePath === PRINT_PRICES_PATH ||
     /^public\/art\/[a-z0-9-]+\.jpg$/.test(filePath);
   if (!allowed) throw new Error("Refusing to write that file.");
 }
@@ -42,6 +44,7 @@ export function catalogFilePath(filePath: string) {
   assertCatalogPath(filePath);
   if (filePath === WORKS_PATH) return path.join(process.cwd(), "content", "works.json");
   if (filePath === MANIFEST_PATH) return path.join(process.cwd(), "content", "art-manifest.json");
+  if (filePath === PRINT_PRICES_PATH) return path.join(process.cwd(), "content", "print-prices.json");
   const name = filePath.slice("public/art/".length);
   if (!/^[a-z0-9-]+\.jpg$/.test(name)) throw new Error("Refusing to write that file.");
   return path.join(process.cwd(), "public", "art", name);

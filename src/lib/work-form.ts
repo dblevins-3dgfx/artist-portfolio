@@ -9,9 +9,10 @@ import type { OriginalStatus } from "@/lib/types";
 import { isCatalogSlug } from "@/lib/catalog";
 import { parseSubjects } from "@/lib/subjects";
 
-// /curate/new is the desk's Add page. A painting with this web name would
-// share its address, and its own edit page could never be opened.
-const RESERVED_SLUGS = new Set(["new"]);
+// /curate/new and /curate/prices are desk pages. A painting with one of
+// these web names would share its address, and its own edit page could
+// never be opened.
+const RESERVED_SLUGS = new Set(["new", "prices"]);
 
 export function slugify(value: string) {
   return value
