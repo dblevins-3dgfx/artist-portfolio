@@ -260,9 +260,61 @@ function PaintingFields({
         />
         Show on the front page
       </label>
+      {/*
+        Desk-only. Nothing in this section reaches the public pages. The
+        hidden field tells the server the section was on the form, so a tab
+        from before it existed cannot reset a painting's availability.
+        "in-studio" is the stored value for Available.
+      */}
+      <fieldset className="grid gap-4 border-t border-border pt-4 sm:col-span-2 sm:grid-cols-2">
+        <legend className="sr-only">Availability</legend>
+        <input type="hidden" name="availability" value="1" />
+        <fieldset>
+          <legend className="text-sm leading-none font-medium">Original</legend>
+          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2">
+            {ORIGINAL_CHOICES.map((choice) => (
+              <label key={choice.value} className="flex items-center gap-2 text-sm">
+                <input
+                  type="radio"
+                  name="originalStatus"
+                  value={choice.value}
+                  defaultChecked={(work?.originalStatus ?? "not-for-sale") === choice.value}
+                  className="size-4 accent-current"
+                />
+                {choice.label}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <Field id={`${idPrefix}-price`} label="Price of the original (US dollars)">
+          <Input
+            id={`${idPrefix}-price`}
+            name="originalPrice"
+            inputMode="numeric"
+            defaultValue={work?.originalPrice ? String(work.originalPrice) : ""}
+            maxLength={12}
+            placeholder="Needed when Available"
+          />
+        </Field>
+        <label className="flex items-center gap-2 text-sm sm:col-span-2">
+          <input
+            type="checkbox"
+            name="printsAvailable"
+            defaultChecked={work ? work.printsAvailable : true}
+            className="size-4 accent-current"
+          />
+          Prints offered
+        </label>
+      </fieldset>
     </div>
   );
 }
+
+const ORIGINAL_CHOICES = [
+  { value: "not-for-sale", label: "Not for sale" },
+  { value: "in-studio", label: "Available" },
+  { value: "sold", label: "Sold" },
+] as const;
 
 function WorkForm({ work, canSave }: { work: DeskWork; canSave: boolean }) {
   const { state, pending, onSubmit } = useDeskForm();

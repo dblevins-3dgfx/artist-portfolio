@@ -11,6 +11,7 @@ import {
   parseWorks,
   serializeManifest,
   serializeWorks,
+  toCatalogWork,
 } from "@/lib/catalog";
 
 test("web names are lowercase words joined by single hyphens", () => {
@@ -55,7 +56,7 @@ test("parseWorks rejects a catalog that is not a list or has a bad web name", ()
 
 test("parseWorks fills safe defaults for missing or wrong fields", () => {
   const [work] = parseWorks([
-    { slug: "lake", year: 2020, originalStatus: "stolen", subject: "dragons", featured: "yes", widthIn: "12" },
+    { slug: "lake", year: 2020, originalStatus: "stolen", subject: "dragons", featured: "yes", widthIn: "12", originalPrice: "900" },
   ]);
   assert.deepEqual(work, {
     title: "lake",
@@ -68,6 +69,7 @@ test("parseWorks fills safe defaults for missing or wrong fields", () => {
     subjects: [],
     featured: false,
     originalStatus: "not-for-sale",
+    originalPrice: 0,
     printsAvailable: false,
     slug: "lake",
     image: "/art/lake.jpg",
@@ -122,6 +124,7 @@ test("serializeWorks round-trips through parseWorks", () => {
       subjects: ["places", "commissioned"],
       featured: true,
       originalStatus: "sold",
+      originalPrice: 1800,
       printsAvailable: true,
       slug: "lake",
       imageWidth: 1400,
@@ -131,6 +134,32 @@ test("serializeWorks round-trips through parseWorks", () => {
   const text = serializeWorks(works);
   assert.ok(text.endsWith("}\n]\n"));
   assert.deepEqual(parseWorks(JSON.parse(text)), works);
+});
+
+test("a price is whole dollars above 0; anything else reads as no price", () => {
+  const prices = [1200, 0, -5, 12.5, "1200", null].map(
+    (originalPrice) => parseWorks([{ slug: "lake", originalPrice }])[0].originalPrice,
+  );
+  assert.deepEqual(prices, [1200, 0, 0, 0, 0, 0]);
+});
+
+test("serializeWorks writes a price only when there is one", () => {
+  const [priced, unpriced] = JSON.parse(
+    serializeWorks(parseWorks([{ slug: "lake", originalPrice: 950 }, { slug: "shore" }])),
+  );
+  assert.equal(priced.originalPrice, 950);
+  assert.equal("originalPrice" in unpriced, false);
+});
+
+test("the public view of a painting leaves out availability, price, and the front-page flag", () => {
+  const [work] = parseWorks([
+    { slug: "lake", title: "Lake", originalStatus: "in-studio", originalPrice: 1800, printsAvailable: true, featured: true },
+  ]);
+  const shown = toCatalogWork(work) as Record<string, unknown>;
+  for (const key of ["originalStatus", "originalPrice", "printsAvailable", "featured", "widthIn", "heightIn"]) {
+    assert.equal(key in shown, false, key);
+  }
+  assert.equal(shown.title, "Lake");
 });
 
 test("parseManifest keeps valid entries and drops bad ones", () => {

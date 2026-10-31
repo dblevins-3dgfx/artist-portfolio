@@ -5,7 +5,7 @@ A catalog of original paintings. The pictures on the site are reduced, watermark
 - [GitHub repository](https://github.com/dblevins-3dgfx/artist-portfolio)
 - [Vercel](https://artist-portfolio-mu-snowy.vercel.app/) — the live site, including the studio desk at `/curate`.
 
-The public site does not list prices, print sizes, or a way to order. That keeps it within Vercel’s free Hobby plan, which is for personal, non-commercial projects. The artist’s name, email, and biography live in [`content/studio.json`](content/studio.json).
+The public site does not list availability, prices, print sizes, or a way to order. That keeps it within Vercel’s free Hobby plan, which is for personal, non-commercial projects. The artist’s name, email, and biography live in [`content/studio.json`](content/studio.json).
 
 The front page keeps any painting marked “Show on the front page.” When that does not fill the page, the open spots are a daily selection that changes at midnight in Coeur d’Alene. The work page groups paintings by subject. The groups are the list in [`src/lib/subjects.mjs`](src/lib/subjects.mjs). A group appears once a painting is in it. A painting can have several subjects: the filter buttons show it under each one, and the grouped view lists it once, under the first in that list.
 
@@ -20,7 +20,7 @@ npm run dev
 
 ## Publish on Vercel
 
-The live site is [https://artist-portfolio-mu-snowy.vercel.app/](https://artist-portfolio-mu-snowy.vercel.app/). It is a normal Next.js app on the Hobby plan. Do not turn on a static export: the studio desk at `/curate` is the one page that runs on the server. The desk is personal use of the site. It does not list prices or take orders.
+The live site is [https://artist-portfolio-mu-snowy.vercel.app/](https://artist-portfolio-mu-snowy.vercel.app/). It is a normal Next.js app on the Hobby plan. Do not turn on a static export: the studio desk at `/curate` is the one page that runs on the server. The desk is personal use of the site. It can record availability and an original’s price for later, but nothing on the public site shows them and the site takes no orders.
 
 [thomasene.art](https://thomasene.art/) still serves the GoDaddy website builder. The registration can stay at GoDaddy. When that name should open this catalog, add the domain in the Vercel project and copy the DNS records Vercel shows into GoDaddy. Disconnect GoDaddy’s website builder or domain forwarding first, or the old page keeps answering. Do not upload the `originals/` folder.
 
@@ -48,6 +48,8 @@ npm run process-images
 ## Studio desk
 
 Open `/curate` on the Vercel address. Thomasene signs in with the studio password, then adds a painting, edits its title, year, medium, surface, size, subjects, note, and “Show on the front page,” or removes it. Each photograph is reduced to a long edge of 1400 pixels, stripped of camera information, and watermarked before it is saved. The original file is discarded after that. It is never written into the repository.
+
+Each painting also has an Availability section: whether the original is Not for sale, Available, or Sold, the original’s price in whole US dollars (needed when Available), and whether prints are offered. These are stored in `content/works.json` as `originalStatus` (`not-for-sale`, `in-studio` for Available, or `sold`), `originalPrice`, and `printsAvailable`. The public pages never read them. This repository is public, so anyone can read those values, prices included, on GitHub.
 
 Each save publishes a new commit, and Vercel rebuilds the catalog from that commit. That suits one painting at a time. For a large batch, use the photograph folder below.
 

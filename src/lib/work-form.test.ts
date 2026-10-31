@@ -107,6 +107,36 @@ test("the web name of the desk's Add page is refused, typed or taken from the ti
   assert.ok("fields" in typed && typed.fields.slug === "new-snow");
 });
 
+const forSale = { ...valid, availability: "1", originalStatus: "in-studio", originalPrice: "$1,200", printsAvailable: "on" };
+
+test("availability and price are read when the form has the Availability section", () => {
+  const parsed = readWorkForm(form(forSale));
+  assert.ok("fields" in parsed);
+  assert.deepEqual(parsed.fields.availability, { originalStatus: "in-studio", originalPrice: 1200, printsAvailable: true });
+  const sold = readWorkForm(form({ ...forSale, originalStatus: "sold", originalPrice: "", printsAvailable: [] }));
+  assert.ok("fields" in sold);
+  assert.deepEqual(sold.fields.availability, { originalStatus: "sold", originalPrice: 0, printsAvailable: false });
+});
+
+test("a form without the Availability section leaves availability out, so the save keeps it", () => {
+  const parsed = readWorkForm(form({ ...valid, originalStatus: "sold" }));
+  assert.ok("fields" in parsed);
+  assert.equal("availability" in parsed.fields, false);
+});
+
+test("an available original needs a price in whole dollars", () => {
+  for (const fields of [
+    { ...forSale, originalPrice: "" },
+    { ...forSale, originalPrice: "12.50" },
+    { ...forSale, originalPrice: "1000001" },
+    { ...forSale, originalPrice: "0" },
+    { ...forSale, originalPrice: "twelve" },
+    { ...forSale, originalStatus: "maybe" },
+  ]) {
+    assert.ok("error" in readWorkForm(form(fields)), JSON.stringify(fields));
+  }
+});
+
 test("removing a painting needs its existing web name", () => {
   assert.deepEqual(readWorkForm(form({ intent: "delete", existingSlug: "bon-voyage" })), {
     intent: "delete",

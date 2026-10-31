@@ -12,7 +12,7 @@
  */
 import path from "path";
 import { parseSubjects } from "@/lib/subjects";
-import type { OriginalStatus, Work } from "@/lib/types";
+import type { CatalogWork, OriginalStatus, Work } from "@/lib/types";
 
 export const WORKS_PATH = "content/works.json";
 export const MANIFEST_PATH = "content/art-manifest.json";
@@ -81,6 +81,10 @@ export function parseWorks(value: unknown): Work[] {
       subjects: readSubjects(record),
       featured: record.featured === true,
       originalStatus,
+      originalPrice:
+        typeof record.originalPrice === "number" && Number.isInteger(record.originalPrice) && record.originalPrice > 0
+          ? record.originalPrice
+          : 0,
       printsAvailable: record.printsAvailable === true,
       slug: record.slug,
       image: `/art/${record.slug}.jpg`,
@@ -123,6 +127,9 @@ export function serializeWorks(works: Work[]) {
       subjects: work.subjects,
       featured: work.featured,
       originalStatus: work.originalStatus,
+      // Written only when set, so paintings without a price keep their entry
+      // unchanged and the file does not gain a 0 on every painting.
+      ...(work.originalPrice > 0 ? { originalPrice: work.originalPrice } : {}),
       printsAvailable: work.printsAvailable,
       slug: work.slug,
       image: work.image,
@@ -138,4 +145,21 @@ export function serializeManifest(manifest: Manifest) {
   const files: Manifest["files"] = {};
   for (const name of Object.keys(manifest.files).sort()) files[name] = manifest.files[name];
   return `${JSON.stringify({ files }, null, 2)}\n`;
+}
+
+// The public pages' view of a painting. Built field by field so a desk-only
+// field (availability, price, front-page flag) cannot ride along.
+export function toCatalogWork(work: Work): CatalogWork {
+  return {
+    slug: work.slug,
+    title: work.title,
+    year: work.year,
+    medium: work.medium,
+    surface: work.surface,
+    statement: work.statement,
+    subjects: work.subjects,
+    image: work.image,
+    imageWidth: work.imageWidth,
+    imageHeight: work.imageHeight,
+  };
 }

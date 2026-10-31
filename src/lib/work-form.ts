@@ -5,6 +5,7 @@
  * `if ("error" in parsed)`, the way a tagged union would in C++.
  */
 import type { WorkFields } from "@/lib/desk";
+import type { OriginalStatus } from "@/lib/types";
 import { isCatalogSlug } from "@/lib/catalog";
 import { parseSubjects } from "@/lib/subjects";
 
@@ -34,6 +35,37 @@ function inches(value: string) {
   const number = Number(value);
   if (!Number.isFinite(number) || number < 0 || number > 200) return null;
   return number;
+}
+
+const ORIGINAL_STATUSES: OriginalStatus[] = ["not-for-sale", "in-studio", "sold"];
+const MAX_PRICE = 1_000_000;
+
+// Whole US dollars. "$1,200" and "1200" both read as 1200; blank is 0, no
+// price. Anything else, cents included, is refused rather than rounded.
+function dollars(value: string) {
+  const digits = value.replace(/[$,\s]/g, "");
+  if (!digits) return 0;
+  if (!/^\d{1,7}$/.test(digits)) return null;
+  const number = Number(digits);
+  return number >= 1 && number <= MAX_PRICE ? number : null;
+}
+
+// The Availability section sends a hidden "availability" field. Without it
+// (a tab from before the section existed) this returns undefined and the
+// save keeps the painting's current availability.
+function readAvailability(formData: FormData): { error: string } | WorkFields["availability"] {
+  if (formData.get("availability") !== "1") return undefined;
+  const status = formData.get("originalStatus");
+  const originalStatus = ORIGINAL_STATUSES.find((value) => value === status);
+  if (!originalStatus) return { error: "Choose whether the original is for sale." };
+  const originalPrice = dollars(textField(formData, "originalPrice", 16));
+  if (originalPrice === null) {
+    return { error: "Enter the price in whole dollars, like 1200, up to 1,000,000." };
+  }
+  if (originalStatus === "in-studio" && originalPrice === 0) {
+    return { error: "Enter a price for the original, or choose Not for sale." };
+  }
+  return { originalStatus, originalPrice, printsAvailable: formData.get("printsAvailable") === "on" };
 }
 
 export function readWorkForm(
@@ -74,6 +106,8 @@ export function readWorkForm(
   if (RESERVED_SLUGS.has(slug)) {
     return { error: `The web name “${slug}” is used by the desk itself. Type a different web name.` };
   }
+  const availability = readAvailability(formData);
+  if (availability && "error" in availability) return availability;
   const fields: WorkFields = {
     slug,
     title,
@@ -87,6 +121,7 @@ export function readWorkForm(
     // value of every checked box; an unchecked box sends nothing at all.
     subjects: parseSubjects(formData.getAll("subjects")),
     featured: formData.get("featured") === "on",
+    ...(availability ? { availability } : {}),
   };
   return { intent: "save" as const, existingSlug, fields };
 }

@@ -5,7 +5,9 @@
  * off the gallery.
  *
  * OriginalStatus is a closed set of string tags, closer to an enum class
- * than to a free-form char*.
+ * than to a free-form char*. "in-studio" is what the desk labels Available.
+ * originalPrice is whole US dollars, 0 for no price. It, originalStatus and
+ * printsAvailable are desk-only: CatalogWork leaves them out.
  *
  * subjects is a list (a JavaScript array, like a std::vector) because a
  * painting can be in more than one group, say Portraits and Commissioned
@@ -40,6 +42,7 @@ export type Work = {
   subjects: SubjectId[];
   featured: boolean;
   originalStatus: OriginalStatus;
+  originalPrice: number;
   printsAvailable: boolean;
   image: string;
   imageWidth: number;
