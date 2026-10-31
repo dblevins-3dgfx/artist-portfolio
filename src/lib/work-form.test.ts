@@ -100,6 +100,13 @@ test("bad fields come back as errors", () => {
   }
 });
 
+test("the web name of the desk's Add page is refused, typed or taken from the title", () => {
+  assert.ok("error" in readWorkForm(form({ ...valid, slug: "new" })));
+  assert.ok("error" in readWorkForm(form({ ...valid, title: "New" })));
+  const typed = readWorkForm(form({ ...valid, title: "New", slug: "new-snow" }));
+  assert.ok("fields" in typed && typed.fields.slug === "new-snow");
+});
+
 test("removing a painting needs its existing web name", () => {
   assert.deepEqual(readWorkForm(form({ intent: "delete", existingSlug: "bon-voyage" })), {
     intent: "delete",

@@ -8,6 +8,10 @@ import type { WorkFields } from "@/lib/desk";
 import { isCatalogSlug } from "@/lib/catalog";
 import { parseSubjects } from "@/lib/subjects";
 
+// /curate/new is the desk's Add page. A painting with this web name would
+// share its address, and its own edit page could never be opened.
+const RESERVED_SLUGS = new Set(["new"]);
+
 export function slugify(value: string) {
   return value
     .normalize("NFKD")
@@ -66,6 +70,9 @@ export function readWorkForm(
   const slug = requested || slugify(title);
   if (!isCatalogSlug(slug)) {
     return { error: "The web name needs letters or numbers. You can leave it blank and it will be taken from the title." };
+  }
+  if (RESERVED_SLUGS.has(slug)) {
+    return { error: `The web name “${slug}” is used by the desk itself. Type a different web name.` };
   }
   const fields: WorkFields = {
     slug,
