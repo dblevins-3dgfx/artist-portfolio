@@ -105,3 +105,18 @@ export const DESK_FILTERS: DeskFilter[] = [
 export function deskFilter(id: string | null | undefined): DeskFilter {
   return DESK_FILTERS.find((filter) => filter.id === id) ?? DESK_FILTERS[0];
 }
+
+// What a desk form would send, as one string, so the edit page can tell
+// whether anything differs from the painting as loaded. The hidden
+// "intent" field is set by the Save and Remove buttons themselves, so it
+// is left out. A chosen photograph counts by its name, size, and date; an
+// empty file input sends an empty file and counts as nothing.
+export function formSignature(formData: FormData) {
+  const parts: string[] = [];
+  for (const [key, value] of formData.entries()) {
+    if (key === "intent") continue;
+    if (typeof value === "string") parts.push(`${key}=${value}`);
+    else if (value.size > 0) parts.push(`${key}=file:${value.name}:${value.size}:${value.lastModified}`);
+  }
+  return JSON.stringify(parts);
+}

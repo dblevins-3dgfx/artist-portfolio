@@ -19,6 +19,8 @@ import {
   startTransition,
   useActionState,
   useEffect,
+  useRef,
+  useState,
   useSyncExternalStore,
   type ChangeEvent,
   type FormEvent,
@@ -31,7 +33,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { DESK_FILTERS, deskFilter, missingDetails, type DeskWork, type Publishing } from "@/lib/desk";
+import { DESK_FILTERS, deskFilter, formSignature, missingDetails, type DeskWork, type Publishing } from "@/lib/desk";
 import { withStaleCheck } from "@/lib/stale-page";
 import { SUBJECTS } from "@/lib/subjects";
 import { cn } from "@/lib/utils";
@@ -64,14 +66,40 @@ const saveFromDesk = withStaleCheck(saveWork);
 // own post, and startTransition runs the action the way <form action> would,
 // so redirect() after a save and the pending flag still work. The browser's
 // own checks (required fields, the photo size) still run before onSubmit.
-function useDeskForm() {
+//
+// trackChanges is for a painting's edit page: the form is compared with a
+// snapshot taken when it first rendered, and `changed` says whether Save
+// has anything to send. Putting a field back the way it was makes the form
+// unchanged again. A failed save keeps the form as typed, so it stays
+// changed. While there are unsaved changes, closing or reloading the tab
+// asks first (beforeunload); links inside the desk do not.
+function useDeskForm({ trackChanges = false }: { trackChanges?: boolean } = {}) {
   const [state, action, pending] = useActionState(saveFromDesk, null as DeskFormState);
+  const formRef = useRef<HTMLFormElement>(null);
+  const loaded = useRef<string | null>(null);
+  const [changed, setChanged] = useState(false);
+
+  useEffect(() => {
+    if (trackChanges && formRef.current) loaded.current = formSignature(new FormData(formRef.current));
+  }, [trackChanges]);
+
+  useEffect(() => {
+    if (!changed) return;
+    const warn = (event: BeforeUnloadEvent) => event.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [changed]);
+
+  const onEdit = () => {
+    if (!formRef.current || loaded.current === null) return;
+    setChanged(formSignature(new FormData(formRef.current)) !== loaded.current);
+  };
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     startTransition(() => action(formData));
   };
-  return { state, pending, onSubmit };
+  return { state, pending, onSubmit, formRef, onEdit, changed };
 }
 
 // A stale page (see lib/stale-page.ts) cannot recover by itself: its
@@ -113,12 +141,14 @@ function checkPhotoSize(event: ChangeEvent<HTMLInputElement>) {
 function PendingButtons({
   pending,
   canSave,
+  hasChanges = true,
   saveLabel,
   pendingLabel,
   allowRemove,
 }: {
   pending: boolean;
   canSave: boolean;
+  hasChanges?: boolean;
   saveLabel: string;
   pendingLabel: string;
   allowRemove: boolean;
@@ -134,7 +164,7 @@ function PendingButtons({
       <input type="hidden" name="intent" defaultValue="save" />
       <Button
         type="submit"
-        disabled={pending || !canSave}
+        disabled={pending || !canSave || !hasChanges}
         onClick={(event) => setIntent(event, "save")}
       >
         {pending ? pendingLabel : saveLabel}
@@ -317,10 +347,13 @@ const ORIGINAL_CHOICES = [
 ] as const;
 
 function WorkForm({ work, canSave }: { work: DeskWork; canSave: boolean }) {
-  const { state, pending, onSubmit } = useDeskForm();
+  const { state, pending, onSubmit, formRef, onEdit, changed } = useDeskForm({ trackChanges: true });
   return (
     <form
+      ref={formRef}
       onSubmit={onSubmit}
+      onInput={onEdit}
+      onChange={onEdit}
       className="grid gap-6 border border-border bg-card p-4 sm:grid-cols-[9rem_minmax(0,1fr)] sm:p-5"
     >
       <input type="hidden" name="existingSlug" value={work.slug} />
@@ -353,7 +386,17 @@ function WorkForm({ work, canSave }: { work: DeskWork; canSave: boolean }) {
           Leave the file empty to keep the current preview. A new photograph is reduced and watermarked. The original is not kept.
         </p>
         <FormError state={state} />
-        <PendingButtons pending={pending} canSave={canSave} saveLabel="Save" pendingLabel="Saving…" allowRemove />
+        <p aria-live="polite" className="text-sm text-muted-foreground">
+          {changed ? "Unsaved changes." : "No changes to save."}
+        </p>
+        <PendingButtons
+          pending={pending}
+          canSave={canSave}
+          hasChanges={changed}
+          saveLabel="Save"
+          pendingLabel="Saving…"
+          allowRemove
+        />
       </div>
     </form>
   );

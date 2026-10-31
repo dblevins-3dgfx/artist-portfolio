@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { DESK_FILTERS, deskFilter, missingDetails, needsWork } from "@/lib/desk";
+import { DESK_FILTERS, deskFilter, formSignature, missingDetails, needsWork } from "@/lib/desk";
 
 const complete = {
   title: "Blue Sky, Blue Lake",
@@ -80,4 +80,35 @@ test("an unknown or missing filter id falls back to All", () => {
   assert.equal(deskFilter("no-such-filter").id, "all");
   assert.equal(deskFilter(null).id, "all");
   assert.equal(deskFilter(undefined).matches(row), true);
+});
+
+function sent(fields: [string, string | File][]) {
+  const data = new FormData();
+  for (const [key, value] of fields) data.append(key, value);
+  return formSignature(data);
+}
+
+const loaded: [string, string | File][] = [
+  ["existingSlug", "lake"],
+  ["title", "Lake"],
+  ["subjects", "places"],
+  ["image", new File([], "")],
+  ["intent", "save"],
+];
+
+test("a form exactly as loaded has the same signature", () => {
+  assert.equal(sent(loaded), sent([...loaded]));
+});
+
+test("a changed field, checkbox, or chosen photograph changes the signature", () => {
+  const base = sent(loaded);
+  assert.notEqual(sent(loaded.map(([k, v]) => [k, k === "title" ? "Lake at dusk" : v])), base);
+  assert.notEqual(sent([...loaded, ["subjects", "animals"]]), base);
+  assert.notEqual(sent(loaded.filter(([k]) => k !== "subjects")), base);
+  const photo = new File(["jpeg bytes"], "lake.jpg", { lastModified: 1 });
+  assert.notEqual(sent(loaded.map(([k, v]) => [k, k === "image" ? photo : v])), base);
+});
+
+test("the buttons' own intent field does not count as a change", () => {
+  assert.equal(sent(loaded.map(([k, v]) => [k, k === "intent" ? "delete" : v])), sent(loaded));
 });
