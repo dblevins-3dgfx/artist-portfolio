@@ -809,13 +809,17 @@
   },
   {
     "title": "Yee Haw!",
-    "year": 2026,
+    "year": 2023,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 14,
+    "heightIn": 11,
     "statement": "Hold on to your Daddy!!!",
-    "subjects": [],
+    "subjects": [
+      "children",
+      "animals",
+      "narratives"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
