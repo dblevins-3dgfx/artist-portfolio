@@ -12,6 +12,7 @@
  * the same text the badge shows, so a badge and its filter cannot disagree.
  */
 import type { SubjectId } from "@/lib/subjects";
+import type { OriginalStatus } from "@/lib/types";
 
 export type Publishing = "github" | "local" | "missing";
 
@@ -26,12 +27,18 @@ export type DeskWork = {
   statement: string;
   subjects: SubjectId[];
   featured: boolean;
+  originalStatus: OriginalStatus;
+  originalPrice: number;
+  printsAvailable: boolean;
   previewUrl: string;
   imageWidth: number;
   imageHeight: number;
   duplicateOf: string;
 };
 
+// availability is absent when the form had no Availability section: a desk
+// tab opened before that section existed. The save then keeps the
+// painting's current values instead of resetting them.
 export type WorkFields = {
   slug: string;
   title: string;
@@ -43,6 +50,11 @@ export type WorkFields = {
   statement: string;
   subjects: SubjectId[];
   featured: boolean;
+  availability?: {
+    originalStatus: OriginalStatus;
+    originalPrice: number;
+    printsAvailable: boolean;
+  };
 };
 
 // scripts/process-images.mjs titles a painting from its file name when no

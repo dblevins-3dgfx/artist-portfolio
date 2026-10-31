@@ -16,6 +16,7 @@ function work(slug: string, featured = false): Work {
     subjects: [],
     featured,
     originalStatus: "not-for-sale",
+    originalPrice: 0,
     printsAvailable: false,
     image: `/art/${slug}.jpg`,
     imageWidth: 0,

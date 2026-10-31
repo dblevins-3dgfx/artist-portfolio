@@ -5,23 +5,8 @@
  */
 import type { Metadata } from "next";
 import { Gallery } from "@/components/gallery";
-import type { CatalogWork } from "@/lib/types";
+import { toCatalogWork } from "@/lib/catalog";
 import { getWorks } from "@/lib/works";
-
-function catalogWorks(): CatalogWork[] {
-  return getWorks().map((work) => ({
-    slug: work.slug,
-    title: work.title,
-    year: work.year,
-    medium: work.medium,
-    surface: work.surface,
-    statement: work.statement,
-    subjects: work.subjects,
-    image: work.image,
-    imageWidth: work.imageWidth,
-    imageHeight: work.imageHeight,
-  }));
-}
 
 export const metadata: Metadata = {
   title: "Work",
@@ -29,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default function WorkPage() {
-  const works = catalogWorks();
+  const works = getWorks().map(toCatalogWork);
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-12">
