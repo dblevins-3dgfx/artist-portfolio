@@ -16,7 +16,6 @@ import { CurateLogin } from "@/components/curate-login";
 import { DeskLoadError, DeskSwitchedOff } from "@/components/desk-messages";
 import { isCatalogSlug } from "@/lib/catalog";
 import { loadCatalog, publishingMode, toDeskWorks } from "@/lib/catalog-store";
-import { catalogLikeness, type LikenessMember } from "@/lib/duplicates";
 import { isSignedIn, studioPassword } from "@/lib/studio-auth";
 
 export const dynamic = "force-dynamic";
@@ -43,12 +42,9 @@ export default async function CuratePage({
   const notice = query.saved === "1" ? "saved" : query.removed === "1" ? "removed" : null;
   const focusSlug = notice === "saved" && query.at && isCatalogSlug(query.at) ? query.at : null;
   let works: Awaited<ReturnType<typeof toDeskWorks>> = [];
-  let duplicateGroups: LikenessMember[][] = [];
   let loadError = "";
   try {
-    const catalog = await loadCatalog();
-    works = toDeskWorks(catalog);
-    duplicateGroups = catalogLikeness(catalog.works, catalog.manifest).groups;
+    works = toDeskWorks(await loadCatalog());
   } catch (error) {
     loadError = error instanceof Error ? error.message : "The catalog could not be read.";
   }
@@ -61,7 +57,6 @@ export default async function CuratePage({
       publishing={publishingMode()}
       notice={notice}
       focusSlug={focusSlug}
-      duplicateGroups={duplicateGroups}
     />
   );
 }

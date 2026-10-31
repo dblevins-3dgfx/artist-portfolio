@@ -308,32 +308,6 @@ function NewWorkForm({ canSave }: { canSave: boolean }) {
   );
 }
 
-function DuplicateList({ groups }: { groups: { slug: string; title: string }[][] }) {
-  if (groups.length === 0) return null;
-  return (
-    <section className="mt-8 border border-border bg-card p-4 sm:p-5" aria-label="Possible duplicates">
-      <h2 className="font-heading text-2xl italic">Possible duplicates</h2>
-      <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
-        These photographs look alike. They may be the same painting saved more than once.
-      </p>
-      <ul className="mt-4 grid gap-2 text-sm">
-        {groups.map((members) => (
-          <li key={members.map((member) => member.slug).join("-")}>
-            {members.map((member, index) => (
-              <span key={member.slug}>
-                {index === 0 ? "" : index === members.length - 1 ? (members.length === 2 ? " and " : ", and ") : ", "}
-                <Link href={`/curate/${member.slug}`} className="underline-offset-4 hover:underline">
-                  {member.title}
-                </Link>
-              </span>
-            ))}
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
 function PublishingNote({ publishing }: { publishing: Publishing }) {
   if (publishing === "github") {
     return (
@@ -393,13 +367,11 @@ export function CurateDesk({
   publishing,
   notice,
   focusSlug,
-  duplicateGroups,
 }: {
   works: DeskWork[];
   publishing: Publishing;
   notice: "saved" | "removed" | null;
   focusSlug: string | null;
-  duplicateGroups: { slug: string; title: string }[][];
 }) {
   const canSave = publishing !== "missing";
 
@@ -435,8 +407,6 @@ export function CurateDesk({
       <div className="mt-10">
         <NewWorkForm canSave={canSave} />
       </div>
-
-      <DuplicateList groups={duplicateGroups} />
 
       <h2 className="mt-14 font-heading text-3xl italic">In the catalog</h2>
       {works.length === 0 ? (
