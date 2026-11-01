@@ -128,7 +128,7 @@ export function readWorkForm(
 }
 
 // Leaves room under the 4.5 MB request limit in next.config.ts for the other
-// form fields. Keep in step with MAX_PHOTO_BYTES in curate-desk.tsx, which
+// form fields. Keep in step with MAX_PHOTO_BYTES in desk/form.tsx, which
 // checks the same size in the browser.
 const MAX_PHOTO_BYTES = 4 * 1024 * 1024;
 

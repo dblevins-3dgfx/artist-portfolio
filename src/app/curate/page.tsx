@@ -11,7 +11,7 @@
  * Optional `at` is the painting slug to scroll back to after that reload.
  */
 import type { Metadata } from "next";
-import { CurateDesk } from "@/components/curate-desk";
+import { CurateDesk } from "@/components/desk/list";
 import { CurateLogin } from "@/components/curate-login";
 import { DeskLoadError, DeskSwitchedOff } from "@/components/desk-messages";
 import { isCatalogSlug } from "@/lib/catalog";
