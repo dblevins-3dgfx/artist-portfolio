@@ -10,9 +10,17 @@
  * the route dynamic. The failed-login map hangs off globalThis because a
  * module-level Map would look like one, but on Vercel each instance has its
  * own memory and cold starts wipe it. The limit is per process, not global.
+ * The lockout rules themselves are in login-attempts.ts.
  */
 import { createHash, createHmac, timingSafeEqual } from "crypto";
 import { cookies, headers } from "next/headers";
+import {
+  clearFailures,
+  clientAddressFrom,
+  isLockedOut,
+  recordFailure,
+  type Attempts,
+} from "@/lib/login-attempts";
 
 // Only the desk reads the session, so the browser sends it only to /curate.
 // The name changed when the path did: a response can set one cookie per
@@ -21,18 +29,14 @@ import { cookies, headers } from "next/headers";
 const COOKIE = "studio_desk_session";
 const COOKIE_PATH = "/curate";
 const LEGACY_COOKIE = "studio_desk";
-const WINDOW_MS = 15 * 60 * 1000;
-const MAX_TRIES = 8;
 const SESSION_DAYS = 14;
 const SESSION_MS = SESSION_DAYS * 24 * 60 * 60 * 1000;
 // Room for a server clock that runs slightly behind the one that signed.
 const CLOCK_SKEW_MS = 60 * 1000;
 const SESSION = /^v2\.(\d{1,15})\.([0-9a-f]{64})$/;
 
-type AttemptBucket = Map<string, number[]>;
-
 function attempts() {
-  const globalState = globalThis as typeof globalThis & { __studioDeskAttempts?: AttemptBucket };
+  const globalState = globalThis as typeof globalThis & { __studioDeskAttempts?: Attempts };
   globalState.__studioDeskAttempts ??= new Map();
   return globalState.__studioDeskAttempts;
 }
@@ -83,32 +87,7 @@ function cookieOptions(maxAge: number) {
 
 export async function clientAddress() {
   const headerList = await headers();
-  const forwarded = headerList.get("x-forwarded-for")?.split(",")[0]?.trim() || "";
-  const address = forwarded || headerList.get("x-real-ip")?.trim() || "unknown";
-  return address.slice(0, 80);
-}
-
-// Failed tries from this address inside the window. Older ones are dropped
-// from the map as a side effect, so the list never grows without bound.
-function recentFailures(address: string) {
-  const now = Date.now();
-  const recent = (attempts().get(address) || []).filter((time) => now - time < WINDOW_MS);
-  attempts().set(address, recent);
-  return recent;
-}
-
-function lockedOut(address: string) {
-  return recentFailures(address).length >= MAX_TRIES;
-}
-
-function recordFailure(address: string) {
-  // recentFailures returns the array stored in the map (a reference, like a
-  // C++ std::vector&), so push() updates the stored list too.
-  recentFailures(address).push(Date.now());
-}
-
-function clearFailures(address: string) {
-  attempts().delete(address);
+  return clientAddressFrom(headerList.get("x-forwarded-for"), headerList.get("x-real-ip"));
 }
 
 export async function isSignedIn() {
@@ -123,15 +102,15 @@ export async function signIn(attempt: string): Promise<{ error: string } | { ok:
   const password = studioPassword();
   if (!password) return { error: "The studio password is not configured." };
   const address = await clientAddress();
-  if (lockedOut(address)) {
+  if (isLockedOut(attempts(), address, Date.now())) {
     return { error: "Too many tries. Wait a few minutes and try again." };
   }
   if (attempt.length === 0 || attempt.length > 200 || !passwordMatches(attempt, password)) {
-    recordFailure(address);
+    recordFailure(attempts(), address, Date.now());
     await new Promise((resolve) => setTimeout(resolve, 400));
     return { error: "That password is not the studio password." };
   }
-  clearFailures(address);
+  clearFailures(attempts(), address);
   const jar = await cookies();
   jar.set(COOKIE, mintSession(password), cookieOptions(SESSION_MS / 1000));
   jar.delete({ name: LEGACY_COOKIE, path: "/" });
