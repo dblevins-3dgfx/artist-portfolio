@@ -98,15 +98,12 @@ for (const file of files) {
   }
   used.add(slug);
 
-  const pipeline = sharp(file.absolute, { failOn: "none" }).rotate();
-  const meta = await pipeline.metadata();
-  const landscape = !meta.width || !meta.height || meta.width >= meta.height;
-  const resized = pipeline.resize({
-    width: landscape ? MAX_EDGE : undefined,
-    height: landscape ? undefined : MAX_EDGE,
-    fit: "inside",
-    withoutEnlargement: true,
-  });
+  // Same sizing as renderPreview in src/lib/preview-image.ts: upright first,
+  // then both edges capped, so a phone portrait stored sideways comes out
+  // portrait at MAX_EDGE tall (#94).
+  const resized = sharp(file.absolute, { failOn: "none" })
+    .rotate()
+    .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: "inside", withoutEnlargement: true });
   const plain = await resized
     .clone()
     .flatten({ background: "#f4efe6" })

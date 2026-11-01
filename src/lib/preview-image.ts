@@ -65,16 +65,13 @@ export async function renderPreview(input: Buffer): Promise<PreviewImage> {
 
   let plain: Buffer;
   try {
-    const pipeline = sharp(input, { failOn: "none", limitInputPixels: 48_000_000 }).rotate();
-    const meta = await pipeline.metadata();
-    const landscape = !meta.width || !meta.height || meta.width >= meta.height;
-    plain = await pipeline
-      .resize({
-        width: landscape ? MAX_EDGE : undefined,
-        height: landscape ? undefined : MAX_EDGE,
-        fit: "inside",
-        withoutEnlargement: true,
-      })
+    // rotate() turns a photo the camera stored sideways (EXIF orientation)
+    // upright. Capping both edges with fit "inside" keeps the long edge at
+    // MAX_EDGE whichever way it ends up facing; deciding "landscape" from
+    // the stored size first got phone portraits wrong (#94).
+    plain = await sharp(input, { failOn: "none", limitInputPixels: 48_000_000 })
+      .rotate()
+      .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: "inside", withoutEnlargement: true })
       .flatten({ background: "#f4efe6" })
       .jpeg({ quality: 70, progressive: true })
       .toBuffer();
