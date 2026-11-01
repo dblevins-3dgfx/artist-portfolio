@@ -49,6 +49,24 @@ test("a photograph already under 1400px is not enlarged", async () => {
   assert.deepEqual([preview.width, preview.height], [800, 600]);
 });
 
+test("the camera's rotation is applied before sizing", async () => {
+  // Phones store a portrait photo sideways with an EXIF orientation tag
+  // (6 = rotate 90°). The preview must come out portrait, 1400px tall (#94).
+  const sideways = await sharp(await solid(1800, 1200)).withMetadata({ orientation: 6 }).jpeg().toBuffer();
+  const preview = await renderPreview(sideways);
+  assert.deepEqual([preview.width, preview.height], [933, 1400]);
+});
+
+test("a full-size phone portrait is accepted and comes out portrait", async () => {
+  // 4032×3024 stored, orientation 6: what an iPhone portrait looks like.
+  const phone = await sharp({ create: { width: 4032, height: 3024, channels: 3, background: { r: 90, g: 120, b: 150 } } })
+    .withMetadata({ orientation: 6 })
+    .jpeg()
+    .toBuffer();
+  const preview = await renderPreview(phone);
+  assert.deepEqual([preview.width, preview.height], [1050, 1400]);
+});
+
 test("a photograph smaller than the watermark tile is still marked", async () => {
   // The mark is a 560×320 tile; sharp refuses a tile larger than the image,
   // so watermark-svg.mjs shrinks it first. Both a narrow and a short image.
