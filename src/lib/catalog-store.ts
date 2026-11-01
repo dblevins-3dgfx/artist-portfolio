@@ -8,6 +8,9 @@
  * The in-memory catalog from the start of the request is not the source of
  * truth; the repo is.
  *
+ * What a save or remove changes is decided in lib/save-plan.ts, as pure
+ * functions; this file loads, renders, reads, and commits around them.
+ *
  * The print price list (lib/print-prices.ts) rides the same commit path, but
  * its change carries no works or manifest, so a price save touches only
  * content/print-prices.json.
@@ -32,6 +35,14 @@ import type { DeskWork, Publishing, WorkFields } from "@/lib/desk";
 import { commitGitFiles, isGitConflict, readGitFile, readGitHead } from "@/lib/github-catalog";
 import { renderPreview } from "@/lib/preview-image";
 import { parsePrintPrices, serializePrintPrices, type PrintPrices } from "@/lib/print-prices";
+import {
+  buildWork,
+  checkSave,
+  commitMessage,
+  planPreviewFiles,
+  planRemoval,
+  type FileChange,
+} from "@/lib/save-plan";
 import type { Work } from "@/lib/types";
 
 export type { DeskWork, Publishing, WorkFields };
@@ -46,8 +57,6 @@ type LoadedCatalog = {
   parentSha: string | null;
   baseTree: string | null;
 };
-
-type FileChange = { path: string; bytes: Buffer | null };
 
 // works and manifest are rewritten only when a change carries them.
 type CatalogChange = {
@@ -210,12 +219,6 @@ function friendlySaveError(error: unknown) {
   return "The catalog could not be saved.";
 }
 
-// A title on one line and short enough for a git commit subject. Titles
-// already in works.json may predate the form's whitespace cleanup.
-function commitTitle(title: string) {
-  return title.replace(/\s+/g, " ").slice(0, 80);
-}
-
 export async function savePainting(
   existingSlug: string,
   fields: WorkFields,
@@ -226,78 +229,25 @@ export async function savePainting(
 
   try {
     await commitChange(async (catalog) => {
-      const existing = existingSlug ? catalog.works.find((work) => work.slug === existingSlug) : undefined;
-      if (existingSlug && !existing) {
-        throw new Error("That painting is no longer in the catalog. Reload the page.");
-      }
-      if (!existing && !rendered) throw new Error("Choose a photograph to add.");
-      const taken = catalog.works.some((work) => work.slug === fields.slug && work.slug !== existingSlug);
-      if (taken) {
-        throw new Error("Another painting already uses that web name. Change the title or the web name.");
-      }
+      const check = checkSave(catalog.works, existingSlug, fields, rendered !== null);
+      if ("error" in check) throw new Error(check.error);
+      const { existing } = check;
+      // Renaming without a new photograph copies the current preview, so
+      // only then does the old file need reading.
+      const currentPreview =
+        existing && existing.slug !== fields.slug && !rendered ? await readArt(catalog, existing.slug) : null;
+      const plan = planPreviewFiles({ existing, slug: fields.slug, rendered, currentPreview, manifest: catalog.manifest });
+      if ("error" in plan) throw new Error(plan.error);
 
-      const files: FileChange[] = [];
-      const manifest: Manifest = { files: { ...catalog.manifest.files } };
-      let imageWidth = existing?.imageWidth ?? 0;
-      let imageHeight = existing?.imageHeight ?? 0;
-
-      if (rendered) {
-        files.push({ path: `public/art/${fields.slug}.jpg`, bytes: rendered.buffer });
-        manifest.files[`${fields.slug}.jpg`] = {
-          width: rendered.width,
-          height: rendered.height,
-          sha256: rendered.sha256,
-          fingerprint: rendered.fingerprint,
-        };
-        imageWidth = rendered.width;
-        imageHeight = rendered.height;
-        if (existing && existing.slug !== fields.slug) {
-          delete manifest.files[`${existing.slug}.jpg`];
-          files.push({ path: `public/art/${existing.slug}.jpg`, bytes: null });
-        }
-      } else if (existing && existing.slug !== fields.slug) {
-        const current = await readArt(catalog, existing.slug);
-        if (!current) {
-          throw new Error("The current preview is missing. Choose the photograph again before changing the web name.");
-        }
-        const previous = manifest.files[`${existing.slug}.jpg`];
-        files.push({ path: `public/art/${fields.slug}.jpg`, bytes: current });
-        manifest.files[`${fields.slug}.jpg`] = previous || {
-          width: existing.imageWidth,
-          height: existing.imageHeight,
-          sha256: createHash("sha256").update(current).digest("hex"),
-        };
-        delete manifest.files[`${existing.slug}.jpg`];
-        files.push({ path: `public/art/${existing.slug}.jpg`, bytes: null });
-      }
-
-      const next: Work = {
-        title: fields.title,
-        year: fields.year,
-        medium: fields.medium,
-        surface: fields.surface,
-        widthIn: fields.widthIn,
-        heightIn: fields.heightIn,
-        statement: fields.statement,
-        subjects: fields.subjects,
-        featured: fields.featured,
-        originalStatus: fields.availability?.originalStatus ?? existing?.originalStatus ?? "not-for-sale",
-        originalPrice: fields.availability?.originalPrice ?? existing?.originalPrice ?? 0,
-        printsAvailable: fields.availability?.printsAvailable ?? existing?.printsAvailable ?? false,
-        slug: fields.slug,
-        image: `/art/${fields.slug}.jpg`,
-        imageWidth,
-        imageHeight,
-      };
+      const next = buildWork(fields, existing, plan);
       const works = existing
         ? catalog.works.map((work) => (work.slug === existing.slug ? next : work))
         : [...catalog.works, next];
-      const verb = existing ? "Update" : "Add";
       return {
-        message: `${verb} "${commitTitle(fields.title)}" from the studio desk`,
+        message: commitMessage(existing ? "Update" : "Add", fields.title),
         works,
-        manifest,
-        files,
+        manifest: plan.manifest,
+        files: plan.files,
       };
     });
   } catch (error) {
@@ -309,22 +259,9 @@ export async function savePainting(
 export async function removePainting(existingSlug: string): Promise<{ error: string } | { ok: true }> {
   try {
     await commitChange(async (catalog) => {
-      const existing = catalog.works.find((work) => work.slug === existingSlug);
-      if (!existing) throw new Error("That painting is no longer in the catalog. Reload the page.");
-      const works = catalog.works.filter((work) => work.slug !== existingSlug);
-      const manifest: Manifest = { files: { ...catalog.manifest.files } };
-      const files: FileChange[] = [];
-      const filename = `${existing.slug}.jpg`;
-      if (!works.some((work) => work.image === `/art/${filename}`)) {
-        delete manifest.files[filename];
-        files.push({ path: `public/art/${filename}`, bytes: null });
-      }
-      return {
-        message: `Remove "${commitTitle(existing.title)}" from the studio desk`,
-        works,
-        manifest,
-        files,
-      };
+      const plan = planRemoval(catalog.works, catalog.manifest, existingSlug);
+      if ("error" in plan) throw new Error(plan.error);
+      return plan;
     });
   } catch (error) {
     return { error: friendlySaveError(error) };
