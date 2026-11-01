@@ -6,7 +6,7 @@
  * shows a form error.
  */
 import type { Metadata } from "next";
-import { CurateAdd } from "@/components/curate-desk";
+import { CurateAdd } from "@/components/desk/editor";
 import { CurateLogin } from "@/components/curate-login";
 import { DeskSwitchedOff } from "@/components/desk-messages";
 import { publishingMode } from "@/lib/catalog-store";

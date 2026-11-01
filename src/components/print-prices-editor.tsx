@@ -11,12 +11,13 @@
  * grid is sent. The server checks everything again (checkPrintPrices).
  *
  * The form submits from onSubmit, like the painting forms (see
- * useDeskForm in curate-desk.tsx), so a refused save keeps the grid as typed.
+ * useDeskForm in desk/form.tsx), so a refused save keeps the grid as typed.
  */
 import Link from "next/link";
 import { startTransition, useActionState, useState, type FormEvent } from "react";
 import { savePrintPriceList, type DeskFormState } from "@/app/curate/actions";
-import { FormError, PublishingNote } from "@/components/curate-desk";
+import { FormError } from "@/components/desk/form";
+import { PublishingNote } from "@/components/desk/list";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Publishing } from "@/lib/desk";

@@ -10,7 +10,7 @@
  */
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CurateEditor } from "@/components/curate-desk";
+import { CurateEditor } from "@/components/desk/editor";
 import { CurateLogin } from "@/components/curate-login";
 import { DeskLoadError, DeskSwitchedOff } from "@/components/desk-messages";
 import { isCatalogSlug } from "@/lib/catalog";
