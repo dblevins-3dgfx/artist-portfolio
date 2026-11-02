@@ -8,8 +8,9 @@
 import type { Metadata } from "next";
 import { CurateAdd } from "@/components/desk/editor";
 import { CurateLogin } from "@/components/curate-login";
-import { DeskSwitchedOff } from "@/components/desk-messages";
-import { publishingMode } from "@/lib/catalog-store";
+import { DeskLoadError, DeskSwitchedOff } from "@/components/desk-messages";
+import { loadVenues, publishingMode } from "@/lib/catalog-store";
+import type { Venue } from "@/lib/venues";
 import { isSignedIn, studioPassword } from "@/lib/studio-auth";
 
 export const dynamic = "force-dynamic";
@@ -28,5 +29,11 @@ export default async function CurateAddPage() {
     return <CurateLogin />;
   }
 
-  return <CurateAdd publishing={publishingMode()} />;
+  let venues: Venue[];
+  try {
+    venues = await loadVenues();
+  } catch (error) {
+    return <DeskLoadError message={error instanceof Error ? error.message : "The venue list could not be read."} />;
+  }
+  return <CurateAdd publishing={publishingMode()} venues={venues} />;
 }

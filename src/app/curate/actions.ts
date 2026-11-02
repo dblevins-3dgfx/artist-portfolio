@@ -15,8 +15,9 @@
  */
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { removePainting, savePainting, savePrintPrices } from "@/lib/catalog-store";
+import { removePainting, savePainting, savePrintPrices, saveVenues } from "@/lib/catalog-store";
 import { checkPrintPrices } from "@/lib/print-prices";
+import { checkVenues } from "@/lib/venues";
 import { imageFromForm, readWorkForm } from "@/lib/work-form";
 import { isSignedIn, signIn, signOut } from "@/lib/studio-auth";
 
@@ -88,4 +89,27 @@ export async function savePrintPriceList(_state: DeskFormState, formData: FormDa
   if ("error" in saved) return saved;
   revalidatePath("/curate/prices");
   redirect("/curate/prices?saved=1");
+}
+
+// The venue list arrives as one JSON field, like the price grid. A removed
+// venue is also taken off the paintings that named it (saveVenues), so
+// the painting pages are refreshed too.
+export async function saveVenueList(_state: DeskFormState, formData: FormData): Promise<DeskFormState> {
+  if (!(await isSignedIn())) return { error: "Sign in again to change the venues." };
+  const text = formData.get("venueList");
+  if (typeof text !== "string" || text.length > 200_000) {
+    return { error: "The venue list did not arrive. Reload the page and try again." };
+  }
+  let sent: unknown;
+  try {
+    sent = JSON.parse(text);
+  } catch {
+    return { error: "The venue list did not arrive. Reload the page and try again." };
+  }
+  const venues = checkVenues(sent);
+  if ("error" in venues) return venues;
+  const saved = await saveVenues(venues);
+  if ("error" in saved) return saved;
+  revalidatePath("/curate", "layout");
+  redirect("/curate/venues?saved=1");
 }

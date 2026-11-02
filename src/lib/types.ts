@@ -9,6 +9,11 @@
  * originalPrice is whole US dollars, 0 for no price. It, originalStatus and
  * printsAvailable are desk-only: CatalogWork leaves them out.
  *
+ * originalShownAt and printsShownAt are where the painting is on display
+ * (#104): venue ids from content/venues.json (see lib/venues.ts). The
+ * original is at one venue or none (""); prints can be at several. Also
+ * desk-only.
+ *
  * subjects is a list (a JavaScript array, like a std::vector) because a
  * painting can be in more than one group, say Portraits and Commissioned
  * Works. It is kept in SUBJECTS order, so subjects[0] is the main one.
@@ -44,6 +49,8 @@ export type Work = {
   originalStatus: OriginalStatus;
   originalPrice: number;
   printsAvailable: boolean;
+  originalShownAt: string;
+  printsShownAt: string[];
   image: string;
   imageWidth: number;
   imageHeight: number;

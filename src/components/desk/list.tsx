@@ -16,7 +16,7 @@ import { logout } from "@/app/curate/actions";
 import { chooseFilter, useDeskFilter, useHydrated } from "@/components/desk/filter-store";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { DESK_FILTERS, missingDetails, type DeskWork, type Publishing } from "@/lib/desk";
+import { DESK_FILTERS, isOnDisplay, missingDetails, type DeskWork, type Publishing } from "@/lib/desk";
 import { cn } from "@/lib/utils";
 
 export function PublishingNote({ publishing }: { publishing: Publishing }) {
@@ -49,6 +49,7 @@ export function PaintingBadges({ work, justSaved = false, className }: { work: D
       {justSaved ? <Badge>Saved</Badge> : null}
       {work.featured ? <Badge variant="secondary">Front page</Badge> : null}
       {work.lookalikes.length > 0 ? <Badge variant="outline">Possible duplicate</Badge> : null}
+      {isOnDisplay(work) ? <Badge variant="secondary">On display</Badge> : null}
       {missingDetails(work).map((detail) => (
         <Badge key={detail} variant="outline">
           {detail}
@@ -134,6 +135,9 @@ export function CurateDesk({
           </Link>
           <Link href="/curate/prices" className={cn(buttonVariants({ variant: "outline" }))}>
             Print prices
+          </Link>
+          <Link href="/curate/venues" className={cn(buttonVariants({ variant: "outline" }))}>
+            Venues
           </Link>
           <form action={logout}>
             <Button type="submit" variant="outline">

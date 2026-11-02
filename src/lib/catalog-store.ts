@@ -13,7 +13,8 @@
  *
  * The print price list (lib/print-prices.ts) rides the same commit path, but
  * its change carries no works or manifest, so a price save touches only
- * content/print-prices.json.
+ * content/print-prices.json. The venue list (lib/venues.ts) does too; a
+ * venue save also takes removed venues off the paintings that named them.
  */
 import { createHash } from "crypto";
 import { readFile, unlink, writeFile, mkdir } from "fs/promises";
@@ -21,6 +22,7 @@ import path from "path";
 import {
   MANIFEST_PATH,
   PRINT_PRICES_PATH,
+  VENUES_PATH,
   WORKS_PATH,
   assertCatalogPath,
   catalogFilePath,
@@ -44,6 +46,7 @@ import {
   type FileChange,
 } from "@/lib/save-plan";
 import type { Work } from "@/lib/types";
+import { cleanShowings, parseVenues, serializeVenues, type Venue } from "@/lib/venues";
 
 export type { DeskWork, Publishing, WorkFields };
 
@@ -144,6 +147,8 @@ export function toDeskWorks(catalog: LoadedCatalog): DeskWork[] {
     imageWidth: work.imageWidth,
     imageHeight: work.imageHeight,
     lookalikes: likeness.lookalikes[work.slug] ?? [],
+    originalShownAt: work.originalShownAt,
+    printsShownAt: work.printsShownAt,
   }));
 }
 
@@ -226,6 +231,12 @@ export async function savePainting(
 ): Promise<{ error: string } | { ok: true }> {
   let rendered: Awaited<ReturnType<typeof renderPreview>> | null = null;
   if (image) rendered = await renderPreview(image);
+  let venueIds: Set<string>;
+  try {
+    venueIds = new Set((await loadVenues()).map((venue) => venue.id));
+  } catch (error) {
+    return { error: friendlySaveError(error) };
+  }
 
   try {
     await commitChange(async (catalog) => {
@@ -239,7 +250,7 @@ export async function savePainting(
       const plan = planPreviewFiles({ existing, slug: fields.slug, rendered, currentPreview, manifest: catalog.manifest });
       if ("error" in plan) throw new Error(plan.error);
 
-      const next = buildWork(fields, existing, plan);
+      const next = buildWork(fields, existing, plan, venueIds);
       const works = existing
         ? catalog.works.map((work) => (work.slug === existing.slug ? next : work))
         : [...catalog.works, next];
@@ -290,6 +301,50 @@ export async function savePrintPrices(list: PrintPrices): Promise<{ error: strin
       message: "Update print prices from the studio desk",
       files: [{ path: PRINT_PRICES_PATH, bytes: Buffer.from(serializePrintPrices(list)) }],
     }));
+  } catch (error) {
+    return { error: friendlySaveError(error) };
+  }
+  return { ok: true as const };
+}
+
+// The venue list as the desk last saved it, read the same way as the
+// print prices. A missing file is an empty list.
+export async function loadVenues(): Promise<Venue[]> {
+  let text: string | null = null;
+  if (process.env.STUDIO_GITHUB_TOKEN?.trim()) {
+    const head = await readGitHead();
+    text = (await readGitFile(VENUES_PATH, head.parentSha))?.toString("utf8") ?? null;
+  } else {
+    text = await readFile(catalogFilePath(VENUES_PATH), "utf8").catch(() => null);
+  }
+  return parseVenues(text ? (JSON.parse(text) as unknown) : null);
+}
+
+// The whole list is replaced on each save. A venue that was removed is
+// also taken off every painting that named it, in the same commit, so
+// works.json never points at a venue that is gone.
+export async function saveVenues(venues: Venue[]): Promise<{ error: string } | { ok: true }> {
+  const ids = new Set(venues.map((venue) => venue.id));
+  try {
+    await commitChange(async (catalog) => {
+      let changed = false;
+      const works = catalog.works.map((work) => {
+        const showings = cleanShowings(work, work, ids);
+        if (
+          showings.originalShownAt === work.originalShownAt &&
+          showings.printsShownAt.length === work.printsShownAt.length
+        ) {
+          return work;
+        }
+        changed = true;
+        return { ...work, ...showings };
+      });
+      return {
+        message: "Update venues from the studio desk",
+        files: [{ path: VENUES_PATH, bytes: Buffer.from(serializeVenues(venues)) }],
+        ...(changed ? { works } : {}),
+      };
+    });
   } catch (error) {
     return { error: friendlySaveError(error) };
   }

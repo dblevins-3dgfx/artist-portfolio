@@ -11,6 +11,7 @@ import { createHash } from "crypto";
 import type { Manifest } from "@/lib/catalog";
 import type { WorkFields } from "@/lib/desk";
 import type { Work } from "@/lib/types";
+import { cleanShowings } from "@/lib/venues";
 
 // One file a save writes (bytes) or deletes (null).
 export type FileChange = { path: string; bytes: Buffer | null };
@@ -104,11 +105,25 @@ export function planPreviewFiles({
 // The catalog entry a save writes. Availability comes from the form when
 // it had that section; a form without it (a tab from before #72) keeps the
 // painting's current values, and a new painting starts not for sale.
+// Showings work the same way (#104), then keep only venues still on the
+// list (`venueIds`), no venue for an original that is not Available, and
+// none for prints that are not offered.
 export function buildWork(
   fields: WorkFields,
   existing: Work | undefined,
   size: { imageWidth: number; imageHeight: number },
+  venueIds: Set<string>,
 ): Work {
+  const originalStatus = fields.availability?.originalStatus ?? existing?.originalStatus ?? "not-for-sale";
+  const printsAvailable = fields.availability?.printsAvailable ?? existing?.printsAvailable ?? false;
+  const showings = cleanShowings(
+    fields.showings ?? {
+      originalShownAt: existing?.originalShownAt ?? "",
+      printsShownAt: existing?.printsShownAt ?? [],
+    },
+    { originalStatus, printsAvailable },
+    venueIds,
+  );
   return {
     title: fields.title,
     year: fields.year,
@@ -119,9 +134,11 @@ export function buildWork(
     statement: fields.statement,
     subjects: fields.subjects,
     featured: fields.featured,
-    originalStatus: fields.availability?.originalStatus ?? existing?.originalStatus ?? "not-for-sale",
+    originalStatus,
     originalPrice: fields.availability?.originalPrice ?? existing?.originalPrice ?? 0,
-    printsAvailable: fields.availability?.printsAvailable ?? existing?.printsAvailable ?? false,
+    printsAvailable,
+    originalShownAt: showings.originalShownAt,
+    printsShownAt: showings.printsShownAt,
     slug: fields.slug,
     image: `/art/${fields.slug}.jpg`,
     imageWidth: size.imageWidth,

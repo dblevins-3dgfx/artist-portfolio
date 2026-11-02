@@ -18,6 +18,8 @@ function work(slug: string, featured = false): Work {
     originalStatus: "not-for-sale",
     originalPrice: 0,
     printsAvailable: false,
+    originalShownAt: "",
+    printsShownAt: [],
     image: `/art/${slug}.jpg`,
     imageWidth: 0,
     imageHeight: 0,
