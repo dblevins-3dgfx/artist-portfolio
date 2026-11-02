@@ -37,14 +37,7 @@ import type { DeskWork, Publishing, WorkFields } from "@/lib/desk";
 import { commitGitFiles, isGitConflict, readGitFile, readGitHead } from "@/lib/github-catalog";
 import { renderPreview } from "@/lib/preview-image";
 import { parsePrintPrices, serializePrintPrices, type PrintPrices } from "@/lib/print-prices";
-import {
-  buildWork,
-  checkSave,
-  commitMessage,
-  planPreviewFiles,
-  planRemoval,
-  type FileChange,
-} from "@/lib/save-plan";
+import { buildWork, checkSave, commitMessage, planPreviewFiles, planRemoval, type FileChange } from "@/lib/save-plan";
 import type { Work } from "@/lib/types";
 import { cleanShowings, parseVenues, serializeVenues, type Venue } from "@/lib/venues";
 
@@ -104,9 +97,7 @@ async function loadGitHub(): Promise<LoadedCatalog> {
     mode: "github",
     revision: head.parentSha,
     works: parseWorks(worksBuffer ? (JSON.parse(worksBuffer.toString("utf8")) as unknown) : []),
-    manifest: parseManifest(
-      manifestBuffer ? (JSON.parse(manifestBuffer.toString("utf8")) as unknown) : { files: {} },
-    ),
+    manifest: parseManifest(manifestBuffer ? (JSON.parse(manifestBuffer.toString("utf8")) as unknown) : { files: {} }),
     repo: head.repo,
     branch: head.branch,
     parentSha: head.parentSha,
@@ -247,7 +238,13 @@ export async function savePainting(
       // only then does the old file need reading.
       const currentPreview =
         existing && existing.slug !== fields.slug && !rendered ? await readArt(catalog, existing.slug) : null;
-      const plan = planPreviewFiles({ existing, slug: fields.slug, rendered, currentPreview, manifest: catalog.manifest });
+      const plan = planPreviewFiles({
+        existing,
+        slug: fields.slug,
+        rendered,
+        currentPreview,
+        manifest: catalog.manifest,
+      });
       if ("error" in plan) throw new Error(plan.error);
 
       const next = buildWork(fields, existing, plan, venueIds);

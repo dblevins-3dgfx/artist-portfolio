@@ -18,15 +18,7 @@ import { SUBJECTS } from "@/lib/subjects";
 import type { OriginalStatus } from "@/lib/types";
 import type { Venue } from "@/lib/venues";
 
-export function PaintingFields({
-  idPrefix,
-  work,
-  venues,
-}: {
-  idPrefix: string;
-  work?: DeskWork;
-  venues: Venue[];
-}) {
+export function PaintingFields({ idPrefix, work, venues }: { idPrefix: string; work?: DeskWork; venues: Venue[] }) {
   const [originalStatus, setOriginalStatus] = useState<OriginalStatus>(work?.originalStatus ?? "not-for-sale");
   const [printsOffered, setPrintsOffered] = useState(work ? work.printsAvailable : true);
   return (
@@ -45,10 +37,22 @@ export function PaintingFields({
         />
       </Field>
       <Field id={`${idPrefix}-medium`} label="Medium">
-        <Input id={`${idPrefix}-medium`} name="medium" defaultValue={work?.medium || ""} maxLength={80} placeholder="Oil" />
+        <Input
+          id={`${idPrefix}-medium`}
+          name="medium"
+          defaultValue={work?.medium || ""}
+          maxLength={80}
+          placeholder="Oil"
+        />
       </Field>
       <Field id={`${idPrefix}-surface`} label="Surface">
-        <Input id={`${idPrefix}-surface`} name="surface" defaultValue={work?.surface || ""} maxLength={80} placeholder="linen" />
+        <Input
+          id={`${idPrefix}-surface`}
+          name="surface"
+          defaultValue={work?.surface || ""}
+          maxLength={80}
+          placeholder="linen"
+        />
       </Field>
       <Field id={`${idPrefix}-slug`} label="Web name">
         <Input

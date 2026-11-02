@@ -23,11 +23,7 @@ export function generateStaticParams() {
 
 export const dynamicParams = false;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const work = getWork(slug);
   if (!work) return { title: "Painting" };
@@ -47,11 +43,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function WorkDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function WorkDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const work = getWork(slug);
   if (!work) notFound();
@@ -61,12 +53,8 @@ export default async function WorkDetailPage({
   const subjects = work.subjects.map(subjectLabel);
   // "More like this": paintings that share any subject come first.
   const rest = getWorks().filter((entry) => entry.slug !== work.slug);
-  const sharesSubject = (entry: (typeof rest)[number]) =>
-    entry.subjects.some((id) => work.subjects.includes(id));
-  const others = [
-    ...rest.filter(sharesSubject),
-    ...rest.filter((entry) => !sharesSubject(entry)),
-  ].slice(0, 3);
+  const sharesSubject = (entry: (typeof rest)[number]) => entry.subjects.some((id) => work.subjects.includes(id));
+  const others = [...rest.filter(sharesSubject), ...rest.filter((entry) => !sharesSubject(entry))].slice(0, 3);
   const { previous, next, subject } = neighbours(getWorks(), work.slug);
   const previousHref = previous ? `/work/${previous.slug}` : undefined;
   const nextHref = next ? `/work/${next.slug}` : undefined;
@@ -117,9 +105,7 @@ export default async function WorkDetailPage({
             {materials ? ` · ${materials}` : ""}
             {inches ? ` · ${inches}` : ""}
           </p>
-          {work.statement ? (
-            <p className="mt-6 max-w-prose leading-relaxed">{work.statement}</p>
-          ) : null}
+          {work.statement ? <p className="mt-6 max-w-prose leading-relaxed">{work.statement}</p> : null}
           {emailIsPublic() ? (
             <a
               className={cn(buttonVariants({ variant: "outline" }), "mt-8 inline-flex h-11 bg-card px-4")}

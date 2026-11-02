@@ -41,7 +41,12 @@ function work(slug: string, title = slug): Work {
 function marks(fingerprints: Record<string, string | undefined>): Manifest {
   const files: Manifest["files"] = {};
   for (const [slug, fingerprint] of Object.entries(fingerprints)) {
-    files[`${slug}.jpg`] = { width: 1400, height: 1000, sha256: `sha-${slug}`, ...(fingerprint ? { fingerprint } : {}) };
+    files[`${slug}.jpg`] = {
+      width: 1400,
+      height: 1000,
+      sha256: `sha-${slug}`,
+      ...(fingerprint ? { fingerprint } : {}),
+    };
   }
   return { files };
 }
@@ -60,7 +65,9 @@ test("paintings 4 bits apart are grouped; 5 bits apart are not", () => {
 
 test("identical fingerprints are grouped", () => {
   const works = [work("lake"), work("lake-again")];
-  assert.deepEqual(slugs(catalogLikeness(works, marks({ lake: ZERO, "lake-again": ZERO })).groups), [["lake", "lake-again"]]);
+  assert.deepEqual(slugs(catalogLikeness(works, marks({ lake: ZERO, "lake-again": ZERO })).groups), [
+    ["lake", "lake-again"],
+  ]);
 });
 
 test("paintings with no fingerprint, or a malformed one, are never grouped", () => {
@@ -81,7 +88,10 @@ test("likeness chains: A near B and B near C make one group even when A and C ar
 
 test("separate pairs make separate groups, and unrelated paintings are left out", () => {
   const works = [work("a"), work("b"), work("c"), work("d"), work("e")];
-  const result = catalogLikeness(works, marks({ a: ZERO, b: FOUR, c: FAR, d: "fffffffffffffff0", e: "0f0f0f0f0f0f0f0f" }));
+  const result = catalogLikeness(
+    works,
+    marks({ a: ZERO, b: FOUR, c: FAR, d: "fffffffffffffff0", e: "0f0f0f0f0f0f0f0f" }),
+  );
   assert.deepEqual(slugs(result.groups), [
     ["a", "b"],
     ["c", "d"],
@@ -90,7 +100,10 @@ test("separate pairs make separate groups, and unrelated paintings are left out"
 });
 
 test("each member's look-alikes are the others in its group, by web name and title", () => {
-  const pair = catalogLikeness([work("img-7889", "IMG 7889"), work("castle-rock", "Castle Rock")], marks({ "img-7889": ZERO, "castle-rock": FOUR }));
+  const pair = catalogLikeness(
+    [work("img-7889", "IMG 7889"), work("castle-rock", "Castle Rock")],
+    marks({ "img-7889": ZERO, "castle-rock": FOUR }),
+  );
   assert.deepEqual(pair.lookalikes, {
     "img-7889": [{ slug: "castle-rock", title: "Castle Rock" }],
     "castle-rock": [{ slug: "img-7889", title: "IMG 7889" }],
@@ -98,9 +111,18 @@ test("each member's look-alikes are the others in its group, by web name and tit
 
   const three = catalogLikeness([work("a", "A"), work("b", "B"), work("c", "C")], marks({ a: ZERO, b: ZERO, c: ZERO }));
   assert.deepEqual(three.lookalikes, {
-    a: [{ slug: "b", title: "B" }, { slug: "c", title: "C" }],
-    b: [{ slug: "a", title: "A" }, { slug: "c", title: "C" }],
-    c: [{ slug: "a", title: "A" }, { slug: "b", title: "B" }],
+    a: [
+      { slug: "b", title: "B" },
+      { slug: "c", title: "C" },
+    ],
+    b: [
+      { slug: "a", title: "A" },
+      { slug: "c", title: "C" },
+    ],
+    c: [
+      { slug: "a", title: "A" },
+      { slug: "b", title: "B" },
+    ],
   });
 });
 

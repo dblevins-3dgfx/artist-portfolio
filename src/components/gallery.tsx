@@ -68,11 +68,7 @@ export function Gallery({ works }: { works: CatalogWork[] }) {
               All
             </FilterButton>
             {groups.map((entry) => (
-              <FilterButton
-                key={entry.id}
-                active={subject === entry.id}
-                onClick={() => setSubject(entry.id)}
-              >
+              <FilterButton key={entry.id} active={subject === entry.id} onClick={() => setSubject(entry.id)}>
                 {entry.label}
               </FilterButton>
             ))}

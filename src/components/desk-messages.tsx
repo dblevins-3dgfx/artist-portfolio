@@ -10,8 +10,8 @@ export function DeskSwitchedOff() {
       <p className="mt-6 max-w-prose text-lg leading-relaxed">
         The desk is not switched on yet. In the Vercel project, set a long{" "}
         <span className="font-medium">STUDIO_PASSWORD</span>, and set{" "}
-        <span className="font-medium">STUDIO_GITHUB_TOKEN</span> to a token that can update this
-        repository. Redeploy, then open this page again.
+        <span className="font-medium">STUDIO_GITHUB_TOKEN</span> to a token that can update this repository. Redeploy,
+        then open this page again.
       </p>
     </div>
   );

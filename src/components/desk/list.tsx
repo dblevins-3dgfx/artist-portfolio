@@ -23,7 +23,8 @@ export function PublishingNote({ publishing }: { publishing: Publishing }) {
   if (publishing === "github") {
     return (
       <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
-        Saving publishes the change. The public catalog updates when the next build finishes. Adding a large batch is still faster by running the photograph folder on a computer.
+        Saving publishes the change. The public catalog updates when the next build finishes. Adding a large batch is
+        still faster by running the photograph folder on a computer.
       </p>
     );
   }
@@ -36,14 +37,23 @@ export function PublishingNote({ publishing }: { publishing: Publishing }) {
   }
   return (
     <p role="status" className="mt-4 max-w-prose text-sm leading-relaxed">
-      The desk can open, but it cannot save yet. Add <span className="font-medium">STUDIO_GITHUB_TOKEN</span> in the Vercel project, then redeploy.
+      The desk can open, but it cannot save yet. Add <span className="font-medium">STUDIO_GITHUB_TOKEN</span> in the
+      Vercel project, then redeploy.
     </p>
   );
 }
 
 // The same badges on a list row and on the painting's edit page. Saved is
 // only ever true on the list, right after the redirect from a save.
-export function PaintingBadges({ work, justSaved = false, className }: { work: DeskWork; justSaved?: boolean; className?: string }) {
+export function PaintingBadges({
+  work,
+  justSaved = false,
+  className,
+}: {
+  work: DeskWork;
+  justSaved?: boolean;
+  className?: string;
+}) {
   return (
     <span className={cn("flex flex-wrap gap-1.5 empty:hidden", className)}>
       {justSaved ? <Badge>Saved</Badge> : null}
@@ -116,7 +126,8 @@ export function CurateDesk({
   // fixing the last painting in a queue, the button stays so the empty result
   // makes sense.
   const offered = DESK_FILTERS.filter(
-    (filter) => filter.id === "all" || filter.id === "needs-work" || filter.id === active.id || (counts.get(filter.id) ?? 0) > 0,
+    (filter) =>
+      filter.id === "all" || filter.id === "needs-work" || filter.id === active.id || (counts.get(filter.id) ?? 0) > 0,
   );
   // The painting just saved stays in view, with its Saved badge, even if the
   // fix took it out of the filter. It drops out on the next visit.
@@ -148,7 +159,8 @@ export function CurateDesk({
       </div>
 
       <p className="mt-6 max-w-prose text-lg leading-relaxed">
-        Add a painting, rewrite its note, or take it down. Photographs are reduced and watermarked before they are saved. The full-size file is not kept on the site.
+        Add a painting, rewrite its note, or take it down. Photographs are reduced and watermarked before they are
+        saved. The full-size file is not kept on the site.
       </p>
 
       <PublishingNote publishing={publishing} />

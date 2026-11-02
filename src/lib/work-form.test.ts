@@ -109,12 +109,22 @@ test("the web name of the desk's Add page is refused, typed or taken from the ti
   assert.ok("fields" in typed && typed.fields.slug === "new-snow");
 });
 
-const forSale = { ...valid, availability: "1", originalStatus: "in-studio", originalPrice: "$1,200", printsAvailable: "on" };
+const forSale = {
+  ...valid,
+  availability: "1",
+  originalStatus: "in-studio",
+  originalPrice: "$1,200",
+  printsAvailable: "on",
+};
 
 test("availability and price are read when the form has the Availability section", () => {
   const parsed = readWorkForm(form(forSale));
   assert.ok("fields" in parsed);
-  assert.deepEqual(parsed.fields.availability, { originalStatus: "in-studio", originalPrice: 1200, printsAvailable: true });
+  assert.deepEqual(parsed.fields.availability, {
+    originalStatus: "in-studio",
+    originalPrice: 1200,
+    printsAvailable: true,
+  });
   const sold = readWorkForm(form({ ...forSale, originalStatus: "sold", originalPrice: "", printsAvailable: [] }));
   assert.ok("fields" in sold);
   assert.deepEqual(sold.fields.availability, { originalStatus: "sold", originalPrice: 0, printsAvailable: false });
@@ -128,10 +138,18 @@ test("a form without the Availability section leaves availability out, so the sa
 
 test("showings are read when the form has the Showings section", () => {
   const parsed = readWorkForm(
-    form({ ...valid, showings: "1", originalShownAt: "blue-door", printsShownAt: ["corner-shop", "blue-door", "corner-shop"] }),
+    form({
+      ...valid,
+      showings: "1",
+      originalShownAt: "blue-door",
+      printsShownAt: ["corner-shop", "blue-door", "corner-shop"],
+    }),
   );
   assert.ok("fields" in parsed);
-  assert.deepEqual(parsed.fields.showings, { originalShownAt: "blue-door", printsShownAt: ["corner-shop", "blue-door"] });
+  assert.deepEqual(parsed.fields.showings, {
+    originalShownAt: "blue-door",
+    printsShownAt: ["corner-shop", "blue-door"],
+  });
   // The original's choice is hidden unless it is Available, so it may not be sent at all.
   const hidden = readWorkForm(form({ ...valid, showings: "1" }));
   assert.ok("fields" in hidden);

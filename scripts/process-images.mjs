@@ -182,7 +182,9 @@ for (const file of files) {
     sha256: hash,
     fingerprint: await previewFingerprint(marked),
   };
-  console.log(`${file.relative} → public/art/${outputName} (${published.width}×${published.height}, mark ${changed.toFixed(2)})`);
+  console.log(
+    `${file.relative} → public/art/${outputName} (${published.width}×${published.height}, mark ${changed.toFixed(2)})`,
+  );
 }
 
 await writeFile(worksPath, `${JSON.stringify(works, null, 2)}\n`);

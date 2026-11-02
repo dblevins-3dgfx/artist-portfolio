@@ -21,21 +21,14 @@ export default async function HomePage() {
     <div>
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:py-20">
         <div>
-          <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">
-            Original work
-          </p>
-          <h1 className="mt-3 font-heading text-5xl italic leading-[1.05] sm:text-6xl">
-            {site.artistName}
-          </h1>
+          <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">Original work</p>
+          <h1 className="mt-3 font-heading text-5xl italic leading-[1.05] sm:text-6xl">{site.artistName}</h1>
           <p className="mt-5 max-w-md text-lg leading-relaxed">{site.tagline}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/work" className={cn(buttonVariants(), "inline-flex h-11 px-4")}>
               Browse the work
             </Link>
-            <Link
-              href="/about"
-              className={cn(buttonVariants({ variant: "outline" }), "inline-flex h-11 bg-card px-4")}
-            >
+            <Link href="/about" className={cn(buttonVariants({ variant: "outline" }), "inline-flex h-11 bg-card px-4")}>
               About the studio
             </Link>
           </div>
@@ -52,9 +45,7 @@ export default async function HomePage() {
               className="h-auto w-full border border-border bg-card"
             />
             <p className="mt-3 flex items-baseline justify-between gap-3 text-sm">
-              <span className="font-heading text-xl italic group-hover:underline">
-                {lead.title}
-              </span>
+              <span className="font-heading text-xl italic group-hover:underline">{lead.title}</span>
               <span className="text-muted-foreground">{lead.year}</span>
             </p>
           </Link>

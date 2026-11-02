@@ -75,7 +75,11 @@ export function PrintPricesEditor({
     const formData = new FormData();
     formData.set(
       "priceList",
-      JSON.stringify({ sizes: sizes.map((size) => size.name), materials: materials.map((material) => material.name), prices }),
+      JSON.stringify({
+        sizes: sizes.map((size) => size.name),
+        materials: materials.map((material) => material.name),
+        prices,
+      }),
     );
     startTransition(() => action(formData));
   };
@@ -90,10 +94,12 @@ export function PrintPricesEditor({
       <p className="mt-6 text-xs tracking-[0.18em] text-muted-foreground uppercase">Studio desk</p>
       <h1 className="mt-3 font-heading text-5xl italic">Print prices</h1>
       <p className="mt-6 max-w-prose text-lg leading-relaxed">
-        One price list for every painting that offers prints. Prices are whole US dollars. Leave a cell blank when that size is not offered in that material.
+        One price list for every painting that offers prints. Prices are whole US dollars. Leave a cell blank when that
+        size is not offered in that material.
       </p>
       <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
-        The public site does not show these prices. They are saved in the catalog’s repository, which anyone can read on GitHub.
+        The public site does not show these prices. They are saved in the catalog’s repository, which anyone can read on
+        GitHub.
       </p>
       <PublishingNote publishing={publishing} />
       {saved ? <p className="mt-4 text-sm">Saved.</p> : null}
@@ -181,7 +187,11 @@ export function PrintPricesEditor({
           </div>
         )}
         <div className="flex flex-wrap gap-3">
-          <Button type="button" variant="outline" onClick={() => setSizes((lines) => [...lines, { id: newId(), name: "" }])}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setSizes((lines) => [...lines, { id: newId(), name: "" }])}
+          >
             Add a size
           </Button>
           <Button

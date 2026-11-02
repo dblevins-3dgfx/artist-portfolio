@@ -199,11 +199,7 @@ export function PendingButtons({
   return (
     <div className="flex flex-wrap gap-3">
       <input type="hidden" name="intent" defaultValue="save" />
-      <Button
-        type="submit"
-        disabled={pending || !canSave || !hasChanges}
-        onClick={(event) => setIntent(event, "save")}
-      >
+      <Button type="submit" disabled={pending || !canSave || !hasChanges} onClick={(event) => setIntent(event, "save")}>
         {pending ? pendingLabel : saveLabel}
       </Button>
       <Button type="button" variant="outline" disabled={pending} onClick={onCancel}>

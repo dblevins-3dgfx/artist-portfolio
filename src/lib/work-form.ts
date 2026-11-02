@@ -118,7 +118,9 @@ export function readWorkForm(
   const requested = textField(formData, "slug", 80);
   const slug = requested || slugify(title);
   if (!isCatalogSlug(slug)) {
-    return { error: "The web name needs letters or numbers. You can leave it blank and it will be taken from the title." };
+    return {
+      error: "The web name needs letters or numbers. You can leave it blank and it will be taken from the title.",
+    };
   }
   if (RESERVED_SLUGS.has(slug)) {
     return { error: `The web name “${slug}” is used by the desk itself. Type a different web name.` };
@@ -151,9 +153,7 @@ export function readWorkForm(
 // checks the same size in the browser.
 const MAX_PHOTO_BYTES = 4 * 1024 * 1024;
 
-export async function imageFromForm(
-  formData: FormData,
-): Promise<{ error: string } | { bytes: Buffer | null }> {
+export async function imageFromForm(formData: FormData): Promise<{ error: string } | { bytes: Buffer | null }> {
   const value = formData.get("image");
   if (!(value instanceof File) || value.size === 0) return { bytes: null as Buffer | null };
   if (value.size > MAX_PHOTO_BYTES) {

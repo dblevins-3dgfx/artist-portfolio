@@ -31,10 +31,14 @@ for (const file of publicRasters) {
   const relative = path.relative(root, file);
   const meta = await sharp(file).metadata();
   if ((meta.width ?? 0) > maxEdge || (meta.height ?? 0) > maxEdge) {
-    errors.push(`${relative} is ${meta.width}×${meta.height}. Previews must be ${maxEdge}px or smaller. Run npm run process-images instead of copying an original into public/.`);
+    errors.push(
+      `${relative} is ${meta.width}×${meta.height}. Previews must be ${maxEdge}px or smaller. Run npm run process-images instead of copying an original into public/.`,
+    );
   }
   if (meta.exif || meta.xmp || meta.iptc) {
-    errors.push(`${relative} still has camera metadata. Run npm run process-images so location and camera details are stripped.`);
+    errors.push(
+      `${relative} still has camera metadata. Run npm run process-images so location and camera details are stripped.`,
+    );
   }
   const stat = statSync(file);
   if (stat.size > 2 * 1024 * 1024) {
@@ -42,14 +46,14 @@ for (const file of publicRasters) {
   }
 }
 
-const artFiles = existsSync(artDir)
-  ? readdirSync(artDir).filter((name) => /\.jpe?g$/i.test(name))
-  : [];
+const artFiles = existsSync(artDir) ? readdirSync(artDir).filter((name) => /\.jpe?g$/i.test(name)) : [];
 
 for (const name of artFiles) {
   const recorded = manifest.files?.[name];
   if (!recorded) {
-    errors.push(`public/art/${name} is not in content/art-manifest.json. Only files written by npm run process-images may be published.`);
+    errors.push(
+      `public/art/${name} is not in content/art-manifest.json. Only files written by npm run process-images may be published.`,
+    );
     continue;
   }
   const bytes = readFileSync(path.join(artDir, name));
@@ -59,7 +63,9 @@ for (const name of artFiles) {
   }
   const fingerprint = await previewFingerprint(bytes);
   if (recorded.fingerprint !== fingerprint) {
-    errors.push(`content/art-manifest.json is missing the likeness fingerprint for ${name}, or it does not match the preview.`);
+    errors.push(
+      `content/art-manifest.json is missing the likeness fingerprint for ${name}, or it does not match the preview.`,
+    );
   }
   if (recorded.width > maxEdge || recorded.height > maxEdge) {
     errors.push(`content/art-manifest.json allows ${name} above ${maxEdge}px.`);

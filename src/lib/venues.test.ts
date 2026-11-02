@@ -2,7 +2,13 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { MAX_VENUES, checkVenues, cleanShowings, isVenueId, parseVenues, serializeVenues } from "@/lib/venues";
 
-const blueDoor = { id: "blue-door", name: "Blue Door Gallery", city: "Mendocino", contact: "Ann, 555-0100", notes: "Takes 40%." };
+const blueDoor = {
+  id: "blue-door",
+  name: "Blue Door Gallery",
+  city: "Mendocino",
+  contact: "Ann, 555-0100",
+  notes: "Takes 40%.",
+};
 
 test("a stored venue list reads back as saved", () => {
   const venues = [blueDoor, { id: "corner-shop", name: "Corner Shop", city: "", contact: "", notes: "" }];
@@ -30,7 +36,8 @@ test("a stored list drops entries it cannot use", () => {
 
 test("venue ids look like web names", () => {
   for (const id of ["blue-door", "a", "shop-2"]) assert.equal(isVenueId(id), true, id);
-  for (const id of ["", "Blue-Door", "blue door", "../x", "x".repeat(61), 7]) assert.equal(isVenueId(id), false, String(id));
+  for (const id of ["", "Blue-Door", "blue door", "../x", "x".repeat(61), 7])
+    assert.equal(isVenueId(id), false, String(id));
 });
 
 test("a save keeps existing ids and gives new venues an id from the name", () => {
@@ -51,14 +58,24 @@ test("a save keeps existing ids and gives new venues an id from the name", () =>
 });
 
 test("a save refuses a missing name, a repeated name, a bad id, and too many venues", () => {
-  assert.match((checkVenues({ venues: [{ id: "", name: " " }] }) as { error: string }).error, /Give every venue a name/);
+  assert.match(
+    (checkVenues({ venues: [{ id: "", name: " " }] }) as { error: string }).error,
+    /Give every venue a name/,
+  );
   assert.match(
     (checkVenues({ venues: [{ name: "Corner Shop" }, { name: "corner shop" }] }) as { error: string }).error,
     /both called “Corner Shop”/,
   );
   assert.match((checkVenues({ venues: [{ id: "Bad Id", name: "X" }] }) as { error: string }).error, /did not arrive/);
   assert.match(
-    (checkVenues({ venues: [{ id: "a", name: "X" }, { id: "a", name: "Y" }] }) as { error: string }).error,
+    (
+      checkVenues({
+        venues: [
+          { id: "a", name: "X" },
+          { id: "a", name: "Y" },
+        ],
+      }) as { error: string }
+    ).error,
     /did not arrive/,
   );
   assert.match((checkVenues({ venues: [{ name: "x".repeat(81) }] }) as { error: string }).error, /80 characters/);

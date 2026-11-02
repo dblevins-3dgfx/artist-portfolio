@@ -70,7 +70,13 @@ function UncroppedPreview({ work }: { work: DeskWork }) {
 // "Possible duplicate of A and B." with each name linking to that
 // painting's edit page. With unsaved changes, following one asks first, as
 // "All paintings" does (guardLink).
-function LookalikeNote({ work, guardLink }: { work: DeskWork; guardLink: (event: MouseEvent<HTMLAnchorElement>) => void }) {
+function LookalikeNote({
+  work,
+  guardLink,
+}: {
+  work: DeskWork;
+  guardLink: (event: MouseEvent<HTMLAnchorElement>) => void;
+}) {
   if (work.lookalikes.length === 0) return null;
   return (
     <p className="mt-2 text-sm leading-relaxed">
@@ -132,7 +138,8 @@ function WorkForm({
           />
         </Field>
         <p className="text-sm text-muted-foreground">
-          Leave the file empty to keep the current preview. A new photograph is reduced and watermarked. The original is not kept.
+          Leave the file empty to keep the current preview. A new photograph is reduced and watermarked. The original is
+          not kept.
         </p>
         <FormError state={state} />
         <p aria-live="polite" className="text-sm text-muted-foreground">
@@ -210,7 +217,11 @@ function StepButton({ href, label, children }: { href?: string; label: string; c
     );
   }
   return (
-    <Link href={`/curate/${href}`} aria-label={label} className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
+    <Link
+      href={`/curate/${href}`}
+      aria-label={label}
+      className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+    >
       {children}
     </Link>
   );
@@ -303,7 +314,12 @@ export function CurateAdd({ publishing, venues }: { publishing: Publishing; venu
       </p>
       <PublishingNote publishing={publishing} />
       <div className="mt-10">
-        <NewWorkForm venues={venues} canSave={publishing !== "missing"} guard={guard} onCancel={() => leave("/curate")} />
+        <NewWorkForm
+          venues={venues}
+          canSave={publishing !== "missing"}
+          guard={guard}
+          onCancel={() => leave("/curate")}
+        />
       </div>
     </div>
   );

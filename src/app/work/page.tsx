@@ -22,8 +22,7 @@ export default function WorkPage() {
       <h1 className="mt-3 font-heading text-5xl italic">The work</h1>
       {works.length === 0 ? (
         <p className="mt-12 max-w-md text-lg">
-          No paintings have been published yet. They appear after the studio processes
-          photographs into previews.
+          No paintings have been published yet. They appear after the studio processes photographs into previews.
         </p>
       ) : (
         <div className="mt-10">

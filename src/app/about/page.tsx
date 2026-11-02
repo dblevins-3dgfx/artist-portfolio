@@ -29,8 +29,7 @@ export default function AboutPage() {
           )}
           {!site.biography ? (
             <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
-              A longer account of the work can be added here when it is ready to be written
-              in the artist’s own voice.
+              A longer account of the work can be added here when it is ready to be written in the artist’s own voice.
             </p>
           ) : null}
 
