@@ -49,5 +49,9 @@ export function useDeskFilter(): DeskFilter {
 }
 
 export function useHydrated() {
-  return useSyncExternalStore(subscribeNothing, () => true, () => false);
+  return useSyncExternalStore(
+    subscribeNothing,
+    () => true,
+    () => false,
+  );
 }

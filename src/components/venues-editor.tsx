@@ -58,7 +58,9 @@ export function VenuesEditor({
     const formData = new FormData();
     formData.set(
       "venueList",
-      JSON.stringify({ venues: rows.map(({ id, name, city, contact, notes }) => ({ id, name, city, contact, notes })) }),
+      JSON.stringify({
+        venues: rows.map(({ id, name, city, contact, notes }) => ({ id, name, city, contact, notes })),
+      }),
     );
     startTransition(() => action(formData));
   };
@@ -77,7 +79,8 @@ export function VenuesEditor({
         Removing a venue here also takes it off those paintings.
       </p>
       <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
-        The public site does not show venues. They are saved in the catalog’s repository, which anyone can read on GitHub.
+        The public site does not show venues. They are saved in the catalog’s repository, which anyone can read on
+        GitHub.
       </p>
       <PublishingNote publishing={publishing} />
       {saved ? <p className="mt-4 text-sm">Saved.</p> : null}

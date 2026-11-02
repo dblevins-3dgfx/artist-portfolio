@@ -12,6 +12,8 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/test-loader.mjs --test \"src/**/*.test.ts\"",
     "process-images": "node scripts/process-images.mjs",
     "check-images": "node scripts/check-public-images.mjs"
@@ -35,6 +37,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
+    "prettier": "^3.9.10",
     "shadcn": "^4.21.1",
     "tailwindcss": "^4",
     "typescript": "^5"

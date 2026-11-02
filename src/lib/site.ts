@@ -25,12 +25,7 @@ export function formatMaterials(work: { medium: string; surface: string }) {
   return medium || surface || null;
 }
 
-export function workAlt(work: {
-  title: string;
-  medium: string;
-  surface: string;
-  year: number;
-}) {
+export function workAlt(work: { title: string; medium: string; surface: string; year: number }) {
   const materials = formatMaterials(work);
   const detail = materials ? `, ${materials.toLowerCase()}` : "";
   return `${work.title}${detail}, ${work.year}. Watermarked preview.`;

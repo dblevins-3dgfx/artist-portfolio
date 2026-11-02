@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { DESK_FILTERS, deskFilter, formSignature, listSeparator, missingDetails, needsWork, stepThrough } from "@/lib/desk";
+import {
+  DESK_FILTERS,
+  deskFilter,
+  formSignature,
+  listSeparator,
+  missingDetails,
+  needsWork,
+  stepThrough,
+} from "@/lib/desk";
 
 const complete = {
   title: "Blue Sky, Blue Lake",
@@ -28,7 +36,14 @@ test("a size needs both width and height", () => {
 });
 
 test("camera file names are flagged as titles, and real titles are not", () => {
-  for (const title of ["IMG 7889", "IMG 6727 Original", "img_4623", "DSC 0042", "PXL 20240101", "IMG 4977 Original Copy"]) {
+  for (const title of [
+    "IMG 7889",
+    "IMG 6727 Original",
+    "img_4623",
+    "DSC 0042",
+    "PXL 20240101",
+    "IMG 4977 Original Copy",
+  ]) {
     assert.deepEqual(missingDetails({ ...complete, title }), ["Title from file name"], title);
   }
   for (const title of ["Imagine", "Image of Spring", "The IMG 7889 Series", "1984", "Room 101"]) {
@@ -56,7 +71,8 @@ const row = {
 test("every badge has a filter with the same label", () => {
   const labels = DESK_FILTERS.map((filter) => filter.label);
   const everyBadge = missingDetails({ title: "IMG 1", subjects: [], medium: "", surface: "", widthIn: 0, heightIn: 0 });
-  for (const badge of [...everyBadge, "Possible duplicate", "Front page", "On display"]) assert.ok(labels.includes(badge), badge);
+  for (const badge of [...everyBadge, "Possible duplicate", "Front page", "On display"])
+    assert.ok(labels.includes(badge), badge);
   assert.equal(new Set(DESK_FILTERS.map((filter) => filter.id)).size, DESK_FILTERS.length);
 });
 
@@ -66,7 +82,10 @@ test("each badge filter matches the paintings that show that badge", () => {
   assert.equal(deskFilter("size").matches(row), false);
   assert.equal(deskFilter("subject").matches({ ...row, subjects: [] }), true);
   assert.equal(deskFilter("title").matches({ ...row, title: "IMG 7889" }), true);
-  assert.equal(deskFilter("duplicate").matches({ ...row, lookalikes: [{ slug: "castle-rock", title: "Castle Rock" }] }), true);
+  assert.equal(
+    deskFilter("duplicate").matches({ ...row, lookalikes: [{ slug: "castle-rock", title: "Castle Rock" }] }),
+    true,
+  );
   assert.equal(deskFilter("front-page").matches({ ...row, featured: true }), true);
   assert.equal(deskFilter("on-display").matches({ ...row, originalShownAt: "blue-door" }), true);
   assert.equal(deskFilter("on-display").matches({ ...row, printsShownAt: ["corner-shop"] }), true);
@@ -127,24 +146,72 @@ const catalog = ["a", "b", "c", "d", "e"].map((slug) => ({
 }));
 
 test("with All, Previous and Next walk the whole catalog in order, without wrapping", () => {
-  assert.deepEqual(stepThrough(catalog, "a", "all"), { previous: undefined, next: "b", position: 1, total: 5, matches: true });
-  assert.deepEqual(stepThrough(catalog, "c", "all"), { previous: "b", next: "d", position: 3, total: 5, matches: true });
-  assert.deepEqual(stepThrough(catalog, "e", "all"), { previous: "d", next: undefined, position: 5, total: 5, matches: true });
+  assert.deepEqual(stepThrough(catalog, "a", "all"), {
+    previous: undefined,
+    next: "b",
+    position: 1,
+    total: 5,
+    matches: true,
+  });
+  assert.deepEqual(stepThrough(catalog, "c", "all"), {
+    previous: "b",
+    next: "d",
+    position: 3,
+    total: 5,
+    matches: true,
+  });
+  assert.deepEqual(stepThrough(catalog, "e", "all"), {
+    previous: "d",
+    next: undefined,
+    position: 5,
+    total: 5,
+    matches: true,
+  });
 });
 
 test("with a filter, they step only through the paintings it shows", () => {
-  assert.deepEqual(stepThrough(catalog, "b", "size"), { previous: undefined, next: "d", position: 1, total: 2, matches: true });
-  assert.deepEqual(stepThrough(catalog, "d", "size"), { previous: "b", next: undefined, position: 2, total: 2, matches: true });
+  assert.deepEqual(stepThrough(catalog, "b", "size"), {
+    previous: undefined,
+    next: "d",
+    position: 1,
+    total: 2,
+    matches: true,
+  });
+  assert.deepEqual(stepThrough(catalog, "d", "size"), {
+    previous: "b",
+    next: undefined,
+    position: 2,
+    total: 2,
+    matches: true,
+  });
 });
 
 test("a painting no longer in the filter keeps its place, with no position", () => {
-  assert.deepEqual(stepThrough(catalog, "c", "size"), { previous: "b", next: "d", position: undefined, total: 2, matches: false });
-  assert.deepEqual(stepThrough(catalog, "a", "size"), { previous: undefined, next: "b", position: undefined, total: 2, matches: false });
+  assert.deepEqual(stepThrough(catalog, "c", "size"), {
+    previous: "b",
+    next: "d",
+    position: undefined,
+    total: 2,
+    matches: false,
+  });
+  assert.deepEqual(stepThrough(catalog, "a", "size"), {
+    previous: undefined,
+    next: "b",
+    position: undefined,
+    total: 2,
+    matches: false,
+  });
 });
 
 test("a one-painting queue and an unknown painting have nowhere to go", () => {
   const one = catalog.map((work) => ({ ...work, heightIn: work.slug === "c" ? 0 : 16 }));
-  assert.deepEqual(stepThrough(one, "c", "size"), { previous: undefined, next: undefined, position: 1, total: 1, matches: true });
+  assert.deepEqual(stepThrough(one, "c", "size"), {
+    previous: undefined,
+    next: undefined,
+    position: 1,
+    total: 1,
+    matches: true,
+  });
   assert.deepEqual(stepThrough(catalog, "zzz", "all"), { total: 5, matches: false });
 });
 

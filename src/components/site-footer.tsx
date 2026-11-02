@@ -13,28 +13,17 @@ export function SiteFooter() {
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-10 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="font-heading text-2xl italic">{site.artistName}</p>
-          {site.location ? (
-            <p className="mt-1 text-sm text-muted-foreground">{site.location}</p>
-          ) : null}
-          {site.domain ? (
-            <p className="mt-1 text-sm text-muted-foreground">{site.domain}</p>
-          ) : null}
+          {site.location ? <p className="mt-1 text-sm text-muted-foreground">{site.location}</p> : null}
+          {site.domain ? <p className="mt-1 text-sm text-muted-foreground">{site.domain}</p> : null}
           {emailIsPublic() ? (
-            <a
-              className="mt-2 inline-block text-sm underline-offset-4 hover:underline"
-              href={`mailto:${site.email}`}
-            >
+            <a className="mt-2 inline-block text-sm underline-offset-4 hover:underline" href={`mailto:${site.email}`}>
               {site.email}
             </a>
           ) : null}
         </div>
         <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm" aria-label="Footer">
           {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-muted-foreground hover:text-foreground"
-            >
+            <Link key={link.href} href={link.href} className="text-muted-foreground hover:text-foreground">
               {link.label}
             </Link>
           ))}

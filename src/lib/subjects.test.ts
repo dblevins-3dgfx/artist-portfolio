@@ -13,10 +13,7 @@ test("subject ids are unique", () => {
 });
 
 test("parseSubjects keeps known ids in list order and drops the rest", () => {
-  assert.deepEqual(parseSubjects(["commissioned", "children", "children", "dragons", 7]), [
-    "children",
-    "commissioned",
-  ]);
+  assert.deepEqual(parseSubjects(["commissioned", "children", "children", "dragons", 7]), ["children", "commissioned"]);
 });
 
 test("parseSubjects gives an empty list for anything that is not a list", () => {

@@ -110,7 +110,9 @@ export function checkPrintPrices(value: unknown): { error: string } | PrintPrice
     for (const size of sizes) {
       const price = cellDollars(row[size]);
       if (price === null) {
-        return { error: `Enter the ${size} ${material} price in whole dollars, like 85, up to 100,000, or leave it blank.` };
+        return {
+          error: `Enter the ${size} ${material} price in whole dollars, like 85, up to 100,000, or leave it blank.`,
+        };
       }
       if (price > 0) (prices[material] ??= {})[size] = price;
     }

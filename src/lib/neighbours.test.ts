@@ -14,11 +14,7 @@ const catalog = [
   work("f", "places"),
 ];
 
-const slugsOf = (result: ReturnType<typeof neighbours>) => [
-  result.previous?.slug,
-  result.next?.slug,
-  result.subject,
-];
+const slugsOf = (result: ReturnType<typeof neighbours>) => [result.previous?.slug, result.next?.slug, result.subject];
 
 test("steps within the main subject and wraps at the ends", () => {
   assert.deepEqual(slugsOf(neighbours(catalog, "a")), ["f", "c", "places"]);

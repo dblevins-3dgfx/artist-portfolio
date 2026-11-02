@@ -28,7 +28,12 @@ test("reading drops blank and repeated names, bad prices, and prices for unknown
     materials: ["Paper", "paper"],
     prices: { Paper: { "8×10": 35, "8X10": 12.5, "16×20": 85 }, Metal: { "8×10": 90 } },
   });
-  assert.deepEqual(read, { currency: "USD", sizes: ["8×10", "8X10"], materials: ["Paper"], prices: { Paper: { "8×10": 35 } } });
+  assert.deepEqual(read, {
+    currency: "USD",
+    sizes: ["8×10", "8X10"],
+    materials: ["Paper"],
+    prices: { Paper: { "8×10": 35 } },
+  });
 });
 
 test("a desk save accepts dollars as typed and treats a blank cell as not offered", () => {
@@ -37,7 +42,12 @@ test("a desk save accepts dollars as typed and treats a blank cell as not offere
     materials: ["Paper"],
     prices: { Paper: { "8×10": "$35", "11×14": "" } },
   });
-  assert.deepEqual(checked, { currency: "USD", sizes: ["8×10", "11×14"], materials: ["Paper"], prices: { Paper: { "8×10": 35 } } });
+  assert.deepEqual(checked, {
+    currency: "USD",
+    sizes: ["8×10", "11×14"],
+    materials: ["Paper"],
+    prices: { Paper: { "8×10": 35 } },
+  });
 });
 
 test("a desk save refuses blank or repeated names and prices that are not whole dollars", () => {
@@ -86,7 +96,12 @@ test("no public page or component imports the print price list or the venue list
   const offenders = files.filter((file) => {
     const relative = path.relative(root, file);
     if (deskOnly.some((allowed) => relative === allowed || relative.startsWith(allowed + path.sep))) return false;
-    return /(?:from|import|require)\s*\(?\s*["'][^"']*(?:print-prices|venues)(?:\.json)?["']/.test(readFileSync(file, "utf8"));
+    return /(?:from|import|require)\s*\(?\s*["'][^"']*(?:print-prices|venues)(?:\.json)?["']/.test(
+      readFileSync(file, "utf8"),
+    );
   });
-  assert.deepEqual(offenders.map((file) => path.relative(root, file)), []);
+  assert.deepEqual(
+    offenders.map((file) => path.relative(root, file)),
+    [],
+  );
 });

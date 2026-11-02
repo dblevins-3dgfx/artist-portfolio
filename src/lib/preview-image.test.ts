@@ -25,7 +25,9 @@ function gradient(width: number, height: number, reverse = false) {
       pixels.fill(level, (y * width + x) * 3, (y * width + x) * 3 + 3);
     }
   }
-  return sharp(pixels, { raw: { width, height, channels: 3 } }).jpeg().toBuffer();
+  return sharp(pixels, { raw: { width, height, channels: 3 } })
+    .jpeg()
+    .toBuffer();
 }
 
 async function size(bytes: Buffer) {
@@ -52,14 +54,19 @@ test("a photograph already under 1400px is not enlarged", async () => {
 test("the camera's rotation is applied before sizing", async () => {
   // Phones store a portrait photo sideways with an EXIF orientation tag
   // (6 = rotate 90°). The preview must come out portrait, 1400px tall (#94).
-  const sideways = await sharp(await solid(1800, 1200)).withMetadata({ orientation: 6 }).jpeg().toBuffer();
+  const sideways = await sharp(await solid(1800, 1200))
+    .withMetadata({ orientation: 6 })
+    .jpeg()
+    .toBuffer();
   const preview = await renderPreview(sideways);
   assert.deepEqual([preview.width, preview.height], [933, 1400]);
 });
 
 test("a full-size phone portrait is accepted and comes out portrait", async () => {
   // 4032×3024 stored, orientation 6: what an iPhone portrait looks like.
-  const phone = await sharp({ create: { width: 4032, height: 3024, channels: 3, background: { r: 90, g: 120, b: 150 } } })
+  const phone = await sharp({
+    create: { width: 4032, height: 3024, channels: 3, background: { r: 90, g: 120, b: 150 } },
+  })
     .withMetadata({ orientation: 6 })
     .jpeg()
     .toBuffer();
@@ -102,11 +109,17 @@ test("the preview is a JPEG and its hash matches its bytes", async () => {
 test("the watermark changes the pixels: the preview is not the plain reduced photograph", async () => {
   const photo = await solid(2000, 1500);
   const preview = await renderPreview(photo);
-  const plain = await sharp(photo).resize({ width: 1400 }).flatten({ background: "#f4efe6" }).jpeg({ quality: 70 }).raw().toBuffer();
+  const plain = await sharp(photo)
+    .resize({ width: 1400 })
+    .flatten({ background: "#f4efe6" })
+    .jpeg({ quality: 70 })
+    .raw()
+    .toBuffer();
   const marked = await sharp(preview.buffer).raw().toBuffer();
   assert.equal(marked.length, plain.length);
   let differing = 0;
-  for (let index = 0; index < marked.length; index += 1) if (Math.abs(marked[index] - plain[index]) > 16) differing += 1;
+  for (let index = 0; index < marked.length; index += 1)
+    if (Math.abs(marked[index] - plain[index]) > 16) differing += 1;
   // On a flat color the repeating mark shows across a good share of the image.
   assert.ok(differing / marked.length > 0.02, `only ${(100 * differing) / marked.length}% of values changed`);
 });
@@ -126,7 +139,10 @@ test("very different photographs get fingerprints well past the duplicate thresh
 });
 
 test("something that is not a photograph is refused before any work", async () => {
-  await assert.rejects(renderPreview(Buffer.from("not an image at all, just text")), /Use a JPEG, PNG, WebP, or TIFF photograph/);
+  await assert.rejects(
+    renderPreview(Buffer.from("not an image at all, just text")),
+    /Use a JPEG, PNG, WebP, or TIFF photograph/,
+  );
 });
 
 test("a file that starts like a JPEG but is broken is refused with a plain message", async () => {
@@ -138,7 +154,11 @@ test("looksLikeImage knows the JPEG, PNG, WebP, and TIFF signatures", () => {
   const pad = (head: number[] | string) => Buffer.concat([Buffer.from(head as never), Buffer.alloc(16)]);
   assert.equal(looksLikeImage(pad([0xff, 0xd8, 0xff])), true, "JPEG");
   assert.equal(looksLikeImage(pad([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])), true, "PNG");
-  assert.equal(looksLikeImage(Buffer.concat([Buffer.from("RIFF"), Buffer.alloc(4), Buffer.from("WEBP"), Buffer.alloc(8)])), true, "WebP");
+  assert.equal(
+    looksLikeImage(Buffer.concat([Buffer.from("RIFF"), Buffer.alloc(4), Buffer.from("WEBP"), Buffer.alloc(8)])),
+    true,
+    "WebP",
+  );
   assert.equal(looksLikeImage(pad([0x49, 0x49, 0x2a, 0x00])), true, "TIFF, little-endian");
   assert.equal(looksLikeImage(pad([0x4d, 0x4d, 0x00, 0x2a])), true, "TIFF, big-endian");
 });
@@ -146,6 +166,10 @@ test("looksLikeImage knows the JPEG, PNG, WebP, and TIFF signatures", () => {
 test("looksLikeImage refuses short and unknown files", () => {
   assert.equal(looksLikeImage(Buffer.from([0xff, 0xd8])), false, "too short to tell");
   assert.equal(looksLikeImage(Buffer.from("GIF89a-------")), false, "GIF is not accepted");
-  assert.equal(looksLikeImage(Buffer.concat([Buffer.from("RIFF"), Buffer.alloc(4), Buffer.from("WAVE"), Buffer.alloc(8)])), false, "a RIFF that is not WebP");
+  assert.equal(
+    looksLikeImage(Buffer.concat([Buffer.from("RIFF"), Buffer.alloc(4), Buffer.from("WAVE"), Buffer.alloc(8)])),
+    false,
+    "a RIFF that is not WebP",
+  );
   assert.equal(looksLikeImage(Buffer.from("%PDF-1.7 not an image")), false, "PDF");
 });

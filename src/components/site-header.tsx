@@ -10,14 +10,7 @@ import { usePathname } from "next/navigation";
 import { MenuIcon } from "lucide-react";
 import { SignatureMark } from "@/components/signature-mark";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -26,15 +19,7 @@ const links = [
   { href: "/about", label: "About" },
 ];
 
-function NavLink({
-  href,
-  label,
-  onNavigate,
-}: {
-  href: string;
-  label: string;
-  onNavigate?: boolean;
-}) {
+function NavLink({ href, label, onNavigate }: { href: string; label: string; onNavigate?: boolean }) {
   const pathname = usePathname();
   const active = pathname === href || pathname.startsWith(`${href}/`);
   const className = cn(
@@ -43,11 +28,7 @@ function NavLink({
   );
 
   if (onNavigate) {
-    return (
-      <SheetClose render={<Link href={href} className={className} />}>
-        {label}
-      </SheetClose>
-    );
+    return <SheetClose render={<Link href={href} className={className} />}>{label}</SheetClose>;
   }
 
   return (
@@ -61,10 +42,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
-        <Link
-          href="/"
-          className="flex items-center gap-2.5 font-heading text-2xl leading-none italic tracking-tight"
-        >
+        <Link href="/" className="flex items-center gap-2.5 font-heading text-2xl leading-none italic tracking-tight">
           {/* aria-hidden: the name beside it already labels the link, so
               screen readers skip the decorative mark. */}
           <SignatureMark aria-hidden="true" className="h-8 w-auto shrink-0 text-primary" />
@@ -78,14 +56,7 @@ export function SiteHeader() {
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger
-              render={
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="size-11 bg-card"
-                  aria-label="Open menu"
-                />
-              }
+              render={<Button variant="outline" size="icon" className="size-11 bg-card" aria-label="Open menu" />}
             >
               <MenuIcon />
             </SheetTrigger>

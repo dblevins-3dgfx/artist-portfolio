@@ -14,13 +14,7 @@
  */
 import { createHash, createHmac, timingSafeEqual } from "crypto";
 import { cookies, headers } from "next/headers";
-import {
-  clearFailures,
-  clientAddressFrom,
-  isLockedOut,
-  recordFailure,
-  type Attempts,
-} from "@/lib/login-attempts";
+import { clearFailures, clientAddressFrom, isLockedOut, recordFailure, type Attempts } from "@/lib/login-attempts";
 
 // Only the desk reads the session, so the browser sends it only to /curate.
 // The name changed when the path did: a response can set one cookie per

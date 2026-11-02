@@ -23,7 +23,10 @@ afterEach(() => {
   else process.env.STUDIO_GITHUB_TOKEN = savedToken;
 });
 
-const internals = JSON.stringify({ message: `Bad credentials for ${TOKEN}`, documentation_url: "https://docs.github.com/rest" });
+const internals = JSON.stringify({
+  message: `Bad credentials for ${TOKEN}`,
+  documentation_url: "https://docs.github.com/rest",
+});
 
 test("a failed read shows a plain message and logs GitHub's reply", async () => {
   replyWith(401, internals);
@@ -113,7 +116,10 @@ test("readGitHead reads the branch, then its commit, and returns the head", asyn
     parentSha: "c0ffee",
     baseTree: "7ree",
   });
-  assert.deepEqual(sent.map((s) => `${s.method} ${s.path}`), ["GET /git/ref/heads/main", "GET /git/commits/c0ffee"]);
+  assert.deepEqual(
+    sent.map((s) => `${s.method} ${s.path}`),
+    ["GET /git/ref/heads/main", "GET /git/commits/c0ffee"],
+  );
 });
 
 test("readGitHead refuses a reply missing the commit or the tree", async () => {
@@ -192,7 +198,10 @@ test("readGitFile passes on errors other than a missing file", async () => {
 test("only catalog paths can be read or written, checked before any request", async () => {
   const sent = scriptGitHub([]);
   await assert.rejects(readGitFile("package.json", "main"), /Refusing/);
-  await assert.rejects(commitGitFiles(head, "Update", [{ path: "../secrets.txt", bytes: Buffer.from("x") }]), /Refusing/);
+  await assert.rejects(
+    commitGitFiles(head, "Update", [{ path: "../secrets.txt", bytes: Buffer.from("x") }]),
+    /Refusing/,
+  );
   assert.equal(sent.length, 0);
 });
 
@@ -210,13 +219,10 @@ test("commitGitFiles writes blobs, a tree with deletes as sha null, a commit, th
     { path: "public/art/old-lake.jpg", bytes: null },
   ]);
   assert.equal(commit, "commit-new");
-  assert.deepEqual(sent.map((s) => `${s.method} ${s.path}`), [
-    "POST /git/blobs",
-    "POST /git/blobs",
-    "POST /git/trees",
-    "POST /git/commits",
-    "PATCH /git/refs/heads/main",
-  ]);
+  assert.deepEqual(
+    sent.map((s) => `${s.method} ${s.path}`),
+    ["POST /git/blobs", "POST /git/blobs", "POST /git/trees", "POST /git/commits", "PATCH /git/refs/heads/main"],
+  );
   // A deleted file gets no blob.
   assert.deepEqual(sent[0].body, { content: Buffer.from("[]\n").toString("base64"), encoding: "base64" });
   assert.deepEqual(sent[2].body, {
@@ -254,7 +260,11 @@ test("commitGitFiles stops if GitHub leaves out a blob, tree, or commit id", asy
     [201, {}],
   ]);
   await assert.rejects(commitGitFiles(head, "Update", one), /did not create the catalog commit/);
-  assert.equal(sent.some((s) => s.method === "PATCH"), false, "the branch is not moved");
+  assert.equal(
+    sent.some((s) => s.method === "PATCH"),
+    false,
+    "the branch is not moved",
+  );
 });
 
 test("isGitConflict is true only for GitHub's 409 and 422", () => {

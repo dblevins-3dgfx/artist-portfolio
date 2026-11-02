@@ -51,12 +51,5 @@ export default async function CuratePage({
 
   if (loadError) return <DeskLoadError message={loadError} />;
 
-  return (
-    <CurateDesk
-      works={works}
-      publishing={publishingMode()}
-      notice={notice}
-      focusSlug={focusSlug}
-    />
-  );
+  return <CurateDesk works={works} publishing={publishingMode()} notice={notice} focusSlug={focusSlug} />;
 }

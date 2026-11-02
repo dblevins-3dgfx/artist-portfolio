@@ -61,7 +61,15 @@ test("parseWorks rejects a catalog that is not a list or has a bad web name", ()
 
 test("parseWorks fills safe defaults for missing or wrong fields", () => {
   const [work] = parseWorks([
-    { slug: "lake", year: 2020, originalStatus: "stolen", subject: "dragons", featured: "yes", widthIn: "12", originalPrice: "900" },
+    {
+      slug: "lake",
+      year: 2020,
+      originalStatus: "stolen",
+      subject: "dragons",
+      featured: "yes",
+      widthIn: "12",
+      originalPrice: "900",
+    },
   ]);
   assert.deepEqual(work, {
     title: "lake",
@@ -175,7 +183,14 @@ test("where a painting is shown is read as venue ids, dropping bad ones, and wri
 
 test("the public view of a painting leaves out availability, price, and the front-page flag", () => {
   const [work] = parseWorks([
-    { slug: "lake", title: "Lake", originalStatus: "in-studio", originalPrice: 1800, printsAvailable: true, featured: true },
+    {
+      slug: "lake",
+      title: "Lake",
+      originalStatus: "in-studio",
+      originalPrice: 1800,
+      printsAvailable: true,
+      featured: true,
+    },
   ]);
   const shown = toCatalogWork(work) as Record<string, unknown>;
   for (const key of [

@@ -31,11 +31,7 @@ async function meanDiff(left: Buffer, right: Buffer) {
 export function looksLikeImage(bytes: Buffer) {
   if (bytes.length < 12) return false;
   if (bytes[0] === 0xff && bytes[1] === 0xd8) return true;
-  if (
-    bytes
-      .subarray(0, 8)
-      .equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))
-  ) {
+  if (bytes.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) {
     return true;
   }
   if (bytes.subarray(0, 4).toString("ascii") === "RIFF" && bytes.subarray(8, 12).toString("ascii") === "WEBP") {
@@ -76,9 +72,7 @@ export async function renderPreview(input: Buffer): Promise<PreviewImage> {
       .jpeg({ quality: 70, progressive: true })
       .toBuffer();
   } catch {
-    throw new Error(
-      "That photograph could not be prepared. Export a smaller JPEG, PNG, WebP, or TIFF and try again.",
-    );
+    throw new Error("That photograph could not be prepared. Export a smaller JPEG, PNG, WebP, or TIFF and try again.");
   }
 
   const marked = await applyWatermark(plain, label, credit);
@@ -92,7 +86,12 @@ export async function renderPreview(input: Buffer): Promise<PreviewImage> {
   if (published.exif || published.xmp || published.iptc) {
     throw new Error("Camera information was still attached to that preview, so it was not saved.");
   }
-  if ((published.width ?? 0) > MAX_EDGE || (published.height ?? 0) > MAX_EDGE || !published.width || !published.height) {
+  if (
+    (published.width ?? 0) > MAX_EDGE ||
+    (published.height ?? 0) > MAX_EDGE ||
+    !published.width ||
+    !published.height
+  ) {
     throw new Error("The preview came out the wrong size, so it was not saved.");
   }
 

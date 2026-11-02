@@ -53,7 +53,13 @@ const manifest: Manifest = {
   },
 };
 const catalog = [work("lake"), work("shore", { imageWidth: 900, imageHeight: 1400 })];
-const photo = { buffer: Buffer.from("new jpeg"), width: 1200, height: 800, sha256: "new-hash", fingerprint: "fedcba9876543210" };
+const photo = {
+  buffer: Buffer.from("new jpeg"),
+  width: 1200,
+  height: 800,
+  sha256: "new-hash",
+  fingerprint: "fedcba9876543210",
+};
 
 test("checkSave: an edit finds its painting, an add needs a photograph", () => {
   assert.deepEqual(checkSave(catalog, "lake", fields("lake"), false), { existing: catalog[0] });
@@ -72,7 +78,12 @@ test("adding a painting writes its preview and manifest entry under the new web 
   const plan = planPreviewFiles({ slug: "pond", rendered: photo, manifest });
   assert.ok(!("error" in plan));
   assert.deepEqual(plan.files, [{ path: "public/art/pond.jpg", bytes: photo.buffer }]);
-  assert.deepEqual(plan.manifest.files["pond.jpg"], { width: 1200, height: 800, sha256: "new-hash", fingerprint: "fedcba9876543210" });
+  assert.deepEqual(plan.manifest.files["pond.jpg"], {
+    width: 1200,
+    height: 800,
+    sha256: "new-hash",
+    fingerprint: "fedcba9876543210",
+  });
   assert.deepEqual([plan.imageWidth, plan.imageHeight], [1200, 800]);
   assert.equal(Object.keys(manifest.files).length, 2, "the manifest passed in is not changed");
 });
@@ -106,7 +117,13 @@ test("a rename with a new photograph writes the new file and deletes the old one
 
 test("a rename without a new photograph moves the current preview and its manifest entry", () => {
   const current = Buffer.from("current jpeg");
-  const plan = planPreviewFiles({ existing: catalog[0], slug: "lake-at-dusk", rendered: null, currentPreview: current, manifest });
+  const plan = planPreviewFiles({
+    existing: catalog[0],
+    slug: "lake-at-dusk",
+    rendered: null,
+    currentPreview: current,
+    manifest,
+  });
   assert.ok(!("error" in plan));
   assert.deepEqual(plan.files, [
     { path: "public/art/lake-at-dusk.jpg", bytes: current },
@@ -119,7 +136,13 @@ test("a rename without a new photograph moves the current preview and its manife
 
 test("a rename without a new photograph and no manifest entry records one from the bytes", () => {
   const current = Buffer.from("current jpeg");
-  const plan = planPreviewFiles({ existing: catalog[0], slug: "lake-at-dusk", rendered: null, currentPreview: current, manifest: { files: {} } });
+  const plan = planPreviewFiles({
+    existing: catalog[0],
+    slug: "lake-at-dusk",
+    rendered: null,
+    currentPreview: current,
+    manifest: { files: {} },
+  });
   assert.ok(!("error" in plan));
   assert.deepEqual(plan.manifest.files["lake-at-dusk.jpg"], {
     width: 1400,
@@ -130,7 +153,10 @@ test("a rename without a new photograph and no manifest entry records one from t
 
 test("a rename without a new photograph needs the current preview", () => {
   for (const currentPreview of [null, undefined]) {
-    assert.ok("error" in planPreviewFiles({ existing: catalog[0], slug: "lake-at-dusk", rendered: null, currentPreview, manifest }));
+    assert.ok(
+      "error" in
+        planPreviewFiles({ existing: catalog[0], slug: "lake-at-dusk", rendered: null, currentPreview, manifest }),
+    );
   }
 });
 
@@ -170,7 +196,11 @@ test("buildWork takes showings from the form when it had that section", () => {
 });
 
 test("buildWork keeps where a painting is shown when the form had no Showings section", () => {
-  const shown = work("lake", { originalStatus: "in-studio", originalShownAt: "blue-door", printsShownAt: ["corner-shop"] });
+  const shown = work("lake", {
+    originalStatus: "in-studio",
+    originalShownAt: "blue-door",
+    printsShownAt: ["corner-shop"],
+  });
   const built = buildWork(fields("lake"), shown, { imageWidth: 1400, imageHeight: 1000 }, venues);
   assert.deepEqual([built.originalShownAt, built.printsShownAt], ["blue-door", ["corner-shop"]]);
   const added = buildWork(fields("pond"), undefined, { imageWidth: 1200, imageHeight: 800 }, venues);
@@ -178,7 +208,11 @@ test("buildWork keeps where a painting is shown when the form had no Showings se
 });
 
 test("buildWork drops the original's venue once it is not Available, and venues no longer on the list", () => {
-  const shown = work("lake", { originalStatus: "in-studio", originalShownAt: "blue-door", printsShownAt: ["corner-shop", "gone"] });
+  const shown = work("lake", {
+    originalStatus: "in-studio",
+    originalShownAt: "blue-door",
+    printsShownAt: ["corner-shop", "gone"],
+  });
   const sold = buildWork(
     fields("lake", { availability: { originalStatus: "sold", originalPrice: 0, printsAvailable: true } }),
     shown,
@@ -210,7 +244,10 @@ test("commit messages keep the title on one short line", () => {
 test("removing a painting deletes its preview unless another entry still uses it", () => {
   const plan = planRemoval(catalog, manifest, "lake");
   assert.ok(!("error" in plan));
-  assert.deepEqual(plan.works.map((w) => w.slug), ["shore"]);
+  assert.deepEqual(
+    plan.works.map((w) => w.slug),
+    ["shore"],
+  );
   assert.deepEqual(plan.files, [{ path: "public/art/lake.jpg", bytes: null }]);
   assert.equal("lake.jpg" in plan.manifest.files, false);
   assert.equal(plan.message, 'Remove "lake" from the studio desk');
