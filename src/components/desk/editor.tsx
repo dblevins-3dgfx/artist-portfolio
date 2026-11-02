@@ -47,16 +47,30 @@ function WorkForm({
     >
       <input type="hidden" name="existingSlug" value={work.slug} />
       <div>
-        <Image
-          src={work.previewUrl}
-          alt={work.title}
-          width={work.imageWidth || 160}
-          height={work.imageHeight || 160}
-          unoptimized
-          className="aspect-[4/5] w-full border border-border object-cover"
-        />
+        {/* The thumbnail is cropped to fit; the link shows the whole preview
+            in a new tab, so the form and any unsaved edits stay put. */}
+        <a
+          href={work.previewUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Open the whole image in a new tab"
+          tabIndex={-1}
+          aria-hidden
+        >
+          <Image
+            src={work.previewUrl}
+            alt={work.title}
+            width={work.imageWidth || 160}
+            height={work.imageHeight || 160}
+            unoptimized
+            className="aspect-[4/5] w-full border border-border object-cover"
+          />
+        </a>
         <p className="mt-2 text-xs text-muted-foreground">
-          Preview{work.imageWidth ? `, ${work.imageWidth} × ${work.imageHeight}` : ""}
+          Preview{work.imageWidth ? `, ${work.imageWidth} × ${work.imageHeight}` : ""}.{" "}
+          <a href={work.previewUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+            View uncropped
+          </a>
         </p>
         {work.duplicateOf ? <p className="mt-2 text-sm leading-relaxed">{work.duplicateOf}</p> : null}
       </div>
