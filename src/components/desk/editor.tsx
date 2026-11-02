@@ -25,6 +25,7 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/
 import { Input } from "@/components/ui/input";
 import { listSeparator, stepThrough, type DeskWork, type Publishing } from "@/lib/desk";
 import { cn } from "@/lib/utils";
+import type { Venue } from "@/lib/venues";
 
 // The thumbnail is cropped to fit the form. Clicking it shows the whole
 // preview over the page, as the public painting page does; the form and any
@@ -89,12 +90,14 @@ function LookalikeNote({ work, guardLink }: { work: DeskWork; guardLink: (event:
 
 function WorkForm({
   work,
+  venues,
   canSave,
   guard,
   guardLink,
   onCancel,
 }: {
   work: DeskWork;
+  venues: Venue[];
   canSave: boolean;
   guard: LeaveGuard;
   guardLink: (event: MouseEvent<HTMLAnchorElement>) => void;
@@ -118,7 +121,7 @@ function WorkForm({
         <LookalikeNote work={work} guardLink={guardLink} />
       </div>
       <div className="grid gap-4">
-        <PaintingFields idPrefix={work.slug} work={work} />
+        <PaintingFields idPrefix={work.slug} work={work} venues={venues} />
         <Field id={`${work.slug}-image`} label="Replace the photograph">
           <Input
             id={`${work.slug}-image`}
@@ -152,10 +155,12 @@ function WorkForm({
 // The add page tracks changes only so leaving can ask first; its button
 // does not wait for a change, and the browser requires a photograph.
 function NewWorkForm({
+  venues,
   canSave,
   guard,
   onCancel,
 }: {
+  venues: Venue[];
   canSave: boolean;
   guard: LeaveGuard;
   onCancel: () => void;
@@ -180,7 +185,7 @@ function NewWorkForm({
           onChange={checkPhotoSize}
         />
       </Field>
-      <PaintingFields idPrefix="new" />
+      <PaintingFields idPrefix="new" venues={venues} />
       <FormError state={state} />
       <PendingButtons
         pending={pending}
@@ -214,11 +219,13 @@ function StepButton({ href, label, children }: { href?: string; label: string; c
 export function CurateEditor({
   work,
   works,
+  venues,
   justSaved,
   publishing,
 }: {
   work: DeskWork;
   works: DeskWork[];
+  venues: Venue[];
   justSaved: boolean;
   publishing: Publishing;
 }) {
@@ -267,6 +274,7 @@ export function CurateEditor({
       <div className="mt-10">
         <WorkForm
           work={work}
+          venues={venues}
           canSave={publishing !== "missing"}
           guard={guard}
           guardLink={guardLink}
@@ -277,7 +285,7 @@ export function CurateEditor({
   );
 }
 
-export function CurateAdd({ publishing }: { publishing: Publishing }) {
+export function CurateAdd({ publishing, venues }: { publishing: Publishing; venues: Venue[] }) {
   const { guard, leave, guardLink } = useLeaveGuard(
     "Discard this new painting? Nothing has been saved. Choose OK to discard it, or Cancel to keep editing.",
   );
@@ -295,7 +303,7 @@ export function CurateAdd({ publishing }: { publishing: Publishing }) {
       </p>
       <PublishingNote publishing={publishing} />
       <div className="mt-10">
-        <NewWorkForm canSave={publishing !== "missing"} guard={guard} onCancel={() => leave("/curate")} />
+        <NewWorkForm venues={venues} canSave={publishing !== "missing"} guard={guard} onCancel={() => leave("/curate")} />
       </div>
     </div>
   );

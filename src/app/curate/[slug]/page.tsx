@@ -14,7 +14,8 @@ import { CurateEditor } from "@/components/desk/editor";
 import { CurateLogin } from "@/components/curate-login";
 import { DeskLoadError, DeskSwitchedOff } from "@/components/desk-messages";
 import { isCatalogSlug } from "@/lib/catalog";
-import { loadCatalog, publishingMode, toDeskWorks } from "@/lib/catalog-store";
+import { loadCatalog, loadVenues, publishingMode, toDeskWorks } from "@/lib/catalog-store";
+import type { Venue } from "@/lib/venues";
 import { isSignedIn, studioPassword } from "@/lib/studio-auth";
 
 export const dynamic = "force-dynamic";
@@ -41,9 +42,12 @@ export default async function CuratePaintingPage({
 
   const { slug } = await params;
   let works: Awaited<ReturnType<typeof toDeskWorks>> = [];
+  let venues: Venue[] = [];
   let loadError = "";
   try {
-    works = toDeskWorks(await loadCatalog());
+    const [catalog, list] = await Promise.all([loadCatalog(), loadVenues()]);
+    works = toDeskWorks(catalog);
+    venues = list;
   } catch (error) {
     loadError = error instanceof Error ? error.message : "The catalog could not be read.";
   }
@@ -76,6 +80,7 @@ export default async function CuratePaintingPage({
       key={JSON.stringify(work)}
       work={work}
       works={works}
+      venues={venues}
       justSaved={saved === "1"}
       publishing={publishingMode()}
     />

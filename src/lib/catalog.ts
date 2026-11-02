@@ -8,7 +8,8 @@
  *
  * assertCatalogPath is the allow-list for anything written to disk or Git.
  * A save may touch content/works.json, content/art-manifest.json,
- * content/print-prices.json, and public/art/<slug>.jpg. Nothing else.
+ * content/print-prices.json, content/venues.json, and public/art/<slug>.jpg.
+ * Nothing else.
  */
 import path from "path";
 import { parseSubjects } from "@/lib/subjects";
@@ -17,6 +18,7 @@ import type { CatalogWork, OriginalStatus, Work } from "@/lib/types";
 export const WORKS_PATH = "content/works.json";
 export const MANIFEST_PATH = "content/art-manifest.json";
 export const PRINT_PRICES_PATH = "content/print-prices.json";
+export const VENUES_PATH = "content/venues.json";
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -36,6 +38,7 @@ export function assertCatalogPath(filePath: string) {
     filePath === WORKS_PATH ||
     filePath === MANIFEST_PATH ||
     filePath === PRINT_PRICES_PATH ||
+    filePath === VENUES_PATH ||
     /^public\/art\/[a-z0-9-]+\.jpg$/.test(filePath);
   if (!allowed) throw new Error("Refusing to write that file.");
 }
@@ -45,6 +48,7 @@ export function catalogFilePath(filePath: string) {
   if (filePath === WORKS_PATH) return path.join(process.cwd(), "content", "works.json");
   if (filePath === MANIFEST_PATH) return path.join(process.cwd(), "content", "art-manifest.json");
   if (filePath === PRINT_PRICES_PATH) return path.join(process.cwd(), "content", "print-prices.json");
+  if (filePath === VENUES_PATH) return path.join(process.cwd(), "content", "venues.json");
   const name = filePath.slice("public/art/".length);
   if (!/^[a-z0-9-]+\.jpg$/.test(name)) throw new Error("Refusing to write that file.");
   return path.join(process.cwd(), "public", "art", name);
@@ -58,6 +62,13 @@ export function asRecord(value: unknown): Record<string, unknown> | null {
 // Older catalogs stored one `subject` string per painting. Read that as a
 // one-item list so an entry written before the change still loads. Once
 // saved again it is written back as `subjects`.
+// Venue ids as stored. Whether each venue still exists is checked against
+// the venue list where it matters (a save, and the desk's display).
+function readVenueIds(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return [...new Set(value.filter((id): id is string => typeof id === "string" && SLUG.test(id)))];
+}
+
 function readSubjects(record: Record<string, unknown>) {
   if (Array.isArray(record.subjects)) return parseSubjects(record.subjects);
   return parseSubjects(typeof record.subject === "string" ? [record.subject] : []);
@@ -89,6 +100,9 @@ export function parseWorks(value: unknown): Work[] {
           ? record.originalPrice
           : 0,
       printsAvailable: record.printsAvailable === true,
+      originalShownAt:
+        typeof record.originalShownAt === "string" && SLUG.test(record.originalShownAt) ? record.originalShownAt : "",
+      printsShownAt: readVenueIds(record.printsShownAt),
       slug: record.slug,
       image: `/art/${record.slug}.jpg`,
       imageWidth: typeof record.imageWidth === "number" ? record.imageWidth : 0,
@@ -134,6 +148,10 @@ export function serializeWorks(works: Work[]) {
       // unchanged and the file does not gain a 0 on every painting.
       ...(work.originalPrice > 0 ? { originalPrice: work.originalPrice } : {}),
       printsAvailable: work.printsAvailable,
+      // Like the price, written only when set, so paintings not on display
+      // keep their entry unchanged.
+      ...(work.originalShownAt ? { originalShownAt: work.originalShownAt } : {}),
+      ...(work.printsShownAt.length > 0 ? { printsShownAt: work.printsShownAt } : {}),
       slug: work.slug,
       image: work.image,
       imageWidth: work.imageWidth,

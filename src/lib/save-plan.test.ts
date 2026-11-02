@@ -20,6 +20,8 @@ function work(slug: string, extra: Partial<Work> = {}): Work {
     originalStatus: "not-for-sale",
     originalPrice: 0,
     printsAvailable: true,
+    originalShownAt: "",
+    printsShownAt: [],
     slug,
     image: `/art/${slug}.jpg`,
     imageWidth: 1400,
@@ -137,6 +139,7 @@ test("buildWork takes availability from the form when it had that section", () =
     fields("lake", { availability: { originalStatus: "in-studio", originalPrice: 1200, printsAvailable: false } }),
     catalog[0],
     { imageWidth: 1400, imageHeight: 1000 },
+    new Set(),
   );
   assert.deepEqual([built.originalStatus, built.originalPrice, built.printsAvailable], ["in-studio", 1200, false]);
   assert.equal(built.image, "/art/lake.jpg");
@@ -144,10 +147,59 @@ test("buildWork takes availability from the form when it had that section", () =
 
 test("buildWork keeps a painting's availability when the form had no such section", () => {
   const sold = work("lake", { originalStatus: "sold", originalPrice: 950, printsAvailable: true });
-  const built = buildWork(fields("lake"), sold, { imageWidth: 1400, imageHeight: 1000 });
+  const built = buildWork(fields("lake"), sold, { imageWidth: 1400, imageHeight: 1000 }, new Set());
   assert.deepEqual([built.originalStatus, built.originalPrice, built.printsAvailable], ["sold", 950, true]);
-  const added = buildWork(fields("pond"), undefined, { imageWidth: 1200, imageHeight: 800 });
+  const added = buildWork(fields("pond"), undefined, { imageWidth: 1200, imageHeight: 800 }, new Set());
   assert.deepEqual([added.originalStatus, added.originalPrice, added.printsAvailable], ["not-for-sale", 0, false]);
+});
+
+const venues = new Set(["blue-door", "corner-shop"]);
+
+test("buildWork takes showings from the form when it had that section", () => {
+  const built = buildWork(
+    fields("lake", {
+      availability: { originalStatus: "in-studio", originalPrice: 1200, printsAvailable: true },
+      showings: { originalShownAt: "blue-door", printsShownAt: ["corner-shop", "blue-door"] },
+    }),
+    catalog[0],
+    { imageWidth: 1400, imageHeight: 1000 },
+    venues,
+  );
+  assert.equal(built.originalShownAt, "blue-door");
+  assert.deepEqual(built.printsShownAt, ["corner-shop", "blue-door"]);
+});
+
+test("buildWork keeps where a painting is shown when the form had no Showings section", () => {
+  const shown = work("lake", { originalStatus: "in-studio", originalShownAt: "blue-door", printsShownAt: ["corner-shop"] });
+  const built = buildWork(fields("lake"), shown, { imageWidth: 1400, imageHeight: 1000 }, venues);
+  assert.deepEqual([built.originalShownAt, built.printsShownAt], ["blue-door", ["corner-shop"]]);
+  const added = buildWork(fields("pond"), undefined, { imageWidth: 1200, imageHeight: 800 }, venues);
+  assert.deepEqual([added.originalShownAt, added.printsShownAt], ["", []]);
+});
+
+test("buildWork drops the original's venue once it is not Available, and venues no longer on the list", () => {
+  const shown = work("lake", { originalStatus: "in-studio", originalShownAt: "blue-door", printsShownAt: ["corner-shop", "gone"] });
+  const sold = buildWork(
+    fields("lake", { availability: { originalStatus: "sold", originalPrice: 0, printsAvailable: true } }),
+    shown,
+    { imageWidth: 1400, imageHeight: 1000 },
+    venues,
+  );
+  assert.deepEqual([sold.originalShownAt, sold.printsShownAt], ["", ["corner-shop"]]);
+});
+
+test("buildWork drops the prints' venues once prints are not offered", () => {
+  const shown = work("lake", { printsAvailable: true, printsShownAt: ["corner-shop"] });
+  const built = buildWork(
+    fields("lake", {
+      availability: { originalStatus: "not-for-sale", originalPrice: 0, printsAvailable: false },
+      showings: { originalShownAt: "", printsShownAt: ["corner-shop"] },
+    }),
+    shown,
+    { imageWidth: 1400, imageHeight: 1000 },
+    venues,
+  );
+  assert.deepEqual(built.printsShownAt, []);
 });
 
 test("commit messages keep the title on one short line", () => {

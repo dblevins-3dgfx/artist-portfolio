@@ -27,6 +27,8 @@ function work(slug: string, title = slug): Work {
     originalStatus: "not-for-sale",
     originalPrice: 0,
     printsAvailable: true,
+    originalShownAt: "",
+    printsShownAt: [],
     slug,
     image: `/art/${slug}.jpg`,
     imageWidth: 1400,

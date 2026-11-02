@@ -35,6 +35,8 @@ export type DeskWork = {
   imageWidth: number;
   imageHeight: number;
   lookalikes: LikenessMember[];
+  originalShownAt: string;
+  printsShownAt: string[];
 };
 
 // availability is absent when the form had no Availability section: a desk
@@ -55,6 +57,12 @@ export type WorkFields = {
     originalStatus: OriginalStatus;
     originalPrice: number;
     printsAvailable: boolean;
+  };
+  // Absent when the form had no Showings fields (a tab from before #104);
+  // the save then keeps where the painting is shown.
+  showings?: {
+    originalShownAt: string;
+    printsShownAt: string[];
   };
 };
 
@@ -91,6 +99,11 @@ export function needsWork(work: DeskWork) {
   return missingDetails(work).length > 0 || work.lookalikes.length > 0;
 }
 
+// Shown at a gallery or shop: the original, prints, or both (#104).
+export function isOnDisplay(work: Pick<DeskWork, "originalShownAt" | "printsShownAt">) {
+  return work.originalShownAt !== "" || work.printsShownAt.length > 0;
+}
+
 export const DESK_FILTERS: DeskFilter[] = [
   { id: "all", label: "All", matches: () => true },
   { id: "needs-work", label: "Needs work", matches: needsWork },
@@ -101,6 +114,7 @@ export const DESK_FILTERS: DeskFilter[] = [
   { id: "size", label: "No size", matches: hasBadge("No size") },
   { id: "duplicate", label: "Possible duplicate", matches: (work) => work.lookalikes.length > 0 },
   { id: "front-page", label: "Front page", matches: (work) => work.featured },
+  { id: "on-display", label: "On display", matches: isOnDisplay },
 ];
 
 export function deskFilter(id: string | null | undefined): DeskFilter {

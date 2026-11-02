@@ -8,11 +8,12 @@ import type { WorkFields } from "@/lib/desk";
 import type { OriginalStatus } from "@/lib/types";
 import { isCatalogSlug } from "@/lib/catalog";
 import { parseSubjects } from "@/lib/subjects";
+import { isVenueId } from "@/lib/venues";
 
-// /curate/new and /curate/prices are desk pages. A painting with one of
-// these web names would share its address, and its own edit page could
-// never be opened.
-const RESERVED_SLUGS = new Set(["new", "prices"]);
+// /curate/new, /curate/prices and /curate/venues are desk pages. A painting
+// with one of these web names would share its address, and its own edit
+// page could never be opened.
+const RESERVED_SLUGS = new Set(["new", "prices", "venues"]);
 
 export function slugify(value: string) {
   return value
@@ -69,6 +70,21 @@ function readAvailability(formData: FormData): { error: string } | WorkFields["a
   return { originalStatus, originalPrice, printsAvailable: formData.get("printsAvailable") === "on" };
 }
 
+// The Showings fields send a hidden "showings" field, for the same reason
+// as Availability. Venue ids are only checked for shape here; whether each
+// venue still exists, and whether the original can be shown, is settled by
+// buildWork against the venue list.
+function readShowings(formData: FormData): { error: string } | WorkFields["showings"] {
+  if (formData.get("showings") !== "1") return undefined;
+  const original = formData.get("originalShownAt");
+  const originalShownAt = typeof original === "string" ? original : "";
+  const printsShownAt = formData.getAll("printsShownAt");
+  if ((originalShownAt && !isVenueId(originalShownAt)) || !printsShownAt.every(isVenueId)) {
+    return { error: "A venue on this form is not valid. Reload the page and try again." };
+  }
+  return { originalShownAt, printsShownAt: [...new Set(printsShownAt as string[])] };
+}
+
 export function readWorkForm(
   formData: FormData,
 ):
@@ -109,6 +125,8 @@ export function readWorkForm(
   }
   const availability = readAvailability(formData);
   if (availability && "error" in availability) return availability;
+  const showings = readShowings(formData);
+  if (showings && "error" in showings) return showings;
   const fields: WorkFields = {
     slug,
     title,
@@ -123,6 +141,7 @@ export function readWorkForm(
     subjects: parseSubjects(formData.getAll("subjects")),
     featured: formData.get("featured") === "on",
     ...(availability ? { availability } : {}),
+    ...(showings ? { showings } : {}),
   };
   return { intent: "save" as const, existingSlug, fields };
 }

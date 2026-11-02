@@ -49,12 +49,14 @@ const row = {
   imageWidth: 0,
   imageHeight: 0,
   lookalikes: [],
+  originalShownAt: "",
+  printsShownAt: [] as string[],
 };
 
 test("every badge has a filter with the same label", () => {
   const labels = DESK_FILTERS.map((filter) => filter.label);
   const everyBadge = missingDetails({ title: "IMG 1", subjects: [], medium: "", surface: "", widthIn: 0, heightIn: 0 });
-  for (const badge of [...everyBadge, "Possible duplicate", "Front page"]) assert.ok(labels.includes(badge), badge);
+  for (const badge of [...everyBadge, "Possible duplicate", "Front page", "On display"]) assert.ok(labels.includes(badge), badge);
   assert.equal(new Set(DESK_FILTERS.map((filter) => filter.id)).size, DESK_FILTERS.length);
 });
 
@@ -66,11 +68,15 @@ test("each badge filter matches the paintings that show that badge", () => {
   assert.equal(deskFilter("title").matches({ ...row, title: "IMG 7889" }), true);
   assert.equal(deskFilter("duplicate").matches({ ...row, lookalikes: [{ slug: "castle-rock", title: "Castle Rock" }] }), true);
   assert.equal(deskFilter("front-page").matches({ ...row, featured: true }), true);
+  assert.equal(deskFilter("on-display").matches({ ...row, originalShownAt: "blue-door" }), true);
+  assert.equal(deskFilter("on-display").matches({ ...row, printsShownAt: ["corner-shop"] }), true);
+  assert.equal(deskFilter("on-display").matches(row), false);
 });
 
 test("needs work is any missing detail or a possible duplicate, but not the front page", () => {
   assert.equal(needsWork(row), false);
   assert.equal(needsWork({ ...row, featured: true }), false);
+  assert.equal(needsWork({ ...row, printsShownAt: ["corner-shop"] }), false);
   assert.equal(needsWork({ ...row, surface: "" }), true);
   assert.equal(needsWork({ ...row, lookalikes: [{ slug: "castle-rock", title: "Castle Rock" }] }), true);
   assert.equal(deskFilter("needs-work").matches({ ...row, surface: "" }), true);

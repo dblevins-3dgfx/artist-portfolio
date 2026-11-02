@@ -103,6 +103,7 @@ test("bad fields come back as errors", () => {
 test("the web name of the desk's Add page is refused, typed or taken from the title", () => {
   assert.ok("error" in readWorkForm(form({ ...valid, slug: "new" })));
   assert.ok("error" in readWorkForm(form({ ...valid, slug: "prices" })));
+  assert.ok("error" in readWorkForm(form({ ...valid, slug: "venues" })));
   assert.ok("error" in readWorkForm(form({ ...valid, title: "New" })));
   const typed = readWorkForm(form({ ...valid, title: "New", slug: "new-snow" }));
   assert.ok("fields" in typed && typed.fields.slug === "new-snow");
@@ -123,6 +124,29 @@ test("a form without the Availability section leaves availability out, so the sa
   const parsed = readWorkForm(form({ ...valid, originalStatus: "sold" }));
   assert.ok("fields" in parsed);
   assert.equal("availability" in parsed.fields, false);
+});
+
+test("showings are read when the form has the Showings section", () => {
+  const parsed = readWorkForm(
+    form({ ...valid, showings: "1", originalShownAt: "blue-door", printsShownAt: ["corner-shop", "blue-door", "corner-shop"] }),
+  );
+  assert.ok("fields" in parsed);
+  assert.deepEqual(parsed.fields.showings, { originalShownAt: "blue-door", printsShownAt: ["corner-shop", "blue-door"] });
+  // The original's choice is hidden unless it is Available, so it may not be sent at all.
+  const hidden = readWorkForm(form({ ...valid, showings: "1" }));
+  assert.ok("fields" in hidden);
+  assert.deepEqual(hidden.fields.showings, { originalShownAt: "", printsShownAt: [] });
+});
+
+test("a form without the Showings section leaves showings out, so the save keeps them", () => {
+  const parsed = readWorkForm(form({ ...valid, printsShownAt: "corner-shop" }));
+  assert.ok("fields" in parsed);
+  assert.equal("showings" in parsed.fields, false);
+});
+
+test("a venue id that is not valid is refused", () => {
+  assert.ok("error" in readWorkForm(form({ ...valid, showings: "1", originalShownAt: "Blue Door" })));
+  assert.ok("error" in readWorkForm(form({ ...valid, showings: "1", printsShownAt: ["corner-shop", "../x"] })));
 });
 
 test("an available original needs a price in whole dollars", () => {

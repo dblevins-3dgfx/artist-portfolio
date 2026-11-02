@@ -4,6 +4,7 @@ import { test } from "node:test";
 import {
   MANIFEST_PATH,
   PRINT_PRICES_PATH,
+  VENUES_PATH,
   WORKS_PATH,
   assertCatalogPath,
   catalogFilePath,
@@ -23,12 +24,13 @@ test("web names are lowercase words joined by single hyphens", () => {
 });
 
 test("only the catalog, the manifest, the print prices, and preview images may be written", () => {
-  for (const file of [WORKS_PATH, MANIFEST_PATH, PRINT_PRICES_PATH, "public/art/bon-voyage.jpg"]) {
+  for (const file of [WORKS_PATH, MANIFEST_PATH, PRINT_PRICES_PATH, VENUES_PATH, "public/art/bon-voyage.jpg"]) {
     assert.doesNotThrow(() => assertCatalogPath(file), file);
   }
   const refused = [
     "content/studio.json",
     "content/print-prices.json.bak",
+    "content/venues.json.bak",
     "./content/works.json",
     "content/../content/works.json",
     "public/art/../../package.json",
@@ -46,6 +48,7 @@ test("allowed paths resolve inside the project", () => {
   const root = process.cwd();
   assert.equal(catalogFilePath(WORKS_PATH), path.join(root, "content", "works.json"));
   assert.equal(catalogFilePath(MANIFEST_PATH), path.join(root, "content", "art-manifest.json"));
+  assert.equal(catalogFilePath(VENUES_PATH), path.join(root, "content", "venues.json"));
   assert.equal(catalogFilePath("public/art/bon-voyage.jpg"), path.join(root, "public", "art", "bon-voyage.jpg"));
   assert.throws(() => catalogFilePath("public/art/../secret.jpg"), /Refusing/);
 });
@@ -73,6 +76,8 @@ test("parseWorks fills safe defaults for missing or wrong fields", () => {
     originalStatus: "not-for-sale",
     originalPrice: 0,
     printsAvailable: false,
+    originalShownAt: "",
+    printsShownAt: [],
     slug: "lake",
     image: "/art/lake.jpg",
     imageWidth: 0,
@@ -128,6 +133,8 @@ test("serializeWorks round-trips through parseWorks", () => {
       originalStatus: "sold",
       originalPrice: 1800,
       printsAvailable: true,
+      originalShownAt: "blue-door",
+      printsShownAt: ["corner-shop", "blue-door"],
       slug: "lake",
       imageWidth: 1400,
       imageHeight: 1120,
@@ -153,12 +160,34 @@ test("serializeWorks writes a price only when there is one", () => {
   assert.equal("originalPrice" in unpriced, false);
 });
 
+test("where a painting is shown is read as venue ids, dropping bad ones, and written only when set", () => {
+  const [shown, plain] = parseWorks([
+    { slug: "lake", originalShownAt: "blue-door", printsShownAt: ["corner-shop", "Bad Id", 7, "corner-shop"] },
+    { slug: "shore", originalShownAt: "Not An Id", printsShownAt: "corner-shop" },
+  ]);
+  assert.deepEqual([shown.originalShownAt, shown.printsShownAt], ["blue-door", ["corner-shop"]]);
+  assert.deepEqual([plain.originalShownAt, plain.printsShownAt], ["", []]);
+  const [written, unwritten] = JSON.parse(serializeWorks([shown, plain]));
+  assert.deepEqual([written.originalShownAt, written.printsShownAt], ["blue-door", ["corner-shop"]]);
+  assert.equal("originalShownAt" in unwritten, false);
+  assert.equal("printsShownAt" in unwritten, false);
+});
+
 test("the public view of a painting leaves out availability, price, and the front-page flag", () => {
   const [work] = parseWorks([
     { slug: "lake", title: "Lake", originalStatus: "in-studio", originalPrice: 1800, printsAvailable: true, featured: true },
   ]);
   const shown = toCatalogWork(work) as Record<string, unknown>;
-  for (const key of ["originalStatus", "originalPrice", "printsAvailable", "featured", "widthIn", "heightIn"]) {
+  for (const key of [
+    "originalStatus",
+    "originalPrice",
+    "printsAvailable",
+    "originalShownAt",
+    "printsShownAt",
+    "featured",
+    "widthIn",
+    "heightIn",
+  ]) {
     assert.equal(key in shown, false, key);
   }
   assert.equal(shown.title, "Lake");

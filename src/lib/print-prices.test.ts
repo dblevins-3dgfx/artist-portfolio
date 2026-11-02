@@ -56,13 +56,20 @@ test("a desk save refuses blank or repeated names and prices that are not whole 
 
 // The list is desk-only. Walk every source file outside the desk and make
 // sure none of them imports the price list module or its JSON, so a public
-// page cannot start showing prices by accident. (catalog.ts only names the
-// file's path in the write allow-list; that is not an import.)
-test("no public page or component imports the print price list", () => {
+// page cannot start showing prices by accident. The venue list (#104) is
+// held to the same rule. (catalog.ts only names the files' paths in the
+// write allow-list; that is not an import.)
+test("no public page or component imports the print price list or the venue list", () => {
   const root = path.join(process.cwd(), "src");
   const deskOnly = [
     path.join("app", "curate"),
     path.join("components", "print-prices-editor.tsx"),
+    path.join("components", "venues-editor.tsx"),
+    path.join("components", "desk"),
+    path.join("lib", "venues.ts"),
+    path.join("lib", "venues.test.ts"),
+    path.join("lib", "work-form.ts"),
+    path.join("lib", "save-plan.ts"),
     path.join("lib", "print-prices.ts"),
     path.join("lib", "print-prices.test.ts"),
     path.join("lib", "catalog-store.ts"),
@@ -79,7 +86,7 @@ test("no public page or component imports the print price list", () => {
   const offenders = files.filter((file) => {
     const relative = path.relative(root, file);
     if (deskOnly.some((allowed) => relative === allowed || relative.startsWith(allowed + path.sep))) return false;
-    return /(?:from|import|require)\s*\(?\s*["'][^"']*print-prices(?:\.json)?["']/.test(readFileSync(file, "utf8"));
+    return /(?:from|import|require)\s*\(?\s*["'][^"']*(?:print-prices|venues)(?:\.json)?["']/.test(readFileSync(file, "utf8"));
   });
   assert.deepEqual(offenders.map((file) => path.relative(root, file)), []);
 });
