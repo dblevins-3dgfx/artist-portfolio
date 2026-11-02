@@ -5,7 +5,7 @@
  * Pending state has to be read in a child of the form; useFormStatus does
  * not see a form from the component that renders the <form> itself.
  */
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +27,17 @@ function SubmitPassword() {
 
 export function CurateLogin() {
   const [state, action] = useActionState(loginFromForm, null as DeskFormState);
+  // Each failed attempt (a new state) gives the password field a new key,
+  // so React replaces it with an empty one that autoFocus focuses again.
+  // Otherwise the masked wrong password stays and the next try adds to it
+  // (#103). Updating state during render is React's pattern for reacting
+  // to a changed value without an extra effect pass.
+  const [answered, setAnswered] = useState(state);
+  const [attempt, setAttempt] = useState(0);
+  if (state !== answered) {
+    setAnswered(state);
+    setAttempt((count) => count + 1);
+  }
 
   return (
     <div className="mx-auto max-w-md px-5 py-16">
@@ -37,6 +48,7 @@ export function CurateLogin() {
         <div>
           <Label htmlFor="password">Password</Label>
           <Input
+            key={attempt}
             id="password"
             name="password"
             type="password"
