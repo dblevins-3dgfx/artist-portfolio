@@ -7,7 +7,7 @@
  */
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useDeskFilter } from "@/components/desk/filter-store";
 import {
   Field,
@@ -21,9 +21,50 @@ import {
 import { PaintingBadges, PublishingNote } from "@/components/desk/list";
 import { PaintingFields } from "@/components/desk/painting-fields";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { stepThrough, type DeskWork, type Publishing } from "@/lib/desk";
 import { cn } from "@/lib/utils";
+
+// The thumbnail is cropped to fit the form. Clicking it shows the whole
+// preview over the page, as the public painting page does; the form and any
+// unsaved edits stay underneath. A click, Escape, or the X closes it.
+function UncroppedPreview({ work }: { work: DeskWork }) {
+  const [open, setOpen] = useState(false);
+  const width = work.imageWidth || 160;
+  const height = work.imageHeight || 160;
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger
+        className="block w-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        aria-label={`View ${work.title} uncropped`}
+      >
+        <Image
+          src={work.previewUrl}
+          alt={work.title}
+          width={width}
+          height={height}
+          unoptimized
+          className="aspect-[4/5] w-full border border-border object-cover"
+        />
+      </DialogTrigger>
+      <DialogContent
+        onClick={() => setOpen(false)}
+        className="flex h-dvh w-screen max-w-none cursor-zoom-out items-center justify-center rounded-none bg-black/95 p-4 text-white ring-0 sm:max-w-none sm:p-8"
+      >
+        <DialogTitle className="sr-only">{work.title}</DialogTitle>
+        <Image
+          src={work.previewUrl}
+          alt={work.title}
+          width={width}
+          height={height}
+          unoptimized
+          className="h-full w-full object-contain"
+        />
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 function WorkForm({
   work,
@@ -47,16 +88,9 @@ function WorkForm({
     >
       <input type="hidden" name="existingSlug" value={work.slug} />
       <div>
-        <Image
-          src={work.previewUrl}
-          alt={work.title}
-          width={work.imageWidth || 160}
-          height={work.imageHeight || 160}
-          unoptimized
-          className="aspect-[4/5] w-full border border-border object-cover"
-        />
+        <UncroppedPreview work={work} />
         <p className="mt-2 text-xs text-muted-foreground">
-          Preview{work.imageWidth ? `, ${work.imageWidth} × ${work.imageHeight}` : ""}
+          Preview{work.imageWidth ? `, ${work.imageWidth} × ${work.imageHeight}` : ""}. Click it to see it uncropped.
         </p>
         {work.duplicateOf ? <p className="mt-2 text-sm leading-relaxed">{work.duplicateOf}</p> : null}
       </div>
