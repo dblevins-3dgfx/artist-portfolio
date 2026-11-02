@@ -12,10 +12,7 @@
     ],
     "featured": false,
     "originalStatus": "not-for-sale",
-    "printsAvailable": true,
-    "printsShownAt": [
-      "gallery-two"
-    ],
+    "printsAvailable": false,
     "slug": "brotherly-love",
     "image": "/art/brotherly-love.jpg",
     "imageWidth": 1400,
