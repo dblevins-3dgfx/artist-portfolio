@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { DESK_FILTERS, deskFilter, formSignature, missingDetails, needsWork, stepThrough } from "@/lib/desk";
+import { DESK_FILTERS, deskFilter, formSignature, listSeparator, missingDetails, needsWork, stepThrough } from "@/lib/desk";
 
 const complete = {
   title: "Blue Sky, Blue Lake",
@@ -48,7 +48,7 @@ const row = {
   previewUrl: "",
   imageWidth: 0,
   imageHeight: 0,
-  duplicateOf: "",
+  lookalikes: [],
 };
 
 test("every badge has a filter with the same label", () => {
@@ -64,7 +64,7 @@ test("each badge filter matches the paintings that show that badge", () => {
   assert.equal(deskFilter("size").matches(row), false);
   assert.equal(deskFilter("subject").matches({ ...row, subjects: [] }), true);
   assert.equal(deskFilter("title").matches({ ...row, title: "IMG 7889" }), true);
-  assert.equal(deskFilter("duplicate").matches({ ...row, duplicateOf: "Possible duplicate of Castle Rock." }), true);
+  assert.equal(deskFilter("duplicate").matches({ ...row, lookalikes: [{ slug: "castle-rock", title: "Castle Rock" }] }), true);
   assert.equal(deskFilter("front-page").matches({ ...row, featured: true }), true);
 });
 
@@ -72,7 +72,7 @@ test("needs work is any missing detail or a possible duplicate, but not the fron
   assert.equal(needsWork(row), false);
   assert.equal(needsWork({ ...row, featured: true }), false);
   assert.equal(needsWork({ ...row, surface: "" }), true);
-  assert.equal(needsWork({ ...row, duplicateOf: "Possible duplicate of Castle Rock." }), true);
+  assert.equal(needsWork({ ...row, lookalikes: [{ slug: "castle-rock", title: "Castle Rock" }] }), true);
   assert.equal(deskFilter("needs-work").matches({ ...row, surface: "" }), true);
 });
 
@@ -140,4 +140,13 @@ test("a one-painting queue and an unknown painting have nowhere to go", () => {
   const one = catalog.map((work) => ({ ...work, heightIn: work.slug === "c" ? 0 : 16 }));
   assert.deepEqual(stepThrough(one, "c", "size"), { previous: undefined, next: undefined, position: 1, total: 1, matches: true });
   assert.deepEqual(stepThrough(catalog, "zzz", "all"), { total: 5, matches: false });
+});
+
+test("listSeparator joins names like a sentence", () => {
+  const join = (names: string[]) => names.map((name, index) => listSeparator(index, names.length) + name).join("");
+  assert.equal(join([]), "");
+  assert.equal(join(["A"]), "A");
+  assert.equal(join(["A", "B"]), "A and B");
+  assert.equal(join(["A", "B", "C"]), "A, B, and C");
+  assert.equal(join(["A", "B", "C", "D"]), "A, B, C, and D");
 });
