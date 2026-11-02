@@ -1,13 +1,6 @@
 {
   "venues": [
     {
-      "id": "gallary-one",
-      "name": "Gallary One",
-      "city": "Troy Idaho",
-      "contact": "Somebody",
-      "notes": ""
-    },
-    {
       "id": "gallery-two",
       "name": "Gallery Two",
       "city": "Moscow Idaho",
