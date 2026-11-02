@@ -1499,14 +1499,17 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 6739 Original",
-    "year": 2026,
+    "title": "Fairy Goldfish Gazing",
+    "year": 2023,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "surface": "Canvas",
+    "widthIn": 12,
+    "heightIn": 9,
+    "statement": "With fairy wings",
+    "subjects": [
+      "children",
+      "animals"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
