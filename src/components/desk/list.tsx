@@ -48,7 +48,7 @@ export function PaintingBadges({ work, justSaved = false, className }: { work: D
     <span className={cn("flex flex-wrap gap-1.5 empty:hidden", className)}>
       {justSaved ? <Badge>Saved</Badge> : null}
       {work.featured ? <Badge variant="secondary">Front page</Badge> : null}
-      {work.duplicateOf ? <Badge variant="outline">Possible duplicate</Badge> : null}
+      {work.lookalikes.length > 0 ? <Badge variant="outline">Possible duplicate</Badge> : null}
       {missingDetails(work).map((detail) => (
         <Badge key={detail} variant="outline">
           {detail}

@@ -143,7 +143,7 @@ export function toDeskWorks(catalog: LoadedCatalog): DeskWork[] {
     previewUrl: previewFor(work, catalog),
     imageWidth: work.imageWidth,
     imageHeight: work.imageHeight,
-    duplicateOf: likeness.notes[work.slug] ?? "",
+    lookalikes: likeness.lookalikes[work.slug] ?? [],
   }));
 }
 

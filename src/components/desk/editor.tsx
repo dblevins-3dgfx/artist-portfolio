@@ -7,7 +7,7 @@
  */
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
+import { useState, type MouseEvent, type ReactNode } from "react";
 import { useDeskFilter } from "@/components/desk/filter-store";
 import {
   Field,
@@ -23,7 +23,7 @@ import { PaintingFields } from "@/components/desk/painting-fields";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { stepThrough, type DeskWork, type Publishing } from "@/lib/desk";
+import { listSeparator, stepThrough, type DeskWork, type Publishing } from "@/lib/desk";
 import { cn } from "@/lib/utils";
 
 // The thumbnail is cropped to fit the form. Clicking it shows the whole
@@ -66,15 +66,38 @@ function UncroppedPreview({ work }: { work: DeskWork }) {
   );
 }
 
+// "Possible duplicate of A and B." with each name linking to that
+// painting's edit page. With unsaved changes, following one asks first, as
+// "All paintings" does (guardLink).
+function LookalikeNote({ work, guardLink }: { work: DeskWork; guardLink: (event: MouseEvent<HTMLAnchorElement>) => void }) {
+  if (work.lookalikes.length === 0) return null;
+  return (
+    <p className="mt-2 text-sm leading-relaxed">
+      Possible duplicate of{" "}
+      {work.lookalikes.map((other, index) => (
+        <span key={other.slug}>
+          {listSeparator(index, work.lookalikes.length)}
+          <Link href={`/curate/${other.slug}`} onClick={guardLink} className="underline underline-offset-4">
+            {other.title}
+          </Link>
+        </span>
+      ))}
+      .
+    </p>
+  );
+}
+
 function WorkForm({
   work,
   canSave,
   guard,
+  guardLink,
   onCancel,
 }: {
   work: DeskWork;
   canSave: boolean;
   guard: LeaveGuard;
+  guardLink: (event: MouseEvent<HTMLAnchorElement>) => void;
   onCancel: () => void;
 }) {
   const { state, pending, onSubmit, formRef, onEdit, changed } = useDeskForm({ trackChanges: true, guard });
@@ -92,7 +115,7 @@ function WorkForm({
         <p className="mt-2 text-xs text-muted-foreground">
           Preview{work.imageWidth ? `, ${work.imageWidth} × ${work.imageHeight}` : ""}. Click it to see it uncropped.
         </p>
-        {work.duplicateOf ? <p className="mt-2 text-sm leading-relaxed">{work.duplicateOf}</p> : null}
+        <LookalikeNote work={work} guardLink={guardLink} />
       </div>
       <div className="grid gap-4">
         <PaintingFields idPrefix={work.slug} work={work} />
@@ -246,6 +269,7 @@ export function CurateEditor({
           work={work}
           canSave={publishing !== "missing"}
           guard={guard}
+          guardLink={guardLink}
           onCancel={() => leave(back)}
         />
       </div>

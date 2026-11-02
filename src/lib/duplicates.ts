@@ -14,9 +14,11 @@ export const POSSIBLE_DUPLICATE_DISTANCE = 4;
 
 export type LikenessMember = { slug: string; title: string };
 
+// groups: each set of look-alike paintings. lookalikes: for each painting
+// in a group, the others in it, which the edit page names and links to.
 export type CatalogLikeness = {
   groups: LikenessMember[][];
-  notes: Record<string, string>;
+  lookalikes: Record<string, LikenessMember[]>;
 };
 
 function find(parent: number[], index: number) {
@@ -55,18 +57,11 @@ export function catalogLikeness(works: Work[], manifest: Manifest): CatalogLiken
   });
 
   const groups = [...buckets.values()].filter((members) => members.length > 1);
-  const notes: Record<string, string> = {};
+  const lookalikes: Record<string, LikenessMember[]> = {};
   for (const members of groups) {
     for (const member of members) {
-      const others = members.filter((other) => other.slug !== member.slug).map((other) => other.title);
-      notes[member.slug] = `Possible duplicate of ${joinTitles(others)}.`;
+      lookalikes[member.slug] = members.filter((other) => other.slug !== member.slug);
     }
   }
-  return { groups, notes };
-}
-
-export function joinTitles(titles: string[]) {
-  if (titles.length <= 1) return titles[0] ?? "";
-  if (titles.length === 2) return `${titles[0]} and ${titles[1]}`;
-  return `${titles.slice(0, -1).join(", ")}, and ${titles[titles.length - 1]}`;
+  return { groups, lookalikes };
 }

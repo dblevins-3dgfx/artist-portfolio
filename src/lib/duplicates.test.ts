@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Manifest } from "@/lib/catalog";
-import { POSSIBLE_DUPLICATE_DISTANCE, catalogLikeness, joinTitles } from "@/lib/duplicates";
+import { POSSIBLE_DUPLICATE_DISTANCE, catalogLikeness } from "@/lib/duplicates";
 import type { Work } from "@/lib/types";
 
 // Fingerprints are 16 hex digits (64 bits); the distance is how many bits
@@ -65,7 +65,7 @@ test("paintings with no fingerprint, or a malformed one, are never grouped", () 
   const works = [work("lake"), work("shore"), work("pond")];
   const result = catalogLikeness(works, marks({ lake: ZERO, shore: undefined, pond: "not-a-fingerprint" }));
   assert.deepEqual(result.groups, []);
-  assert.deepEqual(result.notes, {});
+  assert.deepEqual(result.lookalikes, {});
   // A painting missing from the manifest altogether is skipped the same way.
   assert.deepEqual(catalogLikeness(works, marks({ lake: ZERO })).groups, []);
 });
@@ -84,32 +84,30 @@ test("separate pairs make separate groups, and unrelated paintings are left out"
     ["a", "b"],
     ["c", "d"],
   ]);
-  assert.equal("e" in result.notes, false);
+  assert.equal("e" in result.lookalikes, false);
 });
 
-test("each member's note names the others by title", () => {
+test("each member's look-alikes are the others in its group, by web name and title", () => {
   const pair = catalogLikeness([work("img-7889", "IMG 7889"), work("castle-rock", "Castle Rock")], marks({ "img-7889": ZERO, "castle-rock": FOUR }));
-  assert.deepEqual(pair.notes, {
-    "img-7889": "Possible duplicate of Castle Rock.",
-    "castle-rock": "Possible duplicate of IMG 7889.",
+  assert.deepEqual(pair.lookalikes, {
+    "img-7889": [{ slug: "castle-rock", title: "Castle Rock" }],
+    "castle-rock": [{ slug: "img-7889", title: "IMG 7889" }],
   });
 
   const three = catalogLikeness([work("a", "A"), work("b", "B"), work("c", "C")], marks({ a: ZERO, b: ZERO, c: ZERO }));
-  assert.deepEqual(three.notes, {
-    a: "Possible duplicate of B and C.",
-    b: "Possible duplicate of A and C.",
-    c: "Possible duplicate of A and B.",
+  assert.deepEqual(three.lookalikes, {
+    a: [{ slug: "b", title: "B" }, { slug: "c", title: "C" }],
+    b: [{ slug: "a", title: "A" }, { slug: "c", title: "C" }],
+    c: [{ slug: "a", title: "A" }, { slug: "b", title: "B" }],
   });
 });
 
-test("an empty catalog has no groups and no notes", () => {
-  assert.deepEqual(catalogLikeness([], { files: {} }), { groups: [], notes: {} });
+test("paintings with the same title are told apart by web name", () => {
+  const result = catalogLikeness([work("lake", "Lake"), work("lake-2", "Lake")], marks({ lake: ZERO, "lake-2": ZERO }));
+  assert.deepEqual(result.lookalikes.lake, [{ slug: "lake-2", title: "Lake" }]);
+  assert.deepEqual(result.lookalikes["lake-2"], [{ slug: "lake", title: "Lake" }]);
 });
 
-test("joinTitles reads like a sentence", () => {
-  assert.equal(joinTitles([]), "");
-  assert.equal(joinTitles(["A"]), "A");
-  assert.equal(joinTitles(["A", "B"]), "A and B");
-  assert.equal(joinTitles(["A", "B", "C"]), "A, B, and C");
-  assert.equal(joinTitles(["A", "B", "C", "D"]), "A, B, C, and D");
+test("an empty catalog has no groups and no look-alikes", () => {
+  assert.deepEqual(catalogLikeness([], { files: {} }), { groups: [], lookalikes: {} });
 });

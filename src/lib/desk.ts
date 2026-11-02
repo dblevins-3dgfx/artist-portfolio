@@ -3,14 +3,15 @@
  * DeskWork is one row on the form. WorkFields is the validated save payload.
  * Publishing is where a save will land: GitHub (live site), this computer
  * (local dev), or nowhere (Vercel with no token). The browser uses it only
- * to choose which sentence to show. duplicateOf is empty, or a sentence
- * naming the other paintings that look like this one.
+ * to choose which sentence to show. lookalikes are the other paintings
+ * that look like this one (empty when none do).
  *
  * missingDetails lists what a painting still lacks, for the badges on the
  * desk list. It reads only the row, so the browser can call it.
  * DESK_FILTERS are the list's filter buttons. Each badge filter matches on
  * the same text the badge shows, so a badge and its filter cannot disagree.
  */
+import type { LikenessMember } from "@/lib/duplicates";
 import type { SubjectId } from "@/lib/subjects";
 import type { OriginalStatus } from "@/lib/types";
 
@@ -33,7 +34,7 @@ export type DeskWork = {
   previewUrl: string;
   imageWidth: number;
   imageHeight: number;
-  duplicateOf: string;
+  lookalikes: LikenessMember[];
 };
 
 // availability is absent when the form had no Availability section: a desk
@@ -87,7 +88,7 @@ function hasBadge(label: string) {
 // "Needs work" is any missing detail or a possible duplicate. Front page and
 // Saved are badges too, but neither is a problem to fix.
 export function needsWork(work: DeskWork) {
-  return missingDetails(work).length > 0 || work.duplicateOf !== "";
+  return missingDetails(work).length > 0 || work.lookalikes.length > 0;
 }
 
 export const DESK_FILTERS: DeskFilter[] = [
@@ -98,7 +99,7 @@ export const DESK_FILTERS: DeskFilter[] = [
   { id: "medium", label: "No medium", matches: hasBadge("No medium") },
   { id: "surface", label: "No surface", matches: hasBadge("No surface") },
   { id: "size", label: "No size", matches: hasBadge("No size") },
-  { id: "duplicate", label: "Possible duplicate", matches: (work) => work.duplicateOf !== "" },
+  { id: "duplicate", label: "Possible duplicate", matches: (work) => work.lookalikes.length > 0 },
   { id: "front-page", label: "Front page", matches: (work) => work.featured },
 ];
 
@@ -145,4 +146,13 @@ export function stepThrough(
     total,
     matches,
   };
+}
+
+// The words before item `index` of `count` when they are read as a list:
+// "A", "A and B", "A, B, and C". The edit page puts these between the
+// look-alike painting links.
+export function listSeparator(index: number, count: number) {
+  if (index === 0) return "";
+  if (count === 2) return " and ";
+  return index === count - 1 ? ", and " : ", ";
 }
