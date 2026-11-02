@@ -1479,14 +1479,17 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 6727 Original",
-    "year": 2026,
+    "title": "Goldfish Gazing",
+    "year": 2023,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "surface": "Canvas",
+    "widthIn": 9,
+    "heightIn": 12,
+    "statement": "Without fairy wings",
+    "subjects": [
+      "children",
+      "animals"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
