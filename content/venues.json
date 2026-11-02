@@ -1,11 +1,3 @@
 {
-  "venues": [
-    {
-      "id": "gallery-two",
-      "name": "Gallery Two",
-      "city": "Moscow Idaho",
-      "contact": "sdfghjk",
-      "notes": ""
-    }
-  ]
+  "venues": []
 }
