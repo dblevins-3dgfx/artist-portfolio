@@ -41,6 +41,8 @@ export function CurateLogin() {
             name="password"
             type="password"
             autoComplete="current-password"
+            // The only field on the page, so it is ready to type into.
+            autoFocus
             required
             className="mt-2"
             aria-invalid={state?.error ? true : undefined}
