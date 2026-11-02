@@ -1,0 +1,18 @@
+# Written by the studio desk (JSON.stringify); formatting them here would
+# make every desk save fail the format check.
+content/
+
+# Images, fonts, and the artist's files, not code.
+public/
+assets/
+originals/
+data/
+
+# Generated. Next also rewrites tsconfig.json's include list in its own
+# layout, so formatting it here would not stick.
+package-lock.json
+next-env.d.ts
+tsconfig.json
+
+# Prose. AGENTS.md is rewritten by `next dev`.
+*.md
