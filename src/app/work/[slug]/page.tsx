@@ -111,7 +111,7 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
               className={cn(buttonVariants({ variant: "outline" }), "mt-8 inline-flex h-11 bg-card px-4")}
               href={`mailto:${site.email}?subject=${encodeURIComponent(`About ${work.title}`)}`}
             >
-              Write about this painting
+              Email {site.firstName} about this painting
             </a>
           ) : null}
         </div>
