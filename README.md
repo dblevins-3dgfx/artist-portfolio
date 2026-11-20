@@ -31,6 +31,7 @@ The live site is [https://artist-portfolio-mu-snowy.vercel.app/](https://artist-
 [`content/studio.json`](content/studio.json) already has the studio’s name, tagline, location, email, domain, and biography. Those fields are:
 
 - `artistName` — also burned into the watermark
+- `firstName` — the artist's own name, for the "Email Thomasene about this painting" button on each painting's page
 - `location`
 - `email` — shown when it contains `@` and does not end in `@example.com`
 - `domain` — `thomasene.art`, without `https://`. Also burned into the watermark
