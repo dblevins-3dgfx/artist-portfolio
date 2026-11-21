@@ -1468,14 +1468,17 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 6100 Original",
-    "year": 2026,
+    "title": "“To Life!”",
+    "year": 2017,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 18,
+    "heightIn": 24,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "children",
+      "narratives"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
