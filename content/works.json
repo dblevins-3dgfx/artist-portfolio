@@ -1691,14 +1691,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 7975",
-    "year": 2026,
+    "title": "Little Gardener",
+    "year": 2014,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 16,
+    "heightIn": 30,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "children"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
