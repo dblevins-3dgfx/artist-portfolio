@@ -37,3 +37,9 @@ export function seriesNames(works: { series: string }[]) {
 export function needsSeriesWord(name: string) {
   return !/\bseries$/i.test(cleanSeries(name));
 }
+
+// ...and "the" before it, unless the name already starts with it ("Part of
+// The Hen House series", not "Part of the The Hen House series").
+export function needsThe(name: string) {
+  return !/^the\b/i.test(cleanSeries(name));
+}

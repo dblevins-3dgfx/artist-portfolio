@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { cleanSeries, needsSeriesWord, sameSeries, seriesKey, seriesNames } from "@/lib/series";
+import { cleanSeries, needsSeriesWord, needsThe, sameSeries, seriesKey, seriesNames } from "@/lib/series";
 import { matchesQuery } from "@/lib/search";
 import type { CatalogWork } from "@/lib/types";
 
@@ -51,6 +51,13 @@ const painting = (title: string, series: string): CatalogWork => ({
   image: "",
   imageWidth: 0,
   imageHeight: 0,
+});
+
+test("the word the is added unless the name already starts with it", () => {
+  assert.equal(needsThe("Madera Canyon"), true);
+  assert.equal(needsThe("The Hen House"), false);
+  assert.equal(needsThe("the armor of god"), false);
+  assert.equal(needsThe("Theodore's Garden"), true);
 });
 
 test("the gallery search finds a painting by its series", () => {
