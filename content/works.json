@@ -144,6 +144,7 @@
       "children",
       "narratives"
     ],
+    "series": "Mama and Papa",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": false,
@@ -279,6 +280,7 @@
     "subjects": [
       "animals"
     ],
+    "series": "Strength and Courage",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": false,
@@ -298,6 +300,7 @@
     "subjects": [
       "animals"
     ],
+    "series": "Painted on Cedar",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -415,6 +418,7 @@
       "animals",
       "narratives"
     ],
+    "series": "The Hen House",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -435,6 +439,7 @@
       "animals",
       "birds-and-flowers"
     ],
+    "series": "The Hen House",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -512,6 +517,7 @@
       "animals",
       "birds-and-flowers"
     ],
+    "series": "The Hen House",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -684,6 +690,7 @@
     "subjects": [
       "places"
     ],
+    "series": "Madera Canyon",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -742,6 +749,7 @@
       "animals",
       "birds-and-flowers"
     ],
+    "series": "The Hen House",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -780,6 +788,7 @@
     "subjects": [
       "places"
     ],
+    "series": "Madera Canyon",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -859,6 +868,7 @@
     "subjects": [
       "animals"
     ],
+    "series": "Stormy",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -878,6 +888,7 @@
     "subjects": [
       "animals"
     ],
+    "series": "Barnyard Friends",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -897,6 +908,7 @@
     "subjects": [
       "animals"
     ],
+    "series": "Barnyard Friends",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -917,6 +929,7 @@
       "children",
       "portraits"
     ],
+    "series": "Make a Wish",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -936,6 +949,7 @@
     "subjects": [
       "animals"
     ],
+    "series": "Stormy",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": false,
@@ -955,6 +969,7 @@
     "subjects": [
       "animals"
     ],
+    "series": "Barnyard Friends",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -1129,6 +1144,7 @@
     "subjects": [
       "animals"
     ],
+    "series": "The Hen House",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -1346,6 +1362,7 @@
       "animals",
       "narratives"
     ],
+    "series": "The Armor of God",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -1541,6 +1558,7 @@
       "animals",
       "birds-and-flowers"
     ],
+    "series": "Goldfish Gazing",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -1561,6 +1579,7 @@
       "children",
       "animals"
     ],
+    "series": "Goldfish Gazing",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -1622,6 +1641,7 @@
       "children",
       "portraits"
     ],
+    "series": "Make a Wish",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -1663,6 +1683,7 @@
     "subjects": [
       "animals"
     ],
+    "series": "Strength and Courage",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -1858,6 +1879,7 @@
       "children",
       "narratives"
     ],
+    "series": "Mama and Papa",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -1877,6 +1899,7 @@
     "subjects": [
       "birds-and-flowers"
     ],
+    "series": "Painted on Cedar",
     "featured": false,
     "originalStatus": "sold",
     "printsAvailable": false,
@@ -1896,6 +1919,7 @@
     "subjects": [
       "birds-and-flowers"
     ],
+    "series": "Painted on Cedar",
     "featured": false,
     "originalStatus": "sold",
     "printsAvailable": false,
@@ -1915,6 +1939,7 @@
     "subjects": [
       "birds-and-flowers"
     ],
+    "series": "Painted on Cedar",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": false,
@@ -1936,6 +1961,7 @@
       "birds-and-flowers",
       "narratives"
     ],
+    "series": "The Hen House",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
@@ -1991,6 +2017,7 @@
     "heightIn": 0,
     "statement": "",
     "subjects": [],
+    "series": "The Armor of God",
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
