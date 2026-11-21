@@ -1945,14 +1945,16 @@
     "imageHeight": 713
   },
   {
-    "title": "IMG 9572",
+    "title": "Bram in Bloom",
     "year": 2026,
-    "medium": "Oil",
-    "surface": "",
+    "medium": "Oil watercolor",
+    "surface": "Watercolor paper",
     "widthIn": 0,
     "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "statement": "Bram is a circular village in France built around the church.",
+    "subjects": [
+      "places"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
