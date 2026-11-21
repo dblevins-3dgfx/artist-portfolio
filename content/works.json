@@ -1510,14 +1510,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 6139 Original",
-    "year": 2026,
-    "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "title": "Nasturtiums",
+    "year": 2022,
+    "medium": "Watercolor",
+    "surface": "Paper",
+    "widthIn": 11,
+    "heightIn": 14,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "birds-and-flowers"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
