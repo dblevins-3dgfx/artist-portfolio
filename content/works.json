@@ -148,7 +148,7 @@
     "series": "Mama and Papa",
     "featured": false,
     "originalStatus": "not-for-sale",
-    "printsAvailable": false,
+    "printsAvailable": true,
     "slug": "papa-and-me",
     "image": "/art/papa-and-me.jpg",
     "imageWidth": 1045,
