@@ -1197,14 +1197,16 @@
     "imageHeight": 1117
   },
   {
-    "title": "IMG 4868 Original",
-    "year": 2026,
+    "title": "Bubbles!",
+    "year": 2018,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "surface": "Canvas",
+    "widthIn": 14,
+    "heightIn": 11,
+    "statement": "My Niece Morgan.",
+    "subjects": [
+      "children"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
