@@ -1886,17 +1886,19 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 9485",
-    "year": 2026,
+    "title": "Dressed in His Best",
+    "year": 2020,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "surface": "Cedar Shingle",
+    "widthIn": 8,
+    "heightIn": 16,
+    "statement": "A painting of a Painted Bunting!",
+    "subjects": [
+      "birds-and-flowers"
+    ],
     "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": true,
+    "originalStatus": "sold",
+    "printsAvailable": false,
     "slug": "img-9485",
     "image": "/art/img-9485.jpg",
     "imageWidth": 845,
