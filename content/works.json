@@ -1769,14 +1769,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 8557",
-    "year": 2026,
+    "title": "CleoCatra",
+    "year": 2024,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "surface": "Canvas",
+    "widthIn": 20,
+    "heightIn": 16,
+    "statement": "Posthumous painting of a sweet neighbor cat.",
+    "subjects": [
+      "animals"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
