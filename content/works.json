@@ -11,8 +11,8 @@
       "children"
     ],
     "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": false,
+    "originalStatus": "sold",
+    "printsAvailable": true,
     "slug": "brotherly-love",
     "image": "/art/brotherly-love.jpg",
     "imageWidth": 1400,
