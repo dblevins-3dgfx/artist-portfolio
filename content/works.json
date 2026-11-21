@@ -1905,17 +1905,19 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 9557",
-    "year": 2026,
+    "title": "Smiling Raven",
+    "year": 2019,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Cedar Shingle",
+    "widthIn": 8,
+    "heightIn": 14,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "birds-and-flowers"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
-    "printsAvailable": true,
+    "printsAvailable": false,
     "slug": "img-9557",
     "image": "/art/img-9557.jpg",
     "imageWidth": 906,
