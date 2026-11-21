@@ -1119,14 +1119,16 @@
     "imageHeight": 544
   },
   {
-    "title": "IMG 4623",
-    "year": 2026,
+    "title": "Multicolored Rooster",
+    "year": 2023,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 14,
+    "heightIn": 11,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "animals"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
