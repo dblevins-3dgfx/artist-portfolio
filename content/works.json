@@ -930,15 +930,15 @@
     "year": 2016,
     "medium": "Oil",
     "surface": "Cedar Shingle",
-    "widthIn": 0,
-    "heightIn": 0,
+    "widthIn": 8,
+    "heightIn": 20,
     "statement": "Patience with Stormy",
     "subjects": [
       "animals"
     ],
     "featured": false,
     "originalStatus": "not-for-sale",
-    "printsAvailable": true,
+    "printsAvailable": false,
     "slug": "img-3874-original",
     "image": "/art/img-3874-original.jpg",
     "imageWidth": 579,
