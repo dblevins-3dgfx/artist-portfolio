@@ -1355,14 +1355,16 @@
     "imageHeight": 1046
   },
   {
-    "title": "IMG 5106",
-    "year": 2026,
+    "title": "Snow Baby",
+    "year": 2018,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "surface": "Canvas",
+    "widthIn": 8,
+    "heightIn": 10,
+    "statement": "Sweetness!",
+    "subjects": [
+      "children"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
