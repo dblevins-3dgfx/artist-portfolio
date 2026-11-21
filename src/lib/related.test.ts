@@ -63,3 +63,24 @@ test("a painting with no subject gets a pick from the whole catalog", () => {
   assert.equal(picked.length, 4);
   assert.equal(slugs(picked).includes("untitled"), false);
 });
+
+test("paintings in the same series come first, before the main subject", () => {
+  const work = { slug: "plein-air-1", subjects: ["places" as SubjectId], series: "Madera Canyon" };
+  const works = [
+    work,
+    painting("barn", "places"),
+    painting("lake", "places"),
+    painting("cat", "animals"),
+    { slug: "plein-air-2", subjects: ["places" as SubjectId], series: "madera  canyon" },
+    { slug: "canyon-sketch", subjects: [] as SubjectId[], series: "Madera Canyon" },
+  ];
+  const picked = slugs(relatedWorks(works, work));
+  assert.deepEqual(picked.slice(0, 2).sort(), ["canyon-sketch", "plein-air-2"]);
+  assert.deepEqual(picked.slice(2).sort(), ["barn", "lake"]);
+});
+
+test("paintings in no series are not grouped together by it", () => {
+  const work = { slug: "a", subjects: ["animals" as SubjectId], series: "" };
+  const works = [work, { slug: "b", subjects: [] as SubjectId[], series: "" }, painting("c", "animals")];
+  assert.deepEqual(slugs(relatedWorks(works, work)), ["c", "b"]);
+});

@@ -80,6 +80,7 @@ test("parseWorks fills safe defaults for missing or wrong fields", () => {
     heightIn: 0,
     statement: "",
     subjects: [],
+    series: "",
     featured: false,
     originalStatus: "not-for-sale",
     originalPrice: 0,
@@ -179,6 +180,19 @@ test("where a painting is shown is read as venue ids, dropping bad ones, and wri
   assert.deepEqual([written.originalShownAt, written.printsShownAt], ["blue-door", ["corner-shop"]]);
   assert.equal("originalShownAt" in unwritten, false);
   assert.equal("printsShownAt" in unwritten, false);
+});
+
+test("a series is read cleaned up, written only when set, and shown on the public view", () => {
+  const [named, none] = parseWorks([
+    { slug: "lake", series: "  Mountain   Lakes " },
+    { slug: "shore", series: 7 },
+  ]);
+  assert.equal(named.series, "Mountain Lakes");
+  assert.equal(none.series, "");
+  const [written, unwritten] = JSON.parse(serializeWorks([named, none]));
+  assert.equal(written.series, "Mountain Lakes");
+  assert.equal("series" in unwritten, false);
+  assert.equal(toCatalogWork(named).series, "Mountain Lakes");
 });
 
 test("the public view of a painting leaves out availability, price, and the front-page flag", () => {

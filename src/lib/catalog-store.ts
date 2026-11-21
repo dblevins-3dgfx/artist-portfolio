@@ -149,6 +149,7 @@ export function toDeskWorks(catalog: LoadedCatalog): DeskWork[] {
     notDuplicates: likeness.notDuplicates[work.slug] ?? [],
     originalShownAt: work.originalShownAt,
     printsShownAt: work.printsShownAt,
+    series: work.series,
   }));
 }
 

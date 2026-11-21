@@ -167,6 +167,21 @@ test("a venue id that is not valid is refused", () => {
   assert.ok("error" in readWorkForm(form({ ...valid, showings: "1", printsShownAt: ["corner-shop", "../x"] })));
 });
 
+test("the series is read when the form has the Series box, blank meaning none", () => {
+  const named = readWorkForm(form({ ...valid, series: "  Madera   Canyon " }));
+  assert.ok("fields" in named);
+  assert.equal(named.fields.series, "Madera Canyon");
+  const blank = readWorkForm(form({ ...valid, series: "" }));
+  assert.ok("fields" in blank);
+  assert.equal(blank.fields.series, "");
+});
+
+test("a form without the Series box leaves the series out, so the save keeps it", () => {
+  const parsed = readWorkForm(form(valid));
+  assert.ok("fields" in parsed);
+  assert.equal("series" in parsed.fields, false);
+});
+
 test("an available original needs a price in whole dollars", () => {
   for (const fields of [
     { ...forSale, originalPrice: "" },

@@ -7,23 +7,19 @@
  * it is not a global, and it resets on a full page load.
  * The catalog itself was already parsed on the server and passed in as props.
  */
+import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
+import { matchesQuery } from "@/lib/search";
 import { WorkCard } from "@/components/work-card";
 import { Input } from "@/components/ui/input";
-import { SUBJECTS, subjectLabel } from "@/lib/subjects";
+import { SUBJECTS } from "@/lib/subjects";
 import type { CatalogWork } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-function matchesQuery(work: CatalogWork, needle: string) {
-  if (!needle) return true;
-  return [work.title, work.medium, work.statement, ...work.subjects.map(subjectLabel), String(work.year)]
-    .join(" ")
-    .toLowerCase()
-    .includes(needle);
-}
-
-export function Gallery({ works }: { works: CatalogWork[] }) {
-  const [query, setQuery] = useState("");
+// initialQuery fills the search box when the page opens, for example from a
+// painting's "Part of the … series" link (/work?q=…; see GalleryFromAddress).
+export function Gallery({ works, initialQuery = "" }: { works: CatalogWork[]; initialQuery?: string }) {
+  const [query, setQuery] = useState(initialQuery);
   const [subject, setSubject] = useState("all");
   const groups = useMemo(
     () => SUBJECTS.filter((entry) => works.some((work) => work.subjects.includes(entry.id))),
@@ -141,4 +137,14 @@ function FilterButton({
       {children}
     </button>
   );
+}
+
+// The gallery, starting from the search in the address (?q=…). Reading the
+// address makes this part render in the browser, so /work wraps it in
+// <Suspense> with a plain <Gallery> as the fallback: the prebuilt page
+// still has every painting in its HTML. The key starts the gallery afresh
+// when the search in the address changes.
+export function GalleryFromAddress({ works }: { works: CatalogWork[] }) {
+  const query = useSearchParams().get("q") ?? "";
+  return <Gallery key={query} works={works} initialQuery={query} />;
 }

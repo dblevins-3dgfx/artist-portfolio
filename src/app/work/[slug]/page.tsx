@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { neighbours } from "@/lib/neighbours";
 import { relatedWorks } from "@/lib/related";
+import { needsSeriesWord } from "@/lib/series";
 import { emailIsPublic, formatInches, formatMaterials, site, workAlt } from "@/lib/site";
 import { subjectLabel } from "@/lib/subjects";
 import { getWork, getWorks } from "@/lib/works";
@@ -106,6 +107,19 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
             {materials ? ` · ${materials}` : ""}
             {inches ? ` · ${inches}` : ""}
           </p>
+          {work.series ? (
+            // The link opens The Work with the series name in its search box.
+            <p className="mt-2 text-sm text-muted-foreground">
+              Part of the{" "}
+              <Link
+                href={`/work?q=${encodeURIComponent(work.series)}`}
+                className="text-foreground underline underline-offset-4"
+              >
+                {work.series}
+              </Link>
+              {needsSeriesWord(work.series) ? " series" : ""}
+            </p>
+          ) : null}
           {work.statement ? <p className="mt-6 max-w-prose leading-relaxed">{work.statement}</p> : null}
           {emailIsPublic() ? (
             <a

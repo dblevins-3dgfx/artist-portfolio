@@ -29,6 +29,7 @@ function work(slug: string, title = slug): Work {
     printsAvailable: true,
     originalShownAt: "",
     printsShownAt: [],
+    series: "",
     slug,
     image: `/art/${slug}.jpg`,
     imageWidth: 1400,

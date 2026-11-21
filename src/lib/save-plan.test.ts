@@ -22,6 +22,7 @@ function work(slug: string, extra: Partial<Work> = {}): Work {
     printsAvailable: true,
     originalShownAt: "",
     printsShownAt: [],
+    series: "",
     slug,
     image: `/art/${slug}.jpg`,
     imageWidth: 1400,
@@ -234,6 +235,18 @@ test("buildWork drops the prints' venues once prints are not offered", () => {
     venues,
   );
   assert.deepEqual(built.printsShownAt, []);
+});
+
+test("buildWork takes the series from the form, or keeps it when the form had no Series box", () => {
+  const inSeries = work("lake", { series: "Lakes" });
+  const size = { imageWidth: 1400, imageHeight: 1000 };
+  assert.equal(
+    buildWork(fields("lake", { series: "Mountain Lakes" }), inSeries, size, new Set()).series,
+    "Mountain Lakes",
+  );
+  assert.equal(buildWork(fields("lake", { series: "" }), inSeries, size, new Set()).series, "");
+  assert.equal(buildWork(fields("lake"), inSeries, size, new Set()).series, "Lakes");
+  assert.equal(buildWork(fields("pond"), undefined, size, new Set()).series, "");
 });
 
 test("commit messages keep the title on one short line", () => {

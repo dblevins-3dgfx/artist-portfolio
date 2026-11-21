@@ -12,6 +12,7 @@
  * Nothing else.
  */
 import path from "path";
+import { cleanSeries } from "@/lib/series";
 import { parseSubjects } from "@/lib/subjects";
 import type { CatalogWork, OriginalStatus, Work } from "@/lib/types";
 
@@ -102,6 +103,7 @@ export function parseWorks(value: unknown): Work[] {
       widthIn: typeof record.widthIn === "number" ? record.widthIn : 0,
       heightIn: typeof record.heightIn === "number" ? record.heightIn : 0,
       statement: typeof record.statement === "string" ? record.statement : "",
+      series: cleanSeries(record.series),
       subjects: readSubjects(record),
       featured: record.featured === true,
       originalStatus,
@@ -160,6 +162,9 @@ export function serializeWorks(works: Work[]) {
       heightIn: work.heightIn,
       statement: work.statement,
       subjects: work.subjects,
+      // Written only when set, so paintings in no series keep their entry
+      // unchanged.
+      ...(work.series ? { series: work.series } : {}),
       featured: work.featured,
       originalStatus: work.originalStatus,
       // Written only when set, so paintings without a price keep their entry
@@ -197,6 +202,7 @@ export function toCatalogWork(work: Work): CatalogWork {
     surface: work.surface,
     statement: work.statement,
     subjects: work.subjects,
+    series: work.series,
     image: work.image,
     imageWidth: work.imageWidth,
     imageHeight: work.imageHeight,

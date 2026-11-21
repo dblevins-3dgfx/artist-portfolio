@@ -9,7 +9,8 @@ import type { Metadata } from "next";
 import { CurateAdd } from "@/components/desk/editor";
 import { CurateLogin } from "@/components/curate-login";
 import { DeskLoadError, DeskSwitchedOff } from "@/components/desk-messages";
-import { loadVenues, publishingMode } from "@/lib/catalog-store";
+import { loadCatalog, loadVenues, publishingMode } from "@/lib/catalog-store";
+import { seriesNames } from "@/lib/series";
 import type { Venue } from "@/lib/venues";
 import { isSignedIn, studioPassword } from "@/lib/studio-auth";
 
@@ -30,10 +31,15 @@ export default async function CurateAddPage() {
   }
 
   let venues: Venue[];
+  let seriesOptions: string[];
   try {
-    venues = await loadVenues();
+    const [list, catalog] = await Promise.all([loadVenues(), loadCatalog()]);
+    venues = list;
+    // The series already in the catalog, offered as the new painting's
+    // Series suggestions.
+    seriesOptions = seriesNames(catalog.works);
   } catch (error) {
-    return <DeskLoadError message={error instanceof Error ? error.message : "The venue list could not be read."} />;
+    return <DeskLoadError message={error instanceof Error ? error.message : "The catalog could not be read."} />;
   }
-  return <CurateAdd publishing={publishingMode()} venues={venues} />;
+  return <CurateAdd publishing={publishingMode()} venues={venues} seriesOptions={seriesOptions} />;
 }

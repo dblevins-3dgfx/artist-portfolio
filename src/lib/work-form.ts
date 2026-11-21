@@ -7,6 +7,7 @@
 import type { WorkFields } from "@/lib/desk";
 import type { OriginalStatus } from "@/lib/types";
 import { isCatalogSlug } from "@/lib/catalog";
+import { cleanSeries } from "@/lib/series";
 import { parseSubjects } from "@/lib/subjects";
 import { isVenueId } from "@/lib/venues";
 
@@ -85,6 +86,12 @@ function readShowings(formData: FormData): { error: string } | WorkFields["showi
   return { originalShownAt, printsShownAt: [...new Set(printsShownAt as string[])] };
 }
 
+// The Series box sends "" when blank. A form without it (a tab from before
+// #120) sends nothing, and the save keeps the painting's series.
+function readSeries(formData: FormData): Pick<WorkFields, "series"> {
+  return formData.has("series") ? { series: cleanSeries(formData.get("series")) } : {};
+}
+
 export function readWorkForm(
   formData: FormData,
 ):
@@ -143,6 +150,7 @@ export function readWorkForm(
     subjects: parseSubjects(formData.getAll("subjects")),
     featured: formData.get("featured") === "on",
     ...(availability ? { availability } : {}),
+    ...readSeries(formData),
     ...(showings ? { showings } : {}),
   };
   return { intent: "save" as const, existingSlug, fields };

@@ -4,7 +4,8 @@
  * This file stays on the server and only hands the catalog down as props.
  */
 import type { Metadata } from "next";
-import { Gallery } from "@/components/gallery";
+import { Suspense } from "react";
+import { Gallery, GalleryFromAddress } from "@/components/gallery";
 import { toCatalogWork } from "@/lib/catalog";
 import { getWorks } from "@/lib/works";
 
@@ -26,7 +27,9 @@ export default function WorkPage() {
         </p>
       ) : (
         <div className="mt-10">
-          <Gallery works={works} />
+          <Suspense fallback={<Gallery works={works} />}>
+            <GalleryFromAddress works={works} />
+          </Suspense>
         </div>
       )}
     </div>
