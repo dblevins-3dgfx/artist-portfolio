@@ -50,7 +50,7 @@
     ],
     "featured": false,
     "originalStatus": "not-for-sale",
-    "printsAvailable": true,
+    "printsAvailable": false,
     "slug": "bon-voyage",
     "image": "/art/bon-voyage.jpg",
     "imageWidth": 1032,
