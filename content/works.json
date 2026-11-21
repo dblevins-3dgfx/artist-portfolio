@@ -1276,16 +1276,19 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 4977 Original",
-    "year": 2026,
+    "title": "First Yacht",
+    "year": 2016,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "surface": "Canvas",
+    "widthIn": 10,
+    "heightIn": 8,
+    "statement": "Speaks of a fun summer day!",
+    "subjects": [
+      "children",
+      "still-life"
+    ],
     "featured": false,
-    "originalStatus": "not-for-sale",
+    "originalStatus": "sold",
     "printsAvailable": true,
     "slug": "img-4977-original",
     "image": "/art/img-4977-original.jpg",
