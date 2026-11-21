@@ -28,6 +28,7 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/
 import { Input } from "@/components/ui/input";
 import { listSeparator, stepThrough, type DeskWork, type Publishing } from "@/lib/desk";
 import { cn } from "@/lib/utils";
+import { seriesNames } from "@/lib/series";
 import { withStaleCheck } from "@/lib/stale-page";
 import type { Venue } from "@/lib/venues";
 
@@ -165,10 +166,12 @@ function WorkForm({
   guard,
   guardLink,
   leavePrompt,
+  seriesOptions,
   onCancel,
 }: {
   work: DeskWork;
   venues: Venue[];
+  seriesOptions: string[];
   canSave: boolean;
   guard: LeaveGuard;
   guardLink: (at: string) => (event: MouseEvent<HTMLAnchorElement>) => void;
@@ -199,7 +202,7 @@ function WorkForm({
         />
       </div>
       <div className="grid gap-4">
-        <PaintingFields idPrefix={work.slug} work={work} venues={venues} />
+        <PaintingFields idPrefix={work.slug} work={work} venues={venues} seriesOptions={seriesOptions} />
         <Field id={`${work.slug}-image`} label="Replace the photograph">
           <Input
             id={`${work.slug}-image`}
@@ -239,12 +242,14 @@ function NewWorkForm({
   canSave,
   guard,
   leavePrompt,
+  seriesOptions,
   onCancel,
 }: {
   venues: Venue[];
   canSave: boolean;
   guard: LeaveGuard;
   leavePrompt: LeavePromptState;
+  seriesOptions: string[];
   onCancel: () => void;
 }) {
   const { state, pending, onSubmit, formRef, onEdit } = useDeskForm({ trackChanges: true, guard });
@@ -267,7 +272,7 @@ function NewWorkForm({
           onChange={checkPhotoSize}
         />
       </Field>
-      <PaintingFields idPrefix="new" venues={venues} />
+      <PaintingFields idPrefix="new" venues={venues} seriesOptions={seriesOptions} />
       <FormError state={state} />
       <PendingButtons
         pending={pending}
@@ -365,6 +370,7 @@ export function CurateEditor({
           guard={guard}
           guardLink={guardLink}
           leavePrompt={prompt}
+          seriesOptions={seriesNames(works)}
           onCancel={() => leave(back, "cancel")}
         />
       </div>
@@ -372,7 +378,15 @@ export function CurateEditor({
   );
 }
 
-export function CurateAdd({ publishing, venues }: { publishing: Publishing; venues: Venue[] }) {
+export function CurateAdd({
+  publishing,
+  venues,
+  seriesOptions,
+}: {
+  publishing: Publishing;
+  venues: Venue[];
+  seriesOptions: string[];
+}) {
   const { guard, leave, guardLink, prompt } = useLeaveGuard("Discard this new painting? Nothing has been saved.");
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
@@ -394,6 +408,7 @@ export function CurateAdd({ publishing, venues }: { publishing: Publishing; venu
           canSave={publishing !== "missing"}
           guard={guard}
           leavePrompt={prompt}
+          seriesOptions={seriesOptions}
           onCancel={() => leave("/curate", "cancel")}
         />
       </div>

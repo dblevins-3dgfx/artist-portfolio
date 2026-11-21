@@ -20,6 +20,7 @@ function work(slug: string, featured = false): Work {
     printsAvailable: false,
     originalShownAt: "",
     printsShownAt: [],
+    series: "",
     image: `/art/${slug}.jpg`,
     imageWidth: 0,
     imageHeight: 0,

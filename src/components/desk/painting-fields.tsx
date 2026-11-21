@@ -18,7 +18,17 @@ import { SUBJECTS } from "@/lib/subjects";
 import type { OriginalStatus } from "@/lib/types";
 import type { Venue } from "@/lib/venues";
 
-export function PaintingFields({ idPrefix, work, venues }: { idPrefix: string; work?: DeskWork; venues: Venue[] }) {
+export function PaintingFields({
+  idPrefix,
+  work,
+  venues,
+  seriesOptions,
+}: {
+  idPrefix: string;
+  work?: DeskWork;
+  venues: Venue[];
+  seriesOptions: string[];
+}) {
   const [originalStatus, setOriginalStatus] = useState<OriginalStatus>(work?.originalStatus ?? "not-for-sale");
   const [printsOffered, setPrintsOffered] = useState(work ? work.printsAvailable : true);
   return (
@@ -105,6 +115,7 @@ export function PaintingFields({ idPrefix, work, venues }: { idPrefix: string; w
           ))}
         </div>
       </fieldset>
+      <SeriesField idPrefix={idPrefix} work={work} options={seriesOptions} />
       <Field id={`${idPrefix}-statement`} label="Note" className="sm:col-span-2">
         <Textarea
           id={`${idPrefix}-statement`}
@@ -282,3 +293,28 @@ const ORIGINAL_CHOICES = [
   { value: "in-studio", label: "Available" },
   { value: "sold", label: "Sold" },
 ] as const;
+
+// Series (#120): free text, with the series already in the catalog offered
+// as suggestions (a <datalist>, which iPhone Safari shows above the
+// keyboard). Blank means no series. Capitals and spacing do not start a new
+// series; see lib/series.ts.
+function SeriesField({ idPrefix, work, options }: { idPrefix: string; work?: DeskWork; options: string[] }) {
+  return (
+    <Field id={`${idPrefix}-series`} label="Series">
+      <Input
+        id={`${idPrefix}-series`}
+        name="series"
+        list={`${idPrefix}-series-options`}
+        defaultValue={work?.series ?? ""}
+        maxLength={80}
+        autoComplete="off"
+        placeholder="None"
+      />
+      <datalist id={`${idPrefix}-series-options`}>
+        {options.map((name) => (
+          <option key={name} value={name} />
+        ))}
+      </datalist>
+    </Field>
+  );
+}

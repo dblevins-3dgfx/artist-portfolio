@@ -67,6 +67,7 @@ const row = {
   notDuplicates: [],
   originalShownAt: "",
   printsShownAt: [] as string[],
+  series: "",
 };
 
 test("every badge has a filter with the same label", () => {

@@ -14,6 +14,9 @@
  * original is at one venue or none (""); prints can be at several. Also
  * desk-only.
  *
+ * series is the one series a painting belongs to, as the artist typed it,
+ * or "" for none (#120). Public: the painting page names it. See lib/series.ts.
+ *
  * subjects is a list (a JavaScript array, like a std::vector) because a
  * painting can be in more than one group, say Portraits and Commissioned
  * Works. It is kept in SUBJECTS order, so subjects[0] is the main one.
@@ -29,6 +32,7 @@ export type CatalogWork = {
   medium: string;
   surface: string;
   subjects: SubjectId[];
+  series: string;
   statement: string;
   image: string;
   imageWidth: number;
@@ -45,6 +49,7 @@ export type Work = {
   heightIn: number;
   statement: string;
   subjects: SubjectId[];
+  series: string;
   featured: boolean;
   originalStatus: OriginalStatus;
   originalPrice: number;

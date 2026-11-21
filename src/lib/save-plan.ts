@@ -133,6 +133,7 @@ export function buildWork(
     heightIn: fields.heightIn,
     statement: fields.statement,
     subjects: fields.subjects,
+    series: fields.series ?? existing?.series ?? "",
     featured: fields.featured,
     originalStatus,
     originalPrice: fields.availability?.originalPrice ?? existing?.originalPrice ?? 0,

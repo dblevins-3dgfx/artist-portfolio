@@ -28,6 +28,7 @@ export type DeskWork = {
   heightIn: number;
   statement: string;
   subjects: SubjectId[];
+  series: string;
   featured: boolean;
   originalStatus: OriginalStatus;
   originalPrice: number;
@@ -62,6 +63,9 @@ export type WorkFields = {
   };
   // Absent when the form had no Showings fields (a tab from before #104);
   // the save then keeps where the painting is shown.
+  // Absent when the form had no Series field (a tab from before #120); the
+  // save then keeps the painting's series.
+  series?: string;
   showings?: {
     originalShownAt: string;
     printsShownAt: string[];
