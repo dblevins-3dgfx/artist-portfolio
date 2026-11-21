@@ -1315,14 +1315,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 4996",
-    "year": 2026,
+    "title": "Graceful Feathers",
+    "year": 2022,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "surface": "Canvas",
+    "widthIn": 12,
+    "heightIn": 9,
+    "statement": "Somewhere in Austin",
+    "subjects": [
+      "still-life"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
