@@ -914,7 +914,8 @@
     "heightIn": 0,
     "statement": "A special Boy!",
     "subjects": [
-      "children"
+      "children",
+      "portraits"
     ],
     "featured": false,
     "originalStatus": "not-for-sale",
