@@ -125,7 +125,7 @@
     "subjects": [
       "birds-and-flowers"
     ],
-    "featured": false,
+    "featured": true,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
     "slug": "the-nest",
