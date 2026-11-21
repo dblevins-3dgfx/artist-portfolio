@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { test } from "node:test";
 import type { Manifest } from "@/lib/catalog";
 import type { WorkFields } from "@/lib/desk";
-import { buildWork, checkSave, commitMessage, planPreviewFiles, planRemoval } from "@/lib/save-plan";
+import { buildWork, checkSave, commitMessage, planDuplicateMark, planPreviewFiles, planRemoval } from "@/lib/save-plan";
 import type { Work } from "@/lib/types";
 
 function work(slug: string, extra: Partial<Work> = {}): Work {
@@ -259,4 +259,59 @@ test("removing a painting deletes its preview unless another entry still uses it
   assert.ok("lake.jpg" in kept.manifest.files);
 
   assert.ok("error" in planRemoval(catalog, manifest, "gone"));
+});
+
+// "Not a duplicate" (#116). Both pictures need a fingerprint.
+const lookalike: Manifest = {
+  files: {
+    "lake.jpg": { width: 1400, height: 1000, sha256: "old-lake", fingerprint: "0123456789abcdef" },
+    "shore.jpg": { width: 900, height: 1400, sha256: "old-shore", fingerprint: "0123456789abcdee" },
+  },
+};
+
+test("marking a pair as different puts each fingerprint on the other's entry", () => {
+  const plan = planDuplicateMark(catalog, lookalike, "lake", "shore", true);
+  assert.ok(!("error" in plan));
+  assert.deepEqual(plan.manifest.files["lake.jpg"].notDuplicateOf, ["0123456789abcdee"]);
+  assert.deepEqual(plan.manifest.files["shore.jpg"].notDuplicateOf, ["0123456789abcdef"]);
+  assert.match(plan.message, /^Mark "lake" and "shore" as different paintings/);
+  assert.equal(lookalike.files["lake.jpg"].notDuplicateOf, undefined, "the manifest passed in is not changed");
+});
+
+test("Undo takes the mark off both entries and leaves no empty list", () => {
+  const marked = planDuplicateMark(catalog, lookalike, "lake", "shore", true);
+  assert.ok(!("error" in marked));
+  const undone = planDuplicateMark(catalog, marked.manifest, "shore", "lake", false);
+  assert.ok(!("error" in undone));
+  assert.equal("notDuplicateOf" in undone.manifest.files["lake.jpg"], false);
+  assert.equal("notDuplicateOf" in undone.manifest.files["shore.jpg"], false);
+  assert.match(undone.message, /^Undo/);
+});
+
+test("marking refuses a painting that is gone, itself, or a picture with no fingerprint", () => {
+  assert.ok("error" in planDuplicateMark(catalog, lookalike, "lake", "gone", true));
+  assert.ok("error" in planDuplicateMark(catalog, lookalike, "lake", "lake", true));
+  assert.ok("error" in planDuplicateMark(catalog, manifest, "lake", "shore", true), "shore has no fingerprint here");
+});
+
+test("a mark moves with a rename, and a new photo starts without one", () => {
+  const marked = planDuplicateMark(catalog, lookalike, "lake", "shore", true);
+  assert.ok(!("error" in marked));
+  const renamed = planPreviewFiles({
+    existing: catalog[0],
+    slug: "lake-at-dusk",
+    rendered: null,
+    currentPreview: Buffer.from("old preview"),
+    manifest: marked.manifest,
+  });
+  assert.ok(!("error" in renamed));
+  assert.deepEqual(renamed.manifest.files["lake-at-dusk.jpg"].notDuplicateOf, ["0123456789abcdee"]);
+  const rephotographed = planPreviewFiles({
+    existing: catalog[0],
+    slug: "lake",
+    rendered: photo,
+    manifest: marked.manifest,
+  });
+  assert.ok(!("error" in rephotographed));
+  assert.equal("notDuplicateOf" in rephotographed.manifest.files["lake.jpg"], false);
 });

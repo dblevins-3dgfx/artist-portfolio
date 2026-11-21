@@ -37,7 +37,15 @@ import type { DeskWork, Publishing, WorkFields } from "@/lib/desk";
 import { commitGitFiles, isGitConflict, readGitFile, readGitHead } from "@/lib/github-catalog";
 import { renderPreview } from "@/lib/preview-image";
 import { parsePrintPrices, serializePrintPrices, type PrintPrices } from "@/lib/print-prices";
-import { buildWork, checkSave, commitMessage, planPreviewFiles, planRemoval, type FileChange } from "@/lib/save-plan";
+import {
+  buildWork,
+  checkSave,
+  commitMessage,
+  planDuplicateMark,
+  planPreviewFiles,
+  planRemoval,
+  type FileChange,
+} from "@/lib/save-plan";
 import type { Work } from "@/lib/types";
 import { cleanShowings, parseVenues, serializeVenues, type Venue } from "@/lib/venues";
 
@@ -138,6 +146,7 @@ export function toDeskWorks(catalog: LoadedCatalog): DeskWork[] {
     imageWidth: work.imageWidth,
     imageHeight: work.imageHeight,
     lookalikes: likeness.lookalikes[work.slug] ?? [],
+    notDuplicates: likeness.notDuplicates[work.slug] ?? [],
     originalShownAt: work.originalShownAt,
     printsShownAt: work.printsShownAt,
   }));
@@ -270,6 +279,25 @@ export async function removePainting(existingSlug: string): Promise<{ error: str
       const plan = planRemoval(catalog.works, catalog.manifest, existingSlug);
       if ("error" in plan) throw new Error(plan.error);
       return plan;
+    });
+  } catch (error) {
+    return { error: friendlySaveError(error) };
+  }
+  return { ok: true as const };
+}
+
+// Mark two look-alike paintings as different, or undo that (#116). Only
+// the manifest changes; see planDuplicateMark.
+export async function markDuplicatePair(
+  slug: string,
+  otherSlug: string,
+  different: boolean,
+): Promise<{ error: string } | { ok: true }> {
+  try {
+    await commitChange(async (catalog) => {
+      const plan = planDuplicateMark(catalog.works, catalog.manifest, slug, otherSlug, different);
+      if ("error" in plan) throw new Error(plan.error);
+      return { message: plan.message, manifest: plan.manifest, files: [] };
     });
   } catch (error) {
     return { error: friendlySaveError(error) };

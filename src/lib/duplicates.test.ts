@@ -133,5 +133,51 @@ test("paintings with the same title are told apart by web name", () => {
 });
 
 test("an empty catalog has no groups and no look-alikes", () => {
-  assert.deepEqual(catalogLikeness([], { files: {} }), { groups: [], lookalikes: {} });
+  assert.deepEqual(catalogLikeness([], { files: {} }), { groups: [], lookalikes: {}, notDuplicates: {} });
+});
+
+// A manifest where `notDuplicateOf` lists, per slug, fingerprints that
+// picture is marked as different from ("Not a duplicate", #116).
+function markedManifest(fingerprints: Record<string, string>, notDuplicateOf: Record<string, string[]>): Manifest {
+  const manifest = marks(fingerprints);
+  for (const [slug, list] of Object.entries(notDuplicateOf)) manifest.files[`${slug}.jpg`].notDuplicateOf = list;
+  return manifest;
+}
+
+test("a pair marked as different paintings is not grouped, from either side", () => {
+  const works = [work("goldfish", "Goldfish Gazing"), work("fairy", "Fairy Goldfish Gazing")];
+  const fromOne = catalogLikeness(works, markedManifest({ goldfish: ZERO, fairy: FOUR }, { goldfish: [FOUR] }));
+  assert.deepEqual(fromOne.groups, []);
+  assert.deepEqual(fromOne.lookalikes, {});
+  const fromOther = catalogLikeness(works, markedManifest({ goldfish: ZERO, fairy: FOUR }, { fairy: [ZERO] }));
+  assert.deepEqual(fromOther.groups, []);
+});
+
+test("each side of a marked pair lists the other, for the Undo", () => {
+  const works = [work("goldfish", "Goldfish Gazing"), work("fairy", "Fairy Goldfish Gazing")];
+  const result = catalogLikeness(works, markedManifest({ goldfish: ZERO, fairy: FOUR }, { goldfish: [FOUR] }));
+  assert.deepEqual(result.notDuplicates, {
+    goldfish: [{ slug: "fairy", title: "Fairy Goldfish Gazing" }],
+    fairy: [{ slug: "goldfish", title: "Goldfish Gazing" }],
+  });
+});
+
+test("a replaced photo has a new fingerprint, so the pair is checked again", () => {
+  // The mark names the old photo's fingerprint, FOUR. The fairy painting now
+  // has a new photo, 0000000000000007, 3 bits from ZERO and still close.
+  const works = [work("goldfish"), work("fairy")];
+  const result = catalogLikeness(
+    works,
+    markedManifest({ goldfish: ZERO, fairy: "0000000000000007" }, { goldfish: [FOUR] }),
+  );
+  assert.deepEqual(slugs(result.groups), [["goldfish", "fairy"]]);
+  assert.deepEqual(result.notDuplicates, {});
+});
+
+test("two marked paintings can still be grouped through a third close to both", () => {
+  const works = [work("a"), work("b"), work("c")];
+  // a and b are 2 bits apart but marked different; c is 1 bit from each.
+  const fingerprints = { a: ZERO, b: "0000000000000003", c: "0000000000000001" };
+  const result = catalogLikeness(works, markedManifest(fingerprints, { a: ["0000000000000003"] }));
+  assert.deepEqual(slugs(result.groups), [["a", "b", "c"]]);
 });

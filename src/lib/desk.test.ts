@@ -64,6 +64,7 @@ const row = {
   imageWidth: 0,
   imageHeight: 0,
   lookalikes: [],
+  notDuplicates: [],
   originalShownAt: "",
   printsShownAt: [] as string[],
 };
