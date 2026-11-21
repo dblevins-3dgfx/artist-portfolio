@@ -1103,11 +1103,12 @@
     "year": 2026,
     "medium": "Oil",
     "surface": "Canvas",
-    "widthIn": 0,
-    "heightIn": 0,
+    "widthIn": 36,
+    "heightIn": 12,
     "statement": "SUMMER AFTERNOON—summer afternoon; to me those have always been the two most beautiful words in the English language,” wrote Henry James - and I agree!",
     "subjects": [
-      "children"
+      "children",
+      "narratives"
     ],
     "featured": false,
     "originalStatus": "not-for-sale",
