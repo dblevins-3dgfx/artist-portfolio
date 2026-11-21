@@ -6,12 +6,14 @@
  * `params` is a Promise in this version of Next. Await it before reading slug.
  */
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PaintingViewer } from "@/components/painting-viewer";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { neighbours } from "@/lib/neighbours";
+import { relatedWorks } from "@/lib/related";
 import { emailIsPublic, formatInches, formatMaterials, site, workAlt } from "@/lib/site";
 import { subjectLabel } from "@/lib/subjects";
 import { getWork, getWorks } from "@/lib/works";
@@ -51,10 +53,9 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
   const inches = formatInches(work.widthIn, work.heightIn);
   const materials = formatMaterials(work);
   const subjects = work.subjects.map(subjectLabel);
-  // "More like this": paintings that share any subject come first.
-  const rest = getWorks().filter((entry) => entry.slug !== work.slug);
-  const sharesSubject = (entry: (typeof rest)[number]) => entry.subjects.some((id) => work.subjects.includes(id));
-  const others = [...rest.filter(sharesSubject), ...rest.filter((entry) => !sharesSubject(entry))].slice(0, 3);
+  // "More paintings": same subject first, a different pick on each page
+  // (see lib/related.ts).
+  const others = relatedWorks(getWorks(), work);
   const { previous, next, subject } = neighbours(getWorks(), work.slug);
   const previousHref = previous ? `/work/${previous.slug}` : undefined;
   const nextHref = next ? `/work/${next.slug}` : undefined;
@@ -119,13 +120,29 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
       {others.length > 0 ? (
         <div className="mt-16 border-t border-border pt-8">
           <h2 className="font-heading text-2xl italic">More paintings</h2>
-          <ul className="mt-4 flex flex-col gap-2 text-sm">
+          {/*
+            Each picture is a fixed height at its natural width, so a row
+            stays even and nothing is cropped. The heights are chosen so four
+            fit in a row on a computer and two in a row on a phone. The title
+            is held to the picture's width (w-0 min-w-full) rather than
+            widening it.
+          */}
+          <ul className="mt-4 flex flex-wrap gap-4">
             {others.map((entry) => (
               <li key={entry.slug}>
-                <Link href={`/work/${entry.slug}`} className="underline-offset-4 hover:underline">
-                  {entry.title}
+                <Link href={`/work/${entry.slug}`} className="group flex flex-col">
+                  <Image
+                    src={entry.image}
+                    alt={workAlt(entry)}
+                    width={entry.imageWidth}
+                    height={entry.imageHeight}
+                    sizes="(min-width: 1024px) 320px, 200px"
+                    className="h-26 w-auto border border-border bg-card sm:h-36 lg:h-44"
+                  />
+                  <span className="mt-2 w-0 min-w-full font-heading text-base italic leading-snug group-hover:underline">
+                    {entry.title}
+                  </span>
                 </Link>
-                <span className="text-muted-foreground"> · {entry.year}</span>
               </li>
             ))}
           </ul>
