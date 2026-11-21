@@ -1828,16 +1828,18 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 9245",
-    "year": 2026,
+    "title": "Memory Lane",
+    "year": 2025,
     "medium": "Oil",
     "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "widthIn": 12,
+    "heightIn": 9,
+    "statement": "The place I grew up. I walked this lane every day to catch the bus and home again.",
+    "subjects": [
+      "places"
+    ],
     "featured": false,
-    "originalStatus": "not-for-sale",
+    "originalStatus": "sold",
     "printsAvailable": true,
     "slug": "img-9245",
     "image": "/art/img-9245.jpg",
