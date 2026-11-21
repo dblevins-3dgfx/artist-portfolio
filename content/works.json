@@ -1236,16 +1236,19 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 4976 Original",
-    "year": 2026,
+    "title": "Pookie Bear",
+    "year": 2016,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 10,
+    "heightIn": 8,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "children",
+      "still-life"
+    ],
     "featured": false,
-    "originalStatus": "not-for-sale",
+    "originalStatus": "sold",
     "printsAvailable": true,
     "slug": "img-4976-original",
     "image": "/art/img-4976-original.jpg",
