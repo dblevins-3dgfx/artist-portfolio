@@ -1374,14 +1374,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 5153 Original",
-    "year": 2026,
+    "title": "Olivia Rose",
+    "year": 2017,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 27,
+    "heightIn": 18,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "children"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
