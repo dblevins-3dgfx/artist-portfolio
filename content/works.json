@@ -1216,14 +1216,17 @@
     "imageHeight": 1040
   },
   {
-    "title": "IMG 4974 Original",
-    "year": 2026,
+    "title": "Stepping Out After the Storm",
+    "year": 2016,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "surface": "Canvas",
+    "widthIn": 20,
+    "heightIn": 16,
+    "statement": "Puddles may be the best thing about rain when you’re little!",
+    "subjects": [
+      "children",
+      "narratives"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
