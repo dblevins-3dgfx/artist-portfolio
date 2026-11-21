@@ -1296,14 +1296,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 4988",
-    "year": 2026,
+    "title": "“My Help (Psalm 121) aka “ The Bride of Christ “",
+    "year": 2018,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "surface": "Canvas",
+    "widthIn": 18,
+    "heightIn": 36,
+    "statement": "Because we all have a cliff to climb!  Jesus is available!",
+    "subjects": [
+      "narratives"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
