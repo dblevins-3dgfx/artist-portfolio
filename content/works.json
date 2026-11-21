@@ -1161,15 +1161,15 @@
     "year": 2026,
     "medium": "Oil",
     "surface": "Cedar Shingle",
-    "widthIn": 0,
-    "heightIn": 0,
+    "widthIn": 4,
+    "heightIn": 18,
     "statement": "A fun study in glass",
     "subjects": [
       "still-life"
     ],
     "featured": false,
     "originalStatus": "not-for-sale",
-    "printsAvailable": true,
+    "printsAvailable": false,
     "slug": "img-4706",
     "image": "/art/img-4706.jpg",
     "imageWidth": 371,
