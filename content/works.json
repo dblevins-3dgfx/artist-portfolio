@@ -1847,14 +1847,17 @@
     "imageHeight": 1094
   },
   {
-    "title": "IMG 9475",
-    "year": 2026,
+    "title": "Mommy’s Kiss",
+    "year": 2019,
     "medium": "Oil",
     "surface": "",
     "widthIn": 0,
     "heightIn": 0,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "children",
+      "narratives"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
