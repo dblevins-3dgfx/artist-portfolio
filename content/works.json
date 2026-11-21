@@ -1631,14 +1631,19 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 7696 Original",
-    "year": 2026,
+    "title": "A Boy and His Shelty",
+    "year": 2015,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 24,
+    "heightIn": 24,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "children",
+      "animals",
+      "portraits",
+      "commissioned"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
