@@ -1807,16 +1807,20 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 8847 Original",
-    "year": 2026,
+    "title": "Story Time",
+    "year": 2017,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 18,
+    "heightIn": 24,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "children",
+      "narratives",
+      "commissioned"
+    ],
     "featured": false,
-    "originalStatus": "not-for-sale",
+    "originalStatus": "sold",
     "printsAvailable": true,
     "slug": "img-8847-original",
     "image": "/art/img-8847-original.jpg",
