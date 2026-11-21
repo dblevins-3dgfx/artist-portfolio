@@ -1964,14 +1964,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 9689",
-    "year": 2026,
+    "title": "Snowdrops",
+    "year": 2016,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 16,
+    "heightIn": 20,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "still-life"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
