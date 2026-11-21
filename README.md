@@ -26,6 +26,15 @@ The live site is [https://artist-portfolio-mu-snowy.vercel.app/](https://artist-
 
 `siteUrl` in `content/studio.json` is still empty, so the sitemap is empty. Set it to the public address, including `https://`, when that address is the one you want indexed. Then publish again.
 
+## Visitor stats
+
+The public pages report page views to Vercel Web Analytics. Turn it on once in the Vercel project's **Analytics** tab; until then nothing is recorded. The stats are in that same tab. Each painting has its own page (`/work/<web name>`), so the most visited of those are the most popular paintings. The tab also shows where visitors came from and their country and device.
+
+It uses no cookies and records no names or messages. Two kinds of view are left out before anything is sent:
+
+- the studio desk (`/curate` and its pages), so editing is never counted;
+- every view in a browser that has signed in to the desk, so your own browsing does not count. Signing in to the desk once on a phone or computer is enough. Clearing that browser's site data for this site undoes it.
+
 ## Studio details
 
 [`content/studio.json`](content/studio.json) already has the studio’s name, tagline, location, email, domain, and biography. Those fields are:

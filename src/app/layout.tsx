@@ -10,6 +10,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Outfit } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
+import { SiteAnalytics } from "@/components/site-analytics";
 import { SiteHeader } from "@/components/site-header";
 import { site } from "@/lib/site";
 import "./globals.css";
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <SiteFooter />
+        <SiteAnalytics />
       </body>
     </html>
   );
