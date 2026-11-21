@@ -127,7 +127,7 @@
     ],
     "featured": false,
     "originalStatus": "not-for-sale",
-    "printsAvailable": false,
+    "printsAvailable": true,
     "slug": "the-nest",
     "image": "/art/the-nest.jpg",
     "imageWidth": 1189,
