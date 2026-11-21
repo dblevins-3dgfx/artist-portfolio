@@ -88,7 +88,7 @@
     ],
     "featured": false,
     "originalStatus": "not-for-sale",
-    "printsAvailable": false,
+    "printsAvailable": true,
     "slug": "sisters-in-the-sand",
     "image": "/art/sisters-in-the-sand.jpg",
     "imageWidth": 1400,
