@@ -1491,14 +1491,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 6131 Original",
-    "year": 2026,
+    "title": "The Coffee Roaster",
+    "year": 2018,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 18,
+    "heightIn": 24,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "commissioned"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
