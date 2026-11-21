@@ -1730,16 +1730,19 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 8320",
+    "title": "Crows in Clothes: Singin’ in the Rain",
     "year": 2026,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 30,
+    "heightIn": 15,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "animals",
+      "narratives"
+    ],
     "featured": false,
-    "originalStatus": "not-for-sale",
+    "originalStatus": "sold",
     "printsAvailable": true,
     "slug": "img-8320",
     "image": "/art/img-8320.jpg",
