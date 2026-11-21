@@ -1377,14 +1377,16 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 5721 Original",
-    "year": 2026,
+    "title": "Huckleberry Swirl",
+    "year": 2016,
     "medium": "Oil",
-    "surface": "",
+    "surface": "Canvas",
     "widthIn": 0,
     "heightIn": 0,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "still-life"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
