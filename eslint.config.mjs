@@ -11,7 +11,12 @@ const eslintConfig = defineConfig([
     // when this limit was set (PaintingFields, mostly `|| ""` fallbacks), so
     // lint fails if any function grows past today's worst instead of the
     // code drifting more complex unnoticed.
-    rules: { complexity: ["error", { max: 21 }] },
+    //
+    // no-alert: no alert, confirm, or prompt boxes. Safari on the artist's
+    // iPhone did not show a confirm box, which then counted as Cancel, so
+    // Remove silently did nothing (#111). Ask on the page instead (see
+    // LeavePrompt and PendingButtons in components/desk/form.tsx).
+    rules: { complexity: ["error", { max: 21 }], "no-alert": "error" },
   },
   // Override default ignores of eslint-config-next.
   globalIgnores([
