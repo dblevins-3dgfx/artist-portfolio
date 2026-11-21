@@ -430,19 +430,13 @@
       "width": 1055,
       "height": 1400,
       "sha256": "69e3e9450cea159f84682e14621b1b858e012ab5f09c1eb07d63a01aaeea5254",
-      "fingerprint": "d496861287eeb792",
-      "notDuplicateOf": [
-        "86968e1287eeb792"
-      ]
+      "fingerprint": "d496861287eeb792"
     },
     "img-6739-original.jpg": {
       "width": 1039,
       "height": 1400,
       "sha256": "0ba4d40fdc02ad06f5a1b9370db3d10f849ceac905081482ff2d34f042bd05b1",
-      "fingerprint": "86968e1287eeb792",
-      "notDuplicateOf": [
-        "d496861287eeb792"
-      ]
+      "fingerprint": "86968e1287eeb792"
     },
     "img-6742-original.jpg": {
       "width": 1400,
