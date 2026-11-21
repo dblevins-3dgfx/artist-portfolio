@@ -15,8 +15,10 @@ import {
   PendingButtons,
   checkPhotoSize,
   useDeskForm,
+  LeavePrompt,
   useLeaveGuard,
   type LeaveGuard,
+  type LeavePromptState,
 } from "@/components/desk/form";
 import { PaintingBadges, PublishingNote } from "@/components/desk/list";
 import { PaintingFields } from "@/components/desk/painting-fields";
@@ -69,28 +71,33 @@ function UncroppedPreview({ work }: { work: DeskWork }) {
 
 // "Possible duplicate of A and B." with each name linking to that
 // painting's edit page. With unsaved changes, following one asks first, as
-// "All paintings" does (guardLink).
+// "All paintings" does (guardLink), with the question under the note.
 function LookalikeNote({
   work,
   guardLink,
+  leavePrompt,
 }: {
   work: DeskWork;
   guardLink: (event: MouseEvent<HTMLAnchorElement>) => void;
+  leavePrompt: LeavePromptState;
 }) {
   if (work.lookalikes.length === 0) return null;
   return (
-    <p className="mt-2 text-sm leading-relaxed">
-      Possible duplicate of{" "}
-      {work.lookalikes.map((other, index) => (
-        <span key={other.slug}>
-          {listSeparator(index, work.lookalikes.length)}
-          <Link href={`/curate/${other.slug}`} onClick={guardLink} className="underline underline-offset-4">
-            {other.title}
-          </Link>
-        </span>
-      ))}
-      .
-    </p>
+    <>
+      <p className="mt-2 text-sm leading-relaxed">
+        Possible duplicate of{" "}
+        {work.lookalikes.map((other, index) => (
+          <span key={other.slug}>
+            {listSeparator(index, work.lookalikes.length)}
+            <Link href={`/curate/${other.slug}`} onClick={guardLink} className="underline underline-offset-4">
+              {other.title}
+            </Link>
+          </span>
+        ))}
+        .
+      </p>
+      <LeavePrompt prompt={leavePrompt} at="lookalike" className="mt-2" />
+    </>
   );
 }
 
@@ -100,13 +107,15 @@ function WorkForm({
   canSave,
   guard,
   guardLink,
+  leavePrompt,
   onCancel,
 }: {
   work: DeskWork;
   venues: Venue[];
   canSave: boolean;
   guard: LeaveGuard;
-  guardLink: (event: MouseEvent<HTMLAnchorElement>) => void;
+  guardLink: (at: string) => (event: MouseEvent<HTMLAnchorElement>) => void;
+  leavePrompt: LeavePromptState;
   onCancel: () => void;
 }) {
   const { state, pending, onSubmit, formRef, onEdit, changed } = useDeskForm({ trackChanges: true, guard });
@@ -124,7 +133,7 @@ function WorkForm({
         <p className="mt-2 text-xs text-muted-foreground">
           Preview{work.imageWidth ? `, ${work.imageWidth} × ${work.imageHeight}` : ""}. Click it to see it uncropped.
         </p>
-        <LookalikeNote work={work} guardLink={guardLink} />
+        <LookalikeNote work={work} guardLink={guardLink("lookalike")} leavePrompt={leavePrompt} />
       </div>
       <div className="grid gap-4">
         <PaintingFields idPrefix={work.slug} work={work} venues={venues} />
@@ -154,6 +163,7 @@ function WorkForm({
           allowRemove
           onCancel={onCancel}
         />
+        <LeavePrompt prompt={leavePrompt} at="cancel" />
       </div>
     </form>
   );
@@ -165,11 +175,13 @@ function NewWorkForm({
   venues,
   canSave,
   guard,
+  leavePrompt,
   onCancel,
 }: {
   venues: Venue[];
   canSave: boolean;
   guard: LeaveGuard;
+  leavePrompt: LeavePromptState;
   onCancel: () => void;
 }) {
   const { state, pending, onSubmit, formRef, onEdit } = useDeskForm({ trackChanges: true, guard });
@@ -202,6 +214,7 @@ function NewWorkForm({
         allowRemove={false}
         onCancel={onCancel}
       />
+      <LeavePrompt prompt={leavePrompt} at="cancel" />
     </form>
   );
 }
@@ -243,9 +256,7 @@ export function CurateEditor({
   // Right after a save, going back shows the painting's Saved badge on the
   // list, the same way a save used to land there.
   const back = justSaved ? `/curate?saved=1&at=${encodeURIComponent(work.slug)}` : `/curate#${work.slug}`;
-  const { changed, guard, leave, guardLink } = useLeaveGuard(
-    `Discard your changes to “${work.title}”? Choose OK to discard them, or Cancel to keep editing.`,
-  );
+  const { changed, guard, leave, guardLink, prompt } = useLeaveGuard(`Discard your changes to “${work.title}”?`);
   // The list's filter, remembered for this tab (see filter-store.ts), so
   // Previous/Next step through the same paintings the list shows.
   const filter = useDeskFilter();
@@ -259,10 +270,11 @@ export function CurateEditor({
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
       <p className="text-sm">
-        <Link href={back} onClick={guardLink} className="underline underline-offset-4">
+        <Link href={back} onClick={guardLink("back")} className="underline underline-offset-4">
           All paintings
         </Link>
       </p>
+      <LeavePrompt prompt={prompt} at="back" className="mt-3 max-w-md" />
       <p className="mt-6 text-xs tracking-[0.18em] text-muted-foreground uppercase">Studio desk</p>
       <h1 className="mt-3 font-heading text-5xl italic">{work.title}</h1>
       <PaintingBadges work={work} className="mt-4" />
@@ -289,7 +301,8 @@ export function CurateEditor({
           canSave={publishing !== "missing"}
           guard={guard}
           guardLink={guardLink}
-          onCancel={() => leave(back)}
+          leavePrompt={prompt}
+          onCancel={() => leave(back, "cancel")}
         />
       </div>
     </div>
@@ -297,16 +310,15 @@ export function CurateEditor({
 }
 
 export function CurateAdd({ publishing, venues }: { publishing: Publishing; venues: Venue[] }) {
-  const { guard, leave, guardLink } = useLeaveGuard(
-    "Discard this new painting? Nothing has been saved. Choose OK to discard it, or Cancel to keep editing.",
-  );
+  const { guard, leave, guardLink, prompt } = useLeaveGuard("Discard this new painting? Nothing has been saved.");
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
       <p className="text-sm">
-        <Link href="/curate" onClick={guardLink} className="underline underline-offset-4">
+        <Link href="/curate" onClick={guardLink("back")} className="underline underline-offset-4">
           All paintings
         </Link>
       </p>
+      <LeavePrompt prompt={prompt} at="back" className="mt-3 max-w-md" />
       <p className="mt-6 text-xs tracking-[0.18em] text-muted-foreground uppercase">Studio desk</p>
       <h1 className="mt-3 font-heading text-5xl italic">Add a painting</h1>
       <p className="mt-6 max-w-prose text-lg leading-relaxed">
@@ -318,7 +330,8 @@ export function CurateAdd({ publishing, venues }: { publishing: Publishing; venu
           venues={venues}
           canSave={publishing !== "missing"}
           guard={guard}
-          onCancel={() => leave("/curate")}
+          leavePrompt={prompt}
+          onCancel={() => leave("/curate", "cancel")}
         />
       </div>
     </div>

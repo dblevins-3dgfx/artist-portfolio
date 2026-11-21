@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { formSignature } from "@/lib/desk";
 import { withStaleCheck } from "@/lib/stale-page";
+import { cn } from "@/lib/utils";
 
 export function Field({
   id,
@@ -112,30 +113,70 @@ export function useDeskForm({ trackChanges = false, guard }: { trackChanges?: bo
   return { state, pending, onSubmit, formRef, onEdit, changed };
 }
 
-// Leaving a desk form page through Cancel or "All paintings". With unsaved
-// changes it asks first; without, it just goes. confirmLeave returns false
-// when the artist chooses to keep editing. The browser's own confirm box
-// shows OK and Cancel, so the question is worded to fit those buttons.
-// The guard it returns is handed to the page's form (useDeskForm).
+// A question asked before leaving with unsaved changes: where the press
+// was going, and which control it came from (`at`), so the question shows
+// next to that control (LeavePrompt).
+export type LeavePromptState = {
+  question: string;
+  pending: { href: string; at: string } | null;
+  discard: () => void;
+  keepEditing: () => void;
+};
+
+// Leaving a desk form page through Cancel, "All paintings", or another
+// link. With unsaved changes it asks first, on the page; without, it just
+// goes. The question is not the browser's own confirm box: Safari on an
+// iPhone may not show that box at all, and then it counts as Cancel, so
+// the press silently did nothing (#111). The guard it returns is handed to
+// the page's form (useDeskForm).
 export function useLeaveGuard(question: string) {
   const router = useRouter();
   const [changed, setChanged] = useState(false);
+  const [pending, setPending] = useState<LeavePromptState["pending"]>(null);
   const discarding = useRef(false);
-  const confirmLeave = () => {
-    if (!changed) return true;
-    discarding.current = window.confirm(question);
-    return discarding.current;
+  const leave = (href: string, at: string) => {
+    if (changed) setPending({ href, at });
+    else router.push(href);
   };
-  const leave = (href: string) => {
-    if (confirmLeave()) router.push(href);
+  const guardLink = (at: string) => (event: MouseEvent<HTMLAnchorElement>) => {
+    if (!changed) return;
+    event.preventDefault();
+    setPending({ href: event.currentTarget.getAttribute("href") || "/curate", at });
   };
-  const guardLink = (event: MouseEvent<HTMLAnchorElement>) => {
-    if (!confirmLeave()) event.preventDefault();
+  const prompt: LeavePromptState = {
+    question,
+    pending,
+    discard: () => {
+      if (!pending) return;
+      discarding.current = true;
+      router.push(pending.href);
+    },
+    keepEditing: () => setPending(null),
   };
   // Both parts are stable across renders, so the form's close-tab listener
   // is not re-registered every time the page re-renders.
   const guard = useMemo<LeaveGuard>(() => ({ setChanged, discarding }), []);
-  return { changed, guard, leave, guardLink };
+  return { changed, guard, leave, guardLink, prompt };
+}
+
+// The leave question, shown by the control that was pressed (`at` matches
+// the one passed to leave or guardLink). Focus moves to "Keep editing", the
+// safe choice, so a stray Enter does not discard anything.
+export function LeavePrompt({ prompt, at, className }: { prompt: LeavePromptState; at: string; className?: string }) {
+  if (prompt.pending?.at !== at) return null;
+  return (
+    <div role="alert" className={cn("grid gap-3 border border-border bg-card p-3 text-sm", className)}>
+      <p>{prompt.question}</p>
+      <div className="flex flex-wrap gap-2">
+        <Button type="button" variant="destructive" size="sm" onClick={prompt.discard}>
+          Discard
+        </Button>
+        <Button type="button" variant="outline" size="sm" autoFocus onClick={prompt.keepEditing}>
+          Keep editing
+        </Button>
+      </div>
+    </div>
+  );
 }
 
 // A stale page (see lib/stale-page.ts) cannot recover by itself: its
@@ -190,6 +231,9 @@ export function PendingButtons({
   allowRemove: boolean;
   onCancel: () => void;
 }) {
+  // Remove asks on the page, not with the browser's confirm box, which
+  // Safari on an iPhone may never show (#111). Only "Yes, remove it" posts.
+  const [confirmingRemove, setConfirmingRemove] = useState(false);
   // The button's name/value is not a reliable submit intent with this button
   // primitive. A hidden field, set before the post, is what the server reads.
   const setIntent = (event: MouseEvent<HTMLButtonElement>, intent: "save" | "delete") => {
@@ -197,36 +241,62 @@ export function PendingButtons({
     if (field instanceof HTMLInputElement) field.value = intent;
   };
   return (
-    <div className="flex flex-wrap gap-3">
-      <input type="hidden" name="intent" defaultValue="save" />
-      <Button type="submit" disabled={pending || !canSave || !hasChanges} onClick={(event) => setIntent(event, "save")}>
-        {pending ? pendingLabel : saveLabel}
-      </Button>
-      <Button type="button" variant="outline" disabled={pending} onClick={onCancel}>
-        Cancel
-      </Button>
-      {/* Remove sits apart from Save and Cancel, at the far end of the row. */}
-      {allowRemove ? (
+    <>
+      <div className="flex flex-wrap gap-3">
+        <input type="hidden" name="intent" defaultValue="save" />
         <Button
           type="submit"
-          variant="destructive"
-          formNoValidate
-          className="ml-auto"
-          disabled={pending || !canSave}
-          onClick={(event) => {
-            setIntent(event, "delete");
-            if (
-              !window.confirm(
-                "Take this painting off the site? The preview is removed. A photograph you still have at home is not affected.",
-              )
-            ) {
-              event.preventDefault();
-            }
-          }}
+          disabled={pending || !canSave || !hasChanges}
+          onClick={(event) => setIntent(event, "save")}
         >
-          Remove
+          {pending ? pendingLabel : saveLabel}
         </Button>
+        <Button type="button" variant="outline" disabled={pending} onClick={onCancel}>
+          Cancel
+        </Button>
+        {/* Remove sits apart from Save and Cancel, at the far end of the row. */}
+        {allowRemove ? (
+          <Button
+            type="button"
+            variant="destructive"
+            className="ml-auto"
+            disabled={pending || !canSave || confirmingRemove}
+            onClick={() => setConfirmingRemove(true)}
+          >
+            Remove
+          </Button>
+        ) : null}
+      </div>
+      {allowRemove && confirmingRemove ? (
+        <div role="alert" className="grid gap-3 border border-border bg-card p-3 text-sm">
+          <p>
+            Take this painting off the site? The preview is removed. A photograph you still have at home is not
+            affected.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="submit"
+              variant="destructive"
+              size="sm"
+              formNoValidate
+              disabled={pending || !canSave}
+              onClick={(event) => setIntent(event, "delete")}
+            >
+              {pending ? "Removing…" : "Yes, remove it"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              autoFocus
+              disabled={pending}
+              onClick={() => setConfirmingRemove(false)}
+            >
+              Keep it
+            </Button>
+          </div>
+        </div>
       ) : null}
-    </div>
+    </>
   );
 }
