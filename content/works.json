@@ -1788,16 +1788,18 @@
     "imageHeight": 1115
   },
   {
-    "title": "IMG 8630 Original",
-    "year": 2026,
+    "title": "Fluffy Bunny",
+    "year": 2015,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 8,
+    "heightIn": 10,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "animals"
+    ],
     "featured": false,
-    "originalStatus": "not-for-sale",
+    "originalStatus": "sold",
     "printsAvailable": true,
     "slug": "img-8630-original",
     "image": "/art/img-8630-original.jpg",
