@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { logout } from "@/app/curate/actions";
 import { chooseFilter, useDeskFilter, useHydrated } from "@/components/desk/filter-store";
+import { markOwnBrowser } from "@/components/site-analytics";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { DESK_FILTERS, isOnDisplay, missingDetails, type DeskWork, type Publishing } from "@/lib/desk";
@@ -112,6 +113,10 @@ export function CurateDesk({
 }) {
   const active = useDeskFilter();
   const hydrated = useHydrated();
+
+  // Signed in to the desk: this browser's public-page views are the
+  // artist's own, so analytics leaves them out (see site-analytics.tsx).
+  useEffect(markOwnBrowser, []);
 
   useEffect(() => {
     if (!focusSlug || !hydrated) return;
