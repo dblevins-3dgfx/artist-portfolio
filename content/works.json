@@ -1393,14 +1393,17 @@
     "imageHeight": 1046
   },
   {
-    "title": "IMG 5258",
+    "title": "Hummer on a Clothespin",
     "year": 2026,
     "medium": "Oil",
     "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "widthIn": 10,
+    "heightIn": 8,
+    "statement": "Cozy home!",
+    "subjects": [
+      "animals",
+      "birds-and-flowers"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
