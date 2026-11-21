@@ -1591,14 +1591,17 @@
     "imageHeight": 1060
   },
   {
-    "title": "IMG 6925 Original",
-    "year": 2026,
+    "title": "Palouse Gothic",
+    "year": 2015,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "surface": "Canvas",
+    "widthIn": 18,
+    "heightIn": 24,
+    "statement": "Close friends, farmers on the Palouse. One of my first portraits.",
+    "subjects": [
+      "portraits",
+      "narratives"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
