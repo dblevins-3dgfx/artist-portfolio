@@ -167,8 +167,8 @@
       "animals"
     ],
     "featured": false,
-    "originalStatus": "not-for-sale",
-    "printsAvailable": false,
+    "originalStatus": "sold",
+    "printsAvailable": true,
     "slug": "puppy-love",
     "image": "/art/puppy-love.jpg",
     "imageWidth": 1045,
