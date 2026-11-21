@@ -1871,12 +1871,13 @@
     "title": "Mommy’s Kiss",
     "year": 2019,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 12,
+    "heightIn": 16,
     "statement": "",
     "subjects": [
       "children",
+      "portraits",
       "narratives"
     ],
     "series": "Mama and Papa",
