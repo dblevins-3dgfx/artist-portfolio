@@ -1570,14 +1570,18 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 6742 Original",
-    "year": 2026,
+    "title": "A Day at the Beach",
+    "year": 2020,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 24,
+    "heightIn": 18,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "animals",
+      "portraits",
+      "commissioned"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
