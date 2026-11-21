@@ -1750,16 +1750,18 @@
     "imageHeight": 698
   },
   {
-    "title": "IMG 8351",
-    "year": 2026,
+    "title": "Yellowstone Creek",
+    "year": 2020,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 9,
+    "heightIn": 12,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "places"
+    ],
     "featured": false,
-    "originalStatus": "not-for-sale",
+    "originalStatus": "sold",
     "printsAvailable": true,
     "slug": "img-8351",
     "image": "/art/img-8351.jpg",
