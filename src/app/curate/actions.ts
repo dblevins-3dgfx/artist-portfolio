@@ -15,7 +15,8 @@
  */
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { removePainting, savePainting, savePrintPrices, saveVenues } from "@/lib/catalog-store";
+import { isCatalogSlug } from "@/lib/catalog";
+import { markDuplicatePair, removePainting, savePainting, savePrintPrices, saveVenues } from "@/lib/catalog-store";
 import { checkPrintPrices } from "@/lib/print-prices";
 import { checkVenues } from "@/lib/venues";
 import { imageFromForm, readWorkForm } from "@/lib/work-form";
@@ -112,4 +113,20 @@ export async function saveVenueList(_state: DeskFormState, formData: FormData): 
   if ("error" in saved) return saved;
   revalidatePath("/curate", "layout");
   redirect("/curate/venues?saved=1");
+}
+
+// "Not a duplicate" and its Undo on a painting's edit page (#116). The
+// buttons send the painting, the look-alike, and whether to mark them as
+// different ("1") or undo that ("0"). It comes back to the same page.
+export async function saveDuplicateMark(_state: DeskFormState, formData: FormData): Promise<DeskFormState> {
+  if (!(await isSignedIn())) return { error: "Sign in again to change the catalog." };
+  const slug = formData.get("slug");
+  const otherSlug = formData.get("otherSlug");
+  if (typeof slug !== "string" || typeof otherSlug !== "string" || !isCatalogSlug(slug) || !isCatalogSlug(otherSlug)) {
+    return { error: "That painting’s web name is not valid. Reload the page." };
+  }
+  const saved = await markDuplicatePair(slug, otherSlug, formData.get("different") === "1");
+  if ("error" in saved) return saved;
+  revalidatePath("/curate", "layout");
+  redirect(`/curate/${encodeURIComponent(slug)}?saved=1`);
 }

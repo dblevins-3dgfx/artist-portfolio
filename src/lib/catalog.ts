@@ -26,7 +26,17 @@ const FINGERPRINT = /^[0-9a-f]{16}$/;
 
 // fingerprint is a 16-character likeness mark. The desk compares these.
 // Keeping it here means a later save does not wipe the marks off the manifest.
-export type ManifestFile = { width: number; height: number; sha256: string; fingerprint?: string };
+// notDuplicateOf lists the fingerprints of pictures the artist marked as a
+// different painting, though they look alike (#116). It belongs to this
+// picture: a replaced photo gets a new entry without it, so a new photo is
+// checked again; a rename moves the entry, so the mark survives.
+export type ManifestFile = {
+  width: number;
+  height: number;
+  sha256: string;
+  fingerprint?: string;
+  notDuplicateOf?: string[];
+};
 export type Manifest = { files: Record<string, ManifestFile> };
 
 export function isCatalogSlug(value: string) {
@@ -125,6 +135,14 @@ export function parseManifest(value: unknown): Manifest {
     };
     if (typeof file.fingerprint === "string" && FINGERPRINT.test(file.fingerprint)) {
       parsed.fingerprint = file.fingerprint;
+    }
+    if (Array.isArray(file.notDuplicateOf)) {
+      const marks = [
+        ...new Set(
+          file.notDuplicateOf.filter((mark): mark is string => typeof mark === "string" && FINGERPRINT.test(mark)),
+        ),
+      ].sort();
+      if (marks.length > 0) parsed.notDuplicateOf = marks;
     }
     manifest.files[name] = parsed;
   }

@@ -3,7 +3,8 @@
  * DeskWork is one row on the form. WorkFields is the validated save payload.
  * Publishing is where a save will land: GitHub (live site), this computer
  * (local dev), or nowhere (Vercel with no token). The browser uses it only
- * to choose which sentence to show. lookalikes are the other paintings
+ * to choose which sentence to show. notDuplicates are paintings the artist
+ * marked as different though they look alike (#116). lookalikes are the other paintings
  * that look like this one (empty when none do).
  *
  * missingDetails lists what a painting still lacks, for the badges on the
@@ -35,6 +36,7 @@ export type DeskWork = {
   imageWidth: number;
   imageHeight: number;
   lookalikes: LikenessMember[];
+  notDuplicates: LikenessMember[];
   originalShownAt: string;
   printsShownAt: string[];
 };

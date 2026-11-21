@@ -227,6 +227,24 @@ test("parseManifest keeps valid entries and drops bad ones", () => {
   assert.deepEqual(parseManifest({ files: [] }), { files: {} });
 });
 
+test("parseManifest keeps a picture's Not a duplicate marks, dropping bad ones", () => {
+  const manifest = parseManifest({
+    files: {
+      "a.jpg": {
+        sha256: "a",
+        fingerprint: "0123456789abcdef",
+        notDuplicateOf: ["fedcba9876543210", "not-a-fingerprint", 7, "fedcba9876543210", "00000000000000ff"],
+      },
+      "b.jpg": { sha256: "b", notDuplicateOf: "fedcba9876543210" },
+      "c.jpg": { sha256: "c", notDuplicateOf: [] },
+    },
+  });
+  assert.deepEqual(manifest.files["a.jpg"].notDuplicateOf, ["00000000000000ff", "fedcba9876543210"]);
+  assert.equal("notDuplicateOf" in manifest.files["b.jpg"], false);
+  assert.equal("notDuplicateOf" in manifest.files["c.jpg"], false);
+  assert.deepEqual(parseManifest(JSON.parse(serializeManifest(manifest))), manifest);
+});
+
 test("serializeManifest sorts file names so saves give stable diffs", () => {
   const text = serializeManifest({
     files: {

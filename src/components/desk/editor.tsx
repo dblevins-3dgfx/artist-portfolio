@@ -7,7 +7,8 @@
  */
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type MouseEvent, type ReactNode } from "react";
+import { startTransition, useActionState, useState, type MouseEvent, type ReactNode } from "react";
+import { saveDuplicateMark, type DeskFormState } from "@/app/curate/actions";
 import { useDeskFilter } from "@/components/desk/filter-store";
 import {
   Field,
@@ -27,7 +28,11 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/
 import { Input } from "@/components/ui/input";
 import { listSeparator, stepThrough, type DeskWork, type Publishing } from "@/lib/desk";
 import { cn } from "@/lib/utils";
+import { withStaleCheck } from "@/lib/stale-page";
 import type { Venue } from "@/lib/venues";
+
+// See lib/stale-page.ts: a page left open across a deploy is stale.
+const saveMarkFromDesk = withStaleCheck(saveDuplicateMark);
 
 // The thumbnail is cropped to fit the form. Clicking it shows the whole
 // preview over the page, as the public painting page does; the form and any
@@ -72,32 +77,84 @@ function UncroppedPreview({ work }: { work: DeskWork }) {
 // "Possible duplicate of A and B." with each name linking to that
 // painting's edit page. With unsaved changes, following one asks first, as
 // "All paintings" does (guardLink), with the question under the note.
+//
+// Each look-alike also gets a "Not a duplicate of …" button, and each pair
+// already marked that way an Undo (#116). They save straight away and come
+// back to this page, so they wait while the form has unsaved changes. They
+// sit inside the edit form, which cannot hold a second form, so they call
+// the action themselves instead of submitting.
 function LookalikeNote({
   work,
   guardLink,
   leavePrompt,
+  changed,
+  canSave,
 }: {
   work: DeskWork;
   guardLink: (event: MouseEvent<HTMLAnchorElement>) => void;
   leavePrompt: LeavePromptState;
+  changed: boolean;
+  canSave: boolean;
 }) {
-  if (work.lookalikes.length === 0) return null;
+  const [state, action, pending] = useActionState(saveMarkFromDesk, null as DeskFormState);
+  if (work.lookalikes.length === 0 && work.notDuplicates.length === 0) return null;
+  const mark = (otherSlug: string, different: boolean) => {
+    const formData = new FormData();
+    formData.set("slug", work.slug);
+    formData.set("otherSlug", otherSlug);
+    formData.set("different", different ? "1" : "0");
+    startTransition(() => action(formData));
+  };
+  const disabled = pending || changed || !canSave;
   return (
-    <>
-      <p className="mt-2 text-sm leading-relaxed">
-        Possible duplicate of{" "}
-        {work.lookalikes.map((other, index) => (
-          <span key={other.slug}>
-            {listSeparator(index, work.lookalikes.length)}
-            <Link href={`/curate/${other.slug}`} onClick={guardLink} className="underline underline-offset-4">
-              {other.title}
-            </Link>
-          </span>
-        ))}
-        .
-      </p>
-      <LeavePrompt prompt={leavePrompt} at="lookalike" className="mt-2" />
-    </>
+    <div className="mt-2 grid gap-2 text-sm leading-relaxed">
+      {work.lookalikes.length > 0 ? (
+        <p>
+          Possible duplicate of{" "}
+          {work.lookalikes.map((other, index) => (
+            <span key={other.slug}>
+              {listSeparator(index, work.lookalikes.length)}
+              <Link href={`/curate/${other.slug}`} onClick={guardLink} className="underline underline-offset-4">
+                {other.title}
+              </Link>
+            </span>
+          ))}
+          .
+        </p>
+      ) : null}
+      <LeavePrompt prompt={leavePrompt} at="lookalike" />
+      {work.lookalikes.map((other) => (
+        <Button
+          key={other.slug}
+          type="button"
+          variant="outline"
+          size="sm"
+          className="h-auto justify-start py-1 text-left whitespace-normal"
+          disabled={disabled}
+          onClick={() => mark(other.slug, true)}
+        >
+          Not a duplicate of {other.title}
+        </Button>
+      ))}
+      {work.notDuplicates.map((other) => (
+        <p key={other.slug} className="text-muted-foreground">
+          Marked as not a duplicate of {other.title}.{" "}
+          <Button
+            type="button"
+            variant="link"
+            size="sm"
+            className="h-auto p-0 align-baseline"
+            disabled={disabled}
+            onClick={() => mark(other.slug, false)}
+          >
+            Undo
+          </Button>
+        </p>
+      ))}
+      {changed ? <p className="text-muted-foreground">Save or cancel your changes first.</p> : null}
+      {pending ? <p className="text-muted-foreground">Saving…</p> : null}
+      <FormError state={state} />
+    </div>
   );
 }
 
@@ -133,7 +190,13 @@ function WorkForm({
         <p className="mt-2 text-xs text-muted-foreground">
           Preview{work.imageWidth ? `, ${work.imageWidth} × ${work.imageHeight}` : ""}. Click it to see it uncropped.
         </p>
-        <LookalikeNote work={work} guardLink={guardLink("lookalike")} leavePrompt={leavePrompt} />
+        <LookalikeNote
+          work={work}
+          guardLink={guardLink("lookalike")}
+          leavePrompt={leavePrompt}
+          changed={changed}
+          canSave={canSave}
+        />
       </div>
       <div className="grid gap-4">
         <PaintingFields idPrefix={work.slug} work={work} venues={venues} />

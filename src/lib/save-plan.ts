@@ -8,7 +8,7 @@
  * A refusal comes back as `{ error }` with the sentence the form shows.
  */
 import { createHash } from "crypto";
-import type { Manifest } from "@/lib/catalog";
+import type { Manifest, ManifestFile } from "@/lib/catalog";
 import type { WorkFields } from "@/lib/desk";
 import type { Work } from "@/lib/types";
 import { cleanShowings } from "@/lib/venues";
@@ -171,4 +171,43 @@ export function planRemoval(
     files.push({ path: previewPath(existing.slug), bytes: null });
   }
   return { works: remaining, manifest: next, files, message: commitMessage("Remove", existing.title) };
+}
+
+// Marking two look-alike paintings as different ("Not a duplicate", #116),
+// or undoing that. The mark goes on both pictures' manifest entries, as
+// each other's fingerprint, so either one alone keeps them apart. Only the
+// manifest changes.
+export function planDuplicateMark(
+  works: Work[],
+  manifest: Manifest,
+  slug: string,
+  otherSlug: string,
+  different: boolean,
+): { error: string } | { manifest: Manifest; message: string } {
+  const work = works.find((entry) => entry.slug === slug);
+  const other = works.find((entry) => entry.slug === otherSlug);
+  if (!work || !other || work.slug === other.slug) {
+    return { error: "One of those paintings is no longer in the catalog. Reload the page." };
+  }
+  const file = manifest.files[previewName(work.slug)];
+  const otherFile = manifest.files[previewName(other.slug)];
+  if (!file?.fingerprint || !otherFile?.fingerprint) {
+    return { error: "One of those pictures has no likeness fingerprint, so it cannot be marked. Reload the page." };
+  }
+  const withMark = (entry: typeof file, fingerprint: string) => {
+    const marks = new Set(entry.notDuplicateOf ?? []);
+    if (different) marks.add(fingerprint);
+    else marks.delete(fingerprint);
+    const next: ManifestFile = { ...entry, notDuplicateOf: [...marks].sort() };
+    if (marks.size === 0) delete next.notDuplicateOf;
+    return next;
+  };
+  const next: Manifest = { files: { ...manifest.files } };
+  next.files[previewName(work.slug)] = withMark(file, otherFile.fingerprint);
+  next.files[previewName(other.slug)] = withMark(otherFile, file.fingerprint);
+  const titles = (text: string) => text.replace(/\s+/g, " ").slice(0, 40);
+  const message = different
+    ? `Mark "${titles(work.title)}" and "${titles(other.title)}" as different paintings from the studio desk`
+    : `Undo "${titles(work.title)}" and "${titles(other.title)}" as different paintings from the studio desk`;
+  return { manifest: next, message };
 }
