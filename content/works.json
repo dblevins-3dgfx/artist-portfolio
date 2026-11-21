@@ -949,8 +949,8 @@
     "year": 2026,
     "medium": "Oil",
     "surface": "Canvas",
-    "widthIn": 0,
-    "heightIn": 0,
+    "widthIn": 24,
+    "heightIn": 18,
     "statement": "Two very good milk cows.",
     "subjects": [
       "animals"
