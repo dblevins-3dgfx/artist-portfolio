@@ -183,11 +183,12 @@
     "heightIn": 8,
     "statement": "I did this little piece on Christmas Day. I enjoyed the look of concentration on her little face with her red cheeks. It warmed my heart.",
     "subjects": [
-      "children"
+      "children",
+      "narratives"
     ],
     "featured": false,
     "originalStatus": "not-for-sale",
-    "printsAvailable": false,
+    "printsAvailable": true,
     "slug": "let-me-give-you-a-hand",
     "image": "/art/let-me-give-you-a-hand.jpg",
     "imageWidth": 1116,
