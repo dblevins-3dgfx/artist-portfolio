@@ -1710,16 +1710,19 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 8313 Original",
-    "year": 2026,
+    "title": "Her Royal Highness",
+    "year": 2021,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 8,
+    "heightIn": 10,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "animals",
+      "narratives"
+    ],
     "featured": false,
-    "originalStatus": "not-for-sale",
+    "originalStatus": "sold",
     "printsAvailable": true,
     "slug": "img-8313-original",
     "image": "/art/img-8313-original.jpg",
