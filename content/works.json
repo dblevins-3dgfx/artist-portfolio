@@ -1334,14 +1334,18 @@
     "imageHeight": 1240
   },
   {
-    "title": "IMG 5075",
-    "year": 2026,
+    "title": "The Armor of God",
+    "year": 2017,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "surface": "Canvas",
+    "widthIn": 40,
+    "heightIn": 28,
+    "statement": "Notice the Wolf evaporates when confronted with the Sword!  This painting is about protecting family from evil.",
+    "subjects": [
+      "children",
+      "animals",
+      "narratives"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
