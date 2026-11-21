@@ -1924,14 +1924,18 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 9568",
+    "title": "Ladies in Waiting",
     "year": 2026,
     "medium": "Oil",
     "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "widthIn": 30,
+    "heightIn": 15,
+    "statement": "These three tell a story. They look a little like their having a gossip session!",
+    "subjects": [
+      "animals",
+      "birds-and-flowers",
+      "narratives"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
