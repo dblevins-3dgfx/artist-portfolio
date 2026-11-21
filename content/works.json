@@ -1555,14 +1555,17 @@
     "imageHeight": 1400
   },
   {
-    "title": "IMG 7494",
-    "year": 2026,
+    "title": "make a Wish in Blue",
+    "year": 2024,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
-    "statement": "",
-    "subjects": [],
+    "surface": "Canvas",
+    "widthIn": 8,
+    "heightIn": 10,
+    "statement": "I softened the original",
+    "subjects": [
+      "children",
+      "portraits"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
