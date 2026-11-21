@@ -1432,14 +1432,16 @@
     "imageHeight": 1040
   },
   {
-    "title": "IMG 5882",
-    "year": 2026,
+    "title": "Purple Llama",
+    "year": 2024,
     "medium": "Oil",
-    "surface": "",
-    "widthIn": 0,
-    "heightIn": 0,
+    "surface": "Canvas",
+    "widthIn": 20,
+    "heightIn": 16,
     "statement": "",
-    "subjects": [],
+    "subjects": [
+      "animals"
+    ],
     "featured": false,
     "originalStatus": "not-for-sale",
     "printsAvailable": true,
