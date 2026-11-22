@@ -273,7 +273,7 @@
     "imageHeight": 1400
   },
   {
-    "title": "Kitten on panel",
+    "title": "Kitten on Panel",
     "year": 2015,
     "medium": "Oil",
     "surface": "Cedar panel",
@@ -285,7 +285,7 @@
     ],
     "series": "Painted on Cedar",
     "featured": false,
-    "originalStatus": "not-for-sale",
+    "originalStatus": "sold",
     "printsAvailable": true,
     "slug": "002-original",
     "image": "/art/002-original.jpg",
