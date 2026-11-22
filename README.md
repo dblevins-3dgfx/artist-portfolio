@@ -94,6 +94,6 @@ Keep a private backup of `originals/`. The site cannot reconstruct the full phot
 
 ## What the image protection does, and what it does not
 
-A preview is a poor source for a reproduction: it is small, it is compressed, and the watermark repeats across it, including in a crop. Search engines are asked not to index the images. The original file is never placed where the web server can hand it out.
+A preview is a poor source for a reproduction: it is small, it is compressed, and the watermark repeats across it, including in a crop. The original file is never placed where the web server can hand it out. Search engines may index the previews, so the paintings can turn up in Google Images; what they find is the same watermarked preview.
 
 A screenshot is still possible. No website can prevent that. The practical protection is the reduced file plus the watermark, not a lock on right-click.

@@ -35,7 +35,10 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true, noimageindex: true },
+    // Image indexing is allowed (#44): Google Images is one of the main ways
+    // people find a painter. Only the watermarked 1400px previews are
+    // published, never the originals.
+    googleBot: { index: true, follow: true },
   },
   ...(site.siteUrl ? { metadataBase: new URL(site.siteUrl) } : {}),
 };
