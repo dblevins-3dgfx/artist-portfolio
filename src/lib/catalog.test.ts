@@ -195,6 +195,36 @@ test("a series is read cleaned up, written only when set, and shown on the publi
   assert.equal(toCatalogWork(named).series, "Mountain Lakes");
 });
 
+// #122: a save from an older version of the site must not drop fields a
+// newer version added. "frameColor" and "exhibitions" stand in for them.
+test("fields this version does not know are read and written back unchanged", () => {
+  const stored = {
+    slug: "lake",
+    title: "Lake",
+    year: "1999",
+    frameColor: "walnut",
+    exhibitions: [{ venue: "Blue Door", year: 2026 }],
+  };
+  const [work] = parseWorks([stored]);
+  assert.deepEqual(work.extra, { frameColor: "walnut", exhibitions: [{ venue: "Blue Door", year: 2026 }] });
+  assert.equal(work.year, 0, "known fields are still checked as before");
+  const [written] = JSON.parse(serializeWorks([work]));
+  assert.equal(written.frameColor, "walnut");
+  assert.deepEqual(written.exhibitions, [{ venue: "Blue Door", year: 2026 }]);
+  assert.equal("extra" in written, false, "they go back at the top level, not under extra");
+  assert.deepEqual(parseWorks([written])[0], work, "a second save changes nothing");
+});
+
+test("a plain entry gains no extra fields, and an old subject is not kept twice", () => {
+  const [plain] = parseWorks([{ slug: "lake" }]);
+  assert.equal("extra" in plain, false);
+  const [old] = parseWorks([{ slug: "shore", subject: "places" }]);
+  assert.equal("extra" in old, false);
+  const [written] = JSON.parse(serializeWorks([old]));
+  assert.deepEqual(written.subjects, ["places"]);
+  assert.equal("subject" in written, false);
+});
+
 test("the public view of a painting leaves out availability, price, and the front-page flag", () => {
   const [work] = parseWorks([
     {
@@ -204,10 +234,12 @@ test("the public view of a painting leaves out availability, price, and the fron
       originalPrice: 1800,
       printsAvailable: true,
       featured: true,
+      frameColor: "walnut",
     },
   ]);
   const shown = toCatalogWork(work) as Record<string, unknown>;
   for (const key of [
+    "extra",
     "originalStatus",
     "originalPrice",
     "printsAvailable",
@@ -257,6 +289,14 @@ test("parseManifest keeps a picture's Not a duplicate marks, dropping bad ones",
   assert.equal("notDuplicateOf" in manifest.files["b.jpg"], false);
   assert.equal("notDuplicateOf" in manifest.files["c.jpg"], false);
   assert.deepEqual(parseManifest(JSON.parse(serializeManifest(manifest))), manifest);
+});
+
+test("a manifest entry keeps fields this version does not know, at the top level", () => {
+  const manifest = parseManifest({ files: { "a.jpg": { width: 1, height: 1, sha256: "a", printedAt: "2026-11-01" } } });
+  assert.deepEqual(manifest.files["a.jpg"].extra, { printedAt: "2026-11-01" });
+  const written = JSON.parse(serializeManifest(manifest));
+  assert.deepEqual(written.files["a.jpg"], { width: 1, height: 1, sha256: "a", printedAt: "2026-11-01" });
+  assert.equal("extra" in parseManifest({ files: { "b.jpg": { sha256: "b" } } }).files["b.jpg"], false);
 });
 
 test("serializeManifest sorts file names so saves give stable diffs", () => {
