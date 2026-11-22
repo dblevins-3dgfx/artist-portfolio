@@ -57,7 +57,7 @@ npm run process-images
 
 ## Studio desk
 
-Open `/curate` on the Vercel address. Thomasene signs in with the studio password, then adds a painting, edits its title, year, medium, surface, size, subjects, note, and “Show on the front page,” or removes it. Each photograph is reduced to a long edge of 1400 pixels, stripped of camera information, and watermarked before it is saved. The original file is discarded after that. It is never written into the repository.
+Open `/curate` on the site's address; bookmark it, because the public pages do not link to it. Thomasene signs in with the studio password, then adds a painting, edits its title, year, medium, surface, size, subjects, note, and “Show on the front page,” or removes it. Each photograph is reduced to a long edge of 1400 pixels, stripped of camera information, and watermarked before it is saved. The original file is discarded after that. It is never written into the repository.
 
 Each painting also has an Availability section: whether the original is Not for sale, Available, or Sold, the original’s price in whole US dollars (needed when Available), and whether prints are offered. These are stored in `content/works.json` as `originalStatus` (`not-for-sale`, `in-studio` for Available, or `sold`), `originalPrice`, and `printsAvailable`. The public pages never read them. This repository is public, so anyone can read those values, prices included, on GitHub.
 
