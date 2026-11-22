@@ -377,12 +377,12 @@
     "surface": "Canvas",
     "widthIn": 20,
     "heightIn": 16,
-    "statement": "These two are good friends of each other. I enjoyed painting them for their human!",
+    "statement": "These two are good friends. I enjoyed painting them for their human!",
     "subjects": [
       "animals"
     ],
     "featured": false,
-    "originalStatus": "not-for-sale",
+    "originalStatus": "sold",
     "printsAvailable": true,
     "slug": "img-0311",
     "image": "/art/img-0311.jpg",
