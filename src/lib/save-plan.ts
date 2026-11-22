@@ -108,6 +108,12 @@ export function planPreviewFiles({
 // Showings work the same way (#104), then keep only venues still on the
 // list (`venueIds`), no venue for an original that is not Available, and
 // none for prints that are not offered.
+// Fields this version does not know stay with the painting on a save
+// (#122); a new painting has none.
+function keepExtra(existing: Work | undefined): Pick<Work, "extra"> {
+  return existing?.extra ? { extra: existing.extra } : {};
+}
+
 export function buildWork(
   fields: WorkFields,
   existing: Work | undefined,
@@ -144,6 +150,7 @@ export function buildWork(
     image: `/art/${fields.slug}.jpg`,
     imageWidth: size.imageWidth,
     imageHeight: size.imageHeight,
+    ...keepExtra(existing),
   };
 }
 

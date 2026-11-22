@@ -37,6 +37,8 @@ export type ManifestFile = {
   sha256: string;
   fingerprint?: string;
   notDuplicateOf?: string[];
+  // Fields this version does not know, kept as they were (#122).
+  extra?: Record<string, unknown>;
 };
 export type Manifest = { files: Record<string, ManifestFile> };
 
@@ -63,6 +65,43 @@ export function catalogFilePath(filePath: string) {
   const name = filePath.slice("public/art/".length);
   if (!/^[a-z0-9-]+\.jpg$/.test(name)) throw new Error("Refusing to write that file.");
   return path.join(process.cwd(), "public", "art", name);
+}
+
+// Keeping what this version does not understand (#122). A desk save can
+// run on an older version of the site: Vercel keeps serving it while a new
+// build is published, and an open desk tab may still talk to it. That
+// version reads only the fields it knows and rewrites the whole file, so
+// without this it would drop any field added since (it erased every series
+// once). passThrough collects the other fields of an entry, as plain JSON
+// values, to be written back unchanged after the known ones. It returns {}
+// when there are none, so a plain entry gains no "extra" key.
+const WORK_FIELDS = new Set([
+  "title",
+  "year",
+  "medium",
+  "surface",
+  "widthIn",
+  "heightIn",
+  "statement",
+  "subjects",
+  "subject", // older catalogs; read as subjects and written back as subjects
+  "series",
+  "featured",
+  "originalStatus",
+  "originalPrice",
+  "printsAvailable",
+  "originalShownAt",
+  "printsShownAt",
+  "slug",
+  "image",
+  "imageWidth",
+  "imageHeight",
+]);
+const MANIFEST_FIELDS = new Set(["width", "height", "sha256", "fingerprint", "notDuplicateOf"]);
+
+function passThrough(record: Record<string, unknown>, known: Set<string>): { extra?: Record<string, unknown> } {
+  const extra = Object.fromEntries(Object.entries(record).filter(([key]) => !known.has(key)));
+  return Object.keys(extra).length > 0 ? { extra } : {};
 }
 
 export function asRecord(value: unknown): Record<string, unknown> | null {
@@ -119,6 +158,7 @@ export function parseWorks(value: unknown): Work[] {
       image: `/art/${record.slug}.jpg`,
       imageWidth: typeof record.imageWidth === "number" ? record.imageWidth : 0,
       imageHeight: typeof record.imageHeight === "number" ? record.imageHeight : 0,
+      ...passThrough(record, WORK_FIELDS),
     };
   });
 }
@@ -138,6 +178,7 @@ export function parseManifest(value: unknown): Manifest {
     if (typeof file.fingerprint === "string" && FINGERPRINT.test(file.fingerprint)) {
       parsed.fingerprint = file.fingerprint;
     }
+    Object.assign(parsed, passThrough(file, MANIFEST_FIELDS));
     if (Array.isArray(file.notDuplicateOf)) {
       const marks = [
         ...new Set(
@@ -179,6 +220,8 @@ export function serializeWorks(works: Work[]) {
       image: work.image,
       imageWidth: work.imageWidth,
       imageHeight: work.imageHeight,
+      // Fields a newer version added, written back as they were read (#122).
+      ...work.extra,
     })),
     null,
     2,
@@ -187,7 +230,12 @@ export function serializeWorks(works: Work[]) {
 
 export function serializeManifest(manifest: Manifest) {
   const files: Manifest["files"] = {};
-  for (const name of Object.keys(manifest.files).sort()) files[name] = manifest.files[name];
+  for (const name of Object.keys(manifest.files).sort()) {
+    // Fields a newer version added go back at the top level of the entry,
+    // as they were read (#122).
+    const { extra, ...known } = manifest.files[name];
+    files[name] = { ...known, ...extra };
+  }
   return `${JSON.stringify({ files }, null, 2)}\n`;
 }
 

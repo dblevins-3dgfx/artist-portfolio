@@ -249,6 +249,16 @@ test("buildWork takes the series from the form, or keeps it when the form had no
   assert.equal(buildWork(fields("pond"), undefined, size, new Set()).series, "");
 });
 
+test("a desk save keeps fields this version does not know (#122)", () => {
+  const withExtra = work("lake", { extra: { frameColor: "walnut" } });
+  const size = { imageWidth: 1400, imageHeight: 1000 };
+  assert.deepEqual(buildWork(fields("lake"), withExtra, size, new Set()).extra, { frameColor: "walnut" });
+  assert.equal("extra" in buildWork(fields("pond"), undefined, size, new Set()), false, "a new painting has none");
+  const removal = planRemoval([withExtra, work("shore", { extra: { frameColor: "oak" } })], manifest, "lake");
+  assert.ok(!("error" in removal));
+  assert.deepEqual(removal.works[0].extra, { frameColor: "oak" }, "removing one painting keeps the others' fields");
+});
+
 test("commit messages keep the title on one short line", () => {
   assert.equal(commitMessage("Update", "Lake\n  at   dusk"), 'Update "Lake at dusk" from the studio desk');
   assert.equal(commitMessage("Add", "x".repeat(100)).length, 'Add "" from the studio desk'.length + 80);

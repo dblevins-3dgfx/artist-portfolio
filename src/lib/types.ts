@@ -59,4 +59,7 @@ export type Work = {
   image: string;
   imageWidth: number;
   imageHeight: number;
+  // Fields in works.json this version does not know, kept as they were so
+  // a save does not drop them (#122). See passThrough in lib/catalog.ts.
+  extra?: Record<string, unknown>;
 };
