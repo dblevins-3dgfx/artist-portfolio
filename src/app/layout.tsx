@@ -40,6 +40,20 @@ export const metadata: Metadata = {
     // published, never the originals.
     googleBot: { index: true, follow: true },
   },
+  // The link-preview card (#43, see social-card.png/route.tsx). Painting
+  // pages and About set their own picture, which replaces it. X (Twitter)
+  // shows the large picture only with this card type.
+  openGraph: {
+    images: [
+      {
+        url: "/social-card.png",
+        width: 1200,
+        height: 630,
+        alt: `${site.artistName}: original paintings. ${site.tagline}.`,
+      },
+    ],
+  },
+  twitter: { card: "summary_large_image" },
   ...(site.siteUrl ? { metadataBase: new URL(site.siteUrl) } : {}),
 };
 

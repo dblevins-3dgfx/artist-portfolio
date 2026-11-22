@@ -15,6 +15,10 @@ const PORTRAIT = "/studio/thomasene.jpg";
 export const metadata: Metadata = {
   title: "About",
   description: `${site.artistName}. ${site.tagline}.`,
+  // A shared About link shows the artist (#43), not the site-wide card.
+  openGraph: {
+    images: [{ url: PORTRAIT, width: 1050, height: 1400, alt: `Portrait of ${site.firstName}` }],
+  },
 };
 
 export default function AboutPage() {
