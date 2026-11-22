@@ -77,7 +77,7 @@ export function Gallery({ works, initialQuery = "" }: { works: CatalogWork[]; in
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search titles"
+            placeholder="Search paintings"
             className="h-11 bg-card px-3"
           />
         </label>
