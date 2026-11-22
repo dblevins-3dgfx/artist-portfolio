@@ -9,11 +9,13 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { JsonLd } from "@/components/json-ld";
 import { PaintingViewer } from "@/components/painting-viewer";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { neighbours } from "@/lib/neighbours";
 import { relatedWorks } from "@/lib/related";
+import { artworkJsonLd } from "@/lib/structured-data";
 import { needsSeriesWord, needsThe } from "@/lib/series";
 import { emailIsPublic, formatInches, formatMaterials, site, workAlt } from "@/lib/site";
 import { subjectLabel } from "@/lib/subjects";
@@ -63,6 +65,7 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-10 lg:py-14">
+      <JsonLd data={artworkJsonLd(work, site)} />
       <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 text-sm text-muted-foreground">
         <Link href="/work" className="underline-offset-4 hover:underline">
           The work

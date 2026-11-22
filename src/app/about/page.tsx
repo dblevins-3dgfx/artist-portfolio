@@ -4,7 +4,13 @@
  */
 import type { Metadata } from "next";
 import Image from "next/image";
+import { JsonLd } from "@/components/json-ld";
 import { emailIsPublic, site } from "@/lib/site";
+import { artistJsonLd } from "@/lib/structured-data";
+
+// The portrait, shown on the page and named as the artist's image in the
+// structured data.
+const PORTRAIT = "/studio/thomasene.jpg";
 
 export const metadata: Metadata = {
   title: "About",
@@ -14,6 +20,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
+      <JsonLd data={artistJsonLd(site, PORTRAIT)} />
       <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.9fr)]">
         <div>
           <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">Studio</p>
@@ -51,7 +58,7 @@ export default function AboutPage() {
         </div>
         <figure>
           <Image
-            src="/studio/thomasene.jpg"
+            src={PORTRAIT}
             alt="Thomasene, on a dock beside a lake."
             width={1400}
             height={1050}
