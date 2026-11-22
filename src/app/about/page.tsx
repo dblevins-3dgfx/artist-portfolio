@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description: `${site.artistName}. ${site.tagline}.`,
   // A shared About link shows the artist (#43), not the site-wide card.
   openGraph: {
-    images: [{ url: PORTRAIT, width: 1050, height: 1400, alt: `Portrait of ${site.firstName}` }],
+    images: [{ url: PORTRAIT, width: 690, height: 862, alt: `Portrait of ${site.firstName}` }],
   },
 };
 
@@ -63,9 +63,9 @@ export default function AboutPage() {
         <figure>
           <Image
             src={PORTRAIT}
-            alt="Thomasene, on a dock beside a lake."
-            width={1400}
-            height={1050}
+            alt="Thomasene, smiling."
+            width={690}
+            height={862}
             priority
             sizes="(min-width: 1024px) 42vw, 100vw"
             className="h-auto w-full border border-border bg-card"
