@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { emailIsPublic, site } from "@/lib/site";
 
+// The studio desk (/curate) is deliberately not linked from the public
+// site (#46): visitors have no use for it, and a link invites password
+// guessing. The artist opens it from a bookmark.
 const links = [
   { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
-  { href: "/curate", label: "Studio desk" },
 ];
 
 export function SiteFooter() {
