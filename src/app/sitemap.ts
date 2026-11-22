@@ -12,7 +12,9 @@ export const dynamic = "force-static";
 export default function sitemap(): MetadataRoute.Sitemap {
   if (!site.siteUrl) return [];
   const base = site.siteUrl.replace(/\/$/, "");
-  const paths = ["", "/work", "/about", ...getWorks().map((work) => `/work/${work.slug}`)];
+  // Each address ends with "/", as next.config.ts sets trailingSlash, so
+  // search engines get the page itself rather than a redirect to it.
+  const paths = ["/", "/work/", "/about/", ...getWorks().map((work) => `/work/${work.slug}/`)];
   return paths.map((path) => ({
     url: `${base}${path}`,
     lastModified: new Date(),
