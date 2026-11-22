@@ -3,7 +3,7 @@
 A catalog of original paintings. The pictures on the site are reduced, watermarked previews. The full photographs stay in a private folder and are never published.
 
 - [GitHub repository](https://github.com/dblevins-3dgfx/artist-portfolio)
-- [Vercel](https://artist-portfolio-mu-snowy.vercel.app/) — the live site, including the studio desk at `/curate`.
+- [thomasene.art](https://thomasene.art/) — the live site, on Vercel, including the studio desk at `/curate`.
 
 The public site does not list availability, prices, print sizes, or a way to order. That keeps it within Vercel’s free Hobby plan, which is for personal, non-commercial projects. The artist’s name, email, and biography live in [`content/studio.json`](content/studio.json).
 
@@ -20,11 +20,11 @@ npm run dev
 
 ## Publish on Vercel
 
-The live site is [https://artist-portfolio-mu-snowy.vercel.app/](https://artist-portfolio-mu-snowy.vercel.app/). It is a normal Next.js app on the Hobby plan. Do not turn on a static export: the studio desk at `/curate` is the one page that runs on the server. The desk is personal use of the site. It can record availability and an original’s price for later, but nothing on the public site shows them and the site takes no orders.
+The live site is [https://thomasene.art/](https://thomasene.art/), served by Vercel (the project's own address, [artist-portfolio-mu-snowy.vercel.app](https://artist-portfolio-mu-snowy.vercel.app/), still works too). It is a normal Next.js app on the Hobby plan. Do not turn on a static export: the studio desk at `/curate` is the one page that runs on the server. The desk is personal use of the site. It can record availability and an original’s price for later, but nothing on the public site shows them and the site takes no orders.
 
-[thomasene.art](https://thomasene.art/) still serves the GoDaddy website builder. The registration can stay at GoDaddy. When that name should open this catalog, add the domain in the Vercel project and copy the DNS records Vercel shows into GoDaddy. Disconnect GoDaddy’s website builder or domain forwarding first, or the old page keeps answering. Do not upload the `originals/` folder.
+The domain is registered at GoDaddy and points at the Vercel project; GoDaddy’s website builder and forwarding are no longer used for it. Do not upload the `originals/` folder.
 
-`siteUrl` in `content/studio.json` is still empty, so the sitemap is empty. Set it to the public address, including `https://`, when that address is the one you want indexed. Then publish again.
+`siteUrl` in `content/studio.json` is `https://thomasene.art`. The sitemap (`/sitemap.xml`), the sitemap line in `robots.txt`, and the full addresses in link previews are built from it. Change it only if the public address changes.
 
 ## Visitor stats
 
@@ -44,7 +44,7 @@ It uses no cookies and records no names or messages. Two kinds of view are left 
 - `location`
 - `email` — shown when it contains `@` and does not end in `@example.com`
 - `domain` — `thomasene.art`, without `https://`. Also burned into the watermark
-- `siteUrl` — still empty. The sitemap uses it once it is a full `https://` address
+- `siteUrl` — `https://thomasene.art`, the public address. The sitemap and link previews use it
 - `biography` — the about page
 - `watermark` — the word drawn across previews (`PREVIEW`)
 - `maxPreviewEdge` — longest side of a published preview, in pixels (`1400`)
