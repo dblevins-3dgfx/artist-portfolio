@@ -36,7 +36,7 @@ export default function AboutPage() {
               </p>
             ))
           ) : (
-            <p className="mt-6 max-w-prose text-lg leading-relaxed">{site.tagline}.</p>
+            <p className="mt-6 max-w-prose font-script text-4xl leading-snug">{site.tagline}.</p>
           )}
           {!site.biography ? (
             <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">

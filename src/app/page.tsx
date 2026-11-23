@@ -23,7 +23,9 @@ export default async function HomePage() {
         <div>
           <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">Original work</p>
           <h1 className="mt-3 font-heading text-5xl italic leading-[1.05] sm:text-6xl">{site.artistName}</h1>
-          <p className="mt-5 max-w-md text-lg leading-relaxed">{site.tagline}</p>
+          <p className="mt-6 max-w-md font-script text-4xl leading-snug text-balance text-muted-foreground sm:text-5xl">
+            {site.tagline}
+          </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/work" className={cn(buttonVariants(), "inline-flex h-11 px-4")}>
               Browse the work
