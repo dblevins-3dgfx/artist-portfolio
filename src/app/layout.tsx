@@ -8,7 +8,7 @@
  * not class names you defined in a stylesheet. `@/` means src/.
  */
 import type { Metadata } from "next";
-import { Fraunces, Outfit } from "next/font/google";
+import { Fraunces, Great_Vibes, Outfit } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteAnalytics } from "@/components/site-analytics";
 import { SiteHeader } from "@/components/site-header";
@@ -24,6 +24,14 @@ const fraunces = Fraunces({
   subsets: ["latin"],
   style: ["normal", "italic"],
   variable: "--font-fraunces",
+});
+
+// The tagline's script, the same one the link-preview card draws it in
+// (social-card.png/route.tsx). Used through the font-script class.
+const greatVibes = Great_Vibes({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-great-vibes",
 });
 
 export const metadata: Metadata = {
@@ -59,7 +67,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${outfit.variable} ${fraunces.variable} h-full antialiased`}>
+    <html lang="en" className={`${outfit.variable} ${fraunces.variable} ${greatVibes.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <a
           href="#content"
