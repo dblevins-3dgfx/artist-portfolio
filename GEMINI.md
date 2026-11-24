@@ -1,1 +1,4 @@
-Load AGENTS.md and DEVELOPMENT.md before starting.
+@./AGENTS.md
+@./DEVELOPMENT.md
+
+Also read and follow `.cursor/rules/standing-orders.mdc` before working in this repository.
