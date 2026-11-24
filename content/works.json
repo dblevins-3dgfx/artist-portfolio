@@ -2053,5 +2053,24 @@
     "image": "/art/img-9963.jpg",
     "imageWidth": 1090,
     "imageHeight": 1400
+  },
+  {
+    "title": "Hydrangeas in the Sun",
+    "year": 2024,
+    "medium": "",
+    "surface": "Canvas",
+    "widthIn": 24,
+    "heightIn": 18,
+    "statement": "",
+    "subjects": [
+      "still-life"
+    ],
+    "featured": false,
+    "originalStatus": "not-for-sale",
+    "printsAvailable": true,
+    "slug": "hydrangeas-in-the-sun",
+    "image": "/art/hydrangeas-in-the-sun.jpg",
+    "imageWidth": 1400,
+    "imageHeight": 1124
   }
 ]
