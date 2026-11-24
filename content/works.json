@@ -2072,5 +2072,26 @@
     "image": "/art/hydrangeas-in-the-sun.jpg",
     "imageWidth": 1400,
     "imageHeight": 1124
+  },
+  {
+    "title": "Baby Belle",
+    "year": 2026,
+    "medium": "Oil",
+    "surface": "Canvas",
+    "widthIn": 16,
+    "heightIn": 20,
+    "statement": "“One day, she'll take off the princess dress and never put it on again.\nSo yes, Brooklynn.\nYou can be Belle and take a nap in your dress.” (A quote from her Mom)",
+    "subjects": [
+      "children",
+      "portraits",
+      "narratives"
+    ],
+    "featured": true,
+    "originalStatus": "sold",
+    "printsAvailable": true,
+    "slug": "baby-belle",
+    "image": "/art/baby-belle.jpg",
+    "imageWidth": 1123,
+    "imageHeight": 1400
   }
 ]
