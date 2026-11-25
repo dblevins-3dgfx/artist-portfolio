@@ -64,12 +64,13 @@ test("a desk save refuses blank or repeated names and prices that are not whole 
   for (const value of bad) assert.ok("error" in checkPrintPrices(value), JSON.stringify(value));
 });
 
-// The list is desk-only. Walk every source file outside the desk and make
-// sure none of them imports the price list module or its JSON, so a public
-// page cannot start showing prices by accident. The venue list (#104) is
-// held to the same rule. (catalog.ts only names the files' paths in the
-// write allow-list; that is not an import.)
-test("no public page or component imports the print price list or the venue list", () => {
+// The print price list is desk-only. Walk every source file outside the desk
+// and make sure none of them imports the price list module or its JSON, so a
+// public page cannot start showing prices by accident. Raw venues (which carry
+// private contact details and notes) follow the same rule, except through
+// lib/public-venues.ts, which strips them via toPublicVenue (#41). (catalog.ts
+// only names the files' paths in the write allow-list; that is not an import.)
+test("no public page or component imports the print price list or raw venue records", () => {
   const root = path.join(process.cwd(), "src");
   const deskOnly = [
     path.join("app", "curate"),
@@ -84,6 +85,9 @@ test("no public page or component imports the print price list or the venue list
     path.join("lib", "print-prices.test.ts"),
     path.join("lib", "catalog-store.ts"),
   ];
+  const venueReaders = [...deskOnly, path.join("lib", "public-venues.ts")];
+  const isAllowed = (relative: string, allowedList: string[]) =>
+    allowedList.some((allowed) => relative === allowed || relative.startsWith(allowed + path.sep));
   const files: string[] = [];
   const walk = (dir: string) => {
     for (const name of readdirSync(dir)) {
@@ -93,15 +97,22 @@ test("no public page or component imports the print price list or the venue list
     }
   };
   walk(root);
-  const offenders = files.filter((file) => {
+  const priceOffenders = files.filter((file) => {
     const relative = path.relative(root, file);
-    if (deskOnly.some((allowed) => relative === allowed || relative.startsWith(allowed + path.sep))) return false;
-    return /(?:from|import|require)\s*\(?\s*["'][^"']*(?:print-prices|venues)(?:\.json)?["']/.test(
-      readFileSync(file, "utf8"),
-    );
+    if (isAllowed(relative, deskOnly)) return false;
+    return /(?:from|import|require)\s*\(?\s*["'][^"']*print-prices(?:\.json)?["']/.test(readFileSync(file, "utf8"));
+  });
+  const venueOffenders = files.filter((file) => {
+    const relative = path.relative(root, file);
+    if (isAllowed(relative, venueReaders)) return false;
+    return /(?:from|import|require)\s*\(?\s*["'][^"']*\/venues(?:\.json)?["']/.test(readFileSync(file, "utf8"));
   });
   assert.deepEqual(
-    offenders.map((file) => path.relative(root, file)),
+    priceOffenders.map((file) => path.relative(root, file)),
+    [],
+  );
+  assert.deepEqual(
+    venueOffenders.map((file) => path.relative(root, file)),
     [],
   );
 });

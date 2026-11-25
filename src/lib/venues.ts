@@ -3,8 +3,12 @@
  * where each painting is shown (#104). The list is stored in
  * content/venues.json and edited on the desk at /curate/venues. Paintings
  * name venues by id (see Work.originalShownAt and printsShownAt), so a
- * rename does not touch every painting. Desk-only: no public page imports
- * this file or the JSON (print-prices.test.ts checks that).
+ * rename does not touch every painting.
+ *
+ * Each venue's name and city are shown on the public About page (#41) via
+ * lib/public-venues.ts, which strips contact and notes through toPublicVenue.
+ * print-prices.test.ts checks that no other public file imports this module
+ * or the raw JSON.
  *
  * An original can be at one venue at most, and only while it is Available
  * ("in-studio"); prints can be at any number, but only while prints are
@@ -24,6 +28,21 @@ export type Venue = {
   contact: string;
   notes: string;
 };
+
+// Public projection for the About page (#41): contact and notes stay desk-only.
+export type PublicVenue = {
+  id: string;
+  name: string;
+  city: string;
+};
+
+export function toPublicVenue(venue: Venue): PublicVenue {
+  return {
+    id: venue.id,
+    name: venue.name,
+    city: venue.city,
+  };
+}
 
 export const MAX_VENUES = 100;
 const NAME_LENGTH = 80;

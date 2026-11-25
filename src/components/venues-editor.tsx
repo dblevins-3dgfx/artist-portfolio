@@ -79,8 +79,8 @@ export function VenuesEditor({
         Removing a venue here also takes it off those paintings.
       </p>
       <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
-        The public site does not show venues. They are saved in the catalog’s repository, which anyone can read on
-        GitHub.
+        Each venue’s name and city appear on the public About page. Contact details and notes are kept off the public
+        site, though they are saved in the catalog’s repository, which anyone can read on GitHub.
       </p>
       <PublishingNote publishing={publishing} />
       {saved ? <p className="mt-4 text-sm">Saved.</p> : null}
