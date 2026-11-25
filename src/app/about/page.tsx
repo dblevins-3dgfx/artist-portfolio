@@ -1,10 +1,13 @@
 /*
- * /about. Copy comes from content/studio.json through src/lib/site.ts.
- * The portrait and the easel photo are static files in public/studio/.
+ * /about. Copy comes from content/studio.json through src/lib/site.ts, and
+ * the optional "Shown at" list reads public venue names and cities from
+ * content/venues.json through src/lib/public-venues.ts (#41). The portrait
+ * and the easel photo are static files in public/studio/.
  */
 import type { Metadata } from "next";
 import Image from "next/image";
 import { JsonLd } from "@/components/json-ld";
+import { getPublicVenues } from "@/lib/public-venues";
 import { emailIsPublic, site } from "@/lib/site";
 import { artistJsonLd } from "@/lib/structured-data";
 
@@ -22,6 +25,8 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+  const venues = getPublicVenues();
+
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
       <JsonLd data={artistJsonLd(site, PORTRAIT)} />
@@ -73,6 +78,25 @@ export default function AboutPage() {
           <figcaption className="mt-3 text-sm text-muted-foreground">Thomasene.</figcaption>
         </figure>
       </div>
+
+      {venues.length > 0 ? (
+        <section className="mt-16 border-t border-border pt-12">
+          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)]">
+            <div>
+              <p className="text-xs tracking-[0.18em] text-muted-foreground uppercase">Exhibitions</p>
+              <h2 className="mt-3 font-heading text-3xl italic">Shown at</h2>
+            </div>
+            <ul className="divide-y divide-border border-t border-b border-border">
+              {venues.map((venue) => (
+                <li key={venue.id} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4">
+                  <span className="text-base">{venue.name}</span>
+                  {venue.city ? <span className="text-sm text-muted-foreground">{venue.city}</span> : null}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ) : null}
 
       <section className="mt-16 border-t border-border pt-12">
         <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)]">

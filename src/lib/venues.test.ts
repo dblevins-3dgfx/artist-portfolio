@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { MAX_VENUES, checkVenues, cleanShowings, isVenueId, parseVenues, serializeVenues } from "@/lib/venues";
+import {
+  MAX_VENUES,
+  checkVenues,
+  cleanShowings,
+  isVenueId,
+  parseVenues,
+  serializeVenues,
+  toPublicVenue,
+} from "@/lib/venues";
 
 const blueDoor = {
   id: "blue-door",
@@ -9,6 +17,13 @@ const blueDoor = {
   contact: "Ann, 555-0100",
   notes: "Takes 40%.",
 };
+
+test("the public view of a venue keeps only id, name, and city", () => {
+  const view = toPublicVenue(blueDoor);
+  assert.deepEqual(view, { id: "blue-door", name: "Blue Door Gallery", city: "Mendocino" });
+  assert.equal("contact" in view, false);
+  assert.equal("notes" in view, false);
+});
 
 test("a stored venue list reads back as saved", () => {
   const venues = [blueDoor, { id: "corner-shop", name: "Corner Shop", city: "", contact: "", notes: "" }];
